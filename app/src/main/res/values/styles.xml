@@ -1,0 +1,84 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="AppTheme" parent="Theme.AppCompat.Light">
+        <!-- colorAccent -->
+        <item name="colorAccent">@color/color_blue</item>
+
+        <!-- status bar -->
+        <item name="android:statusBarColor">@android:color/white</item>
+        <item name="android:windowLightStatusBar">true</item>
+
+        <!-- action bar -->
+        <item name="windowActionBar">false</item> <!-- no action bar -->
+        <item name="windowNoTitle">true</item> <!-- no action bar -->
+        <item name="colorPrimary">@android:color/white</item> <!-- action bar color -->
+        <item name="elevation">0dp</item>
+        <item name="android:actionButtonStyle">@style/ActionButtonStyle</item> <!-- action bar button -->
+
+        <!-- text -->
+        <item name="android:textColor">@color/color_dark_gray</item>
+        <item name="android:textColorHint">@color/color_light_gray</item>
+        <item name="android:textSize">@dimen/text_size_default</item>
+
+        <!-- window -->
+        <item name="android:windowBackground">@android:color/white</item>
+
+        <!-- divider -->
+        <item name="android:listDivider">@color/color_light_gray</item>
+
+        <!-- ripple effect -->
+        <item name="colorControlHighlight">@color/color_light_gray</item>
+
+        <!-- navigation bar -->
+        <item name="android:windowLightNavigationBar" tools:targetApi="27">true</item>
+    </style>
+
+    <style name="AppTheme.ActivityTheme">
+        <!-- status bar -->
+        <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:statusBarColor">@android:color/white</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarTheme">
+        <item name="android:textColor">@android:color/white</item> <!-- menu item long click title color -->
+    </style>
+
+<!--    <style name="AppTheme.SplashTheme">-->
+<!--        <item name="android:statusBarColor">@android:color/white</item>-->
+<!--        <item name="android:windowBackground">@drawable/drawable_splash</item>-->
+<!--        <item name="android:navigationBarColor">@android:color/white</item>-->
+<!--    </style>-->
+
+    <style name="ActionButtonStyle" parent="@android:style/Widget.ActionButton">
+        <item name="android:drawablePadding">8dp</item>
+        <item name="android:textColor">@color/color_dark_gray</item> <!-- pop up menu title color -->
+    </style>
+
+    <!-- dialog -->
+    <style name="AppTheme.DialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="buttonStyle">@style/DialogButtonStyle</item>
+        <item name="android:windowTitleStyle">@style/DialogTitleStyle</item>
+
+        <item name="buttonBarPositiveButtonStyle">@style/DialogButtonStyle</item>
+        <item name="buttonBarNegativeButtonStyle">@style/DialogButtonStyle</item>
+        <item name="buttonBarButtonStyle">@style/DialogButtonStyle</item>
+        <item name="buttonBarNeutralButtonStyle">@style/DialogButtonStyle</item>
+
+        <item name="colorAccent">@color/color_blue</item>
+
+        <item name="colorControlHighlight">@color/color_light_gray</item>
+    </style>
+
+    <style name="AppTheme.DialogTheme.Transparent">
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <style name="DialogButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@color/color_blue</item>
+    </style>
+
+    <style name="DialogTitleStyle" parent="AppTheme">
+        <item name="android:textSize">18sp</item>
+    </style>
+</resources>

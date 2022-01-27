@@ -1,0 +1,25 @@
+<resources>
+    <dimen name="width_window">256dp</dimen>
+    <dimen name="height_window">128dp</dimen>
+
+    <dimen name="icon_size_small">18dp</dimen>
+    <dimen name="icon_size_default">36dp</dimen>
+    <dimen name="icon_size_large">52dp</dimen>
+    <dimen name="icon_size_very_large">64dp</dimen>
+    <dimen name="icon_size_huge">128dp</dimen>
+
+    <dimen name="text_size_small">12sp</dimen>
+    <dimen name="text_size_medium">13sp</dimen>
+    <dimen name="text_size_default">14sp</dimen>
+    <dimen name="text_size_large">16sp</dimen>
+    <dimen name="text_size_very_large">18sp</dimen>
+    <dimen name="text_size_huge">36sp</dimen>
+
+    <dimen name="margin_very_small">4dp</dimen>
+    <dimen name="margin_small">8dp</dimen>
+    <dimen name="margin_medium">12dp</dimen>
+    <dimen name="margin_default">16dp</dimen>
+    <dimen name="margin_large">24dp</dimen>
+    <dimen name="margin_very_large">32dp</dimen>
+    <dimen name="margin_huge">48dp</dimen>
+</resources>

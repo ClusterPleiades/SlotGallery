@@ -7,7 +7,9 @@ import com.pleiades.pleione.slotgallery.content.info.ContentInfo
 import java.io.File
 
 class ContentController(private val context: Context) {
-    private var contentInfoHashSet: HashSet<ContentInfo> = HashSet()
+    companion object {
+        var contentInfoHashSet: HashSet<ContentInfo> = HashSet()
+    }
 
     fun initialize() {
         // clear content info hash set

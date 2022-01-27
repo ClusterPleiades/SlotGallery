@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">갤러리</string>
+
+    <string name="dialog_cancel">취소</string>
+    <string name="dialog_confirm">확인</string>
+
+    <string name="dialog_message_permission">스토리지 접근을 허용해 주세요.</string>
 </resources>
