@@ -11,7 +11,7 @@ class ContentController(private val context: Context) {
         var contentInfoHashSet: HashSet<ContentInfo> = HashSet()
     }
 
-    fun initialize() {
+    fun initializeContentInfoHashSet() {
         // clear content info hash set
         contentInfoHashSet.clear()
 

@@ -11,4 +11,6 @@ class ContentInfo(
     private val height: String,
     private val date: String
 ) {
+    private val directoryPath = path.substringBeforeLast("/")
+    private val directoryName = directoryPath.substringAfterLast("/")
 }
