@@ -13,7 +13,21 @@ class ContentController(private val context: Context) {
     }
 
     fun initialize() {
-
+        putContentInfo(
+            context.contentResolver.query(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, arrayOf(
+                    MediaStore.Images.Media.DISPLAY_NAME,
+                    MediaStore.Images.Media.DATA,
+                    MediaStore.Images.Media.SIZE,
+                    MediaStore.Images.Media.WIDTH,
+                    MediaStore.Images.Media.HEIGHT,
+                    MediaStore.Images.Media.DATE_MODIFIED
+                ),
+                null,
+                null,
+                null
+            )!!, false
+        )
     }
 
     fun initializeContentInfoHashSet() {

@@ -2,21 +2,14 @@ package com.pleiades.pleione.slotgallery.ui.activity
 
 import android.graphics.Color
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.pleiades.pleione.slotgallery.R
+import com.pleiades.pleione.slotgallery.ui.fragment.SettingFragment
 
 class SettingActivity : AppCompatActivity() {
-    private lateinit var settingArray: Array<String>
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_setting)
@@ -30,15 +23,9 @@ class SettingActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
-        // initialize setting array
-        settingArray = resources.getStringArray(R.array.setting)
-
-        // initialize setting recycler view
-        val recyclerView = findViewById<RecyclerView>(R.id.recycler_setting)
-        recyclerView.setHasFixedSize(true)
-        recyclerView.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = SettingRecyclerAdapter()
+        // add fragment
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
+        fragmentTransaction.add(R.id.fragment_setting, SettingFragment.newInstance()).commit()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -48,32 +35,5 @@ class SettingActivity : AppCompatActivity() {
             return true
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    inner class SettingRecyclerAdapter : RecyclerView.Adapter<SettingRecyclerAdapter.SettingViewHolder>() {
-        inner class SettingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-            val titleTextView: TextView = itemView.findViewById(R.id.title_setting)
-            val contentTextView: TextView = itemView.findViewById(R.id.content_setting)
-
-            init {
-                itemView.setOnClickListener { v: View? ->
-                    val position = adapterPosition
-                    if (position == RecyclerView.NO_POSITION) return@setOnClickListener
-                    // TODO
-                }
-            }
-        }
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SettingViewHolder {
-            return SettingViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.layout_setting, parent, false))
-        }
-
-        override fun onBindViewHolder(holder: SettingViewHolder, position: Int) {
-            holder.titleTextView.text = settingArray[position]
-        }
-
-        override fun getItemCount(): Int {
-            return settingArray.size
-        }
     }
 }

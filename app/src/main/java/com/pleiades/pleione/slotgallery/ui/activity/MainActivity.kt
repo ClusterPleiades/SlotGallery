@@ -7,15 +7,13 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_PERMISSION
 import com.pleiades.pleione.slotgallery.Config.Companion.PERMISSION_STORAGE
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.content.ContentChangeObserver
-import com.pleiades.pleione.slotgallery.content.ContentController
-import com.pleiades.pleione.slotgallery.ui.fragment.DirectoryFragment
+import com.pleiades.pleione.slotgallery.ui.fragment.MainFragment
 import com.pleiades.pleione.slotgallery.ui.fragment.dialog.DefaultDialogFragment
 
 class MainActivity : AppCompatActivity() {
@@ -55,7 +53,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         var result = false
-        val fragment = supportFragmentManager.findFragmentById(R.id.fragment_main) as DirectoryFragment?
+        val fragment = supportFragmentManager.findFragmentById(R.id.fragment_main) as MainFragment?
         if (fragment != null) {
             result = fragment.onBackPressed()
         }
@@ -75,9 +73,8 @@ class MainActivity : AppCompatActivity() {
             return
 
         // add fragment
-        val fragmentManager = supportFragmentManager
-        val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.add(R.id.fragment_main, DirectoryFragment.newInstance()).commit()
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
+        fragmentTransaction.add(R.id.fragment_main, MainFragment.newInstance()).commit()
 
         // register content change observer
         val handler = Handler(Looper.getMainLooper())

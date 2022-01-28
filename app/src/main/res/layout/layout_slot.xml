@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <EditText
+        android:id="@+id/title_slot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_default"
+        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginBottom="@dimen/margin_small"
+        android:inputType="text"
+        tools:ignore="Autofill,LabelFor" />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <ImageButton
+        android:id="@+id/save_slot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginEnd="@dimen/margin_small"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:padding="@dimen/margin_very_small"
+        android:src="@drawable/icon_save"
+        android:visibility="gone"
+        tools:ignore="ContentDescription" />
+
+    <ImageButton
+        android:id="@+id/remove_slot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginEnd="@dimen/margin_small"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:padding="@dimen/margin_very_small"
+        android:src="@drawable/icon_remove"
+        tools:ignore="ContentDescription" />
+</LinearLayout>

@@ -1,10 +1,16 @@
 <resources>
-    <string name="app_name">Gallery</string>
+    <string name="label_application">Gallery</string>
+    <string name="label_setting">Settings</string>
 
     <string name="dialog_cancel">Cancel</string>
     <string name="dialog_confirm">Confirm</string>
 
     <string name="dialog_message_permission">Please allow to access storage.</string>
+
+    <string name="name_new_slot">New Slot</string>
+
+    <!-- toast -->
+    <string name="toast_saved">Saved.</string>
 
     <!-- action -->
     <string name="action_add">Add</string>

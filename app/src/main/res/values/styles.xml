@@ -13,7 +13,7 @@
         <item name="windowNoTitle">true</item> <!-- no action bar -->
         <item name="actionOverflowMenuStyle">@style/ActionOverflowMenuStyle</item> <!-- action bar popup menu -->
         <item name="elevation">0dp</item>
-        <item name="android:actionButtonStyle">@style/ActionButtonStyle</item> <!-- action bar button -->
+<!--        <item name="android:actionButtonStyle">@style/ActionButtonStyle</item> &lt;!&ndash; action bar button &ndash;&gt;-->
 
         <!-- text -->
         <item name="android:textColorPrimary">@android:color/black</item>

@@ -49,4 +49,10 @@ dependencies {
 
     // drag select recyclerview
     implementation 'com.github.MFlisar:DragSelectRecyclerView:0.3'
+
+    // gson
+    implementation 'com.google.code.gson:gson:2.8.8'
+
+    // file picker
+    implementation 'com.github.TutorialsAndroid:FilePicker:v8.0.19'
 }

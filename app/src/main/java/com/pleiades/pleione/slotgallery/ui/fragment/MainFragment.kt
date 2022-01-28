@@ -8,10 +8,10 @@ import androidx.fragment.app.Fragment
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.ui.activity.SettingActivity
 
-class DirectoryFragment : Fragment() {
+class MainFragment : Fragment() {
     companion object {
-        fun newInstance(): DirectoryFragment {
-            return DirectoryFragment()
+        fun newInstance(): MainFragment {
+            return MainFragment()
         }
     }
 
