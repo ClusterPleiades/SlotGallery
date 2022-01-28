@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:foreground="?android:selectableItemBackground"
+    android:clickable="true"
+    android:id="@+id/layout_slot"
+    android:focusable="true"
     android:orientation="horizontal">
 
     <EditText
@@ -42,4 +46,4 @@
         android:padding="@dimen/margin_very_small"
         android:src="@drawable/icon_remove"
         tools:ignore="ContentDescription" />
-</LinearLayout>
+</androidx.appcompat.widget.LinearLayoutCompat>

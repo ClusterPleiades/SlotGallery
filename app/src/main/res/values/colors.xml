@@ -3,4 +3,5 @@
     <color name="color_blue">#437BFE</color>
     <color name="color_red">#E65F3E</color>
     <color name="color_gray">#757575</color>
+    <color name="color_light_gray">#E5E5E5</color>
 </resources>
