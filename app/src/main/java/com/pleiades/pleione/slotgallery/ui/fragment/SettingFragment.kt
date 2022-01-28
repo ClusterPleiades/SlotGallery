@@ -14,7 +14,8 @@ import com.pleiades.pleione.slotgallery.Config.Companion.SETTING_POSITION_DIRECT
 import com.pleiades.pleione.slotgallery.Config.Companion.SETTING_POSITION_SLOT
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.slot.SlotController
-import com.pleiades.pleione.slotgallery.ui.fragment.setting.SlotFragment
+import com.pleiades.pleione.slotgallery.ui.fragment.setting.ManageDirectoryFragment
+import com.pleiades.pleione.slotgallery.ui.fragment.setting.ManageSlotFragment
 
 class SettingFragment : Fragment() {
     companion object {
@@ -58,11 +59,18 @@ class SettingFragment : Fragment() {
                             // replace fragment
                             activity!!.supportFragmentManager
                                 .beginTransaction()
-                                .replace(R.id.fragment_setting, SlotFragment.newInstance())
+                                .replace(R.id.fragment_setting, ManageSlotFragment.newInstance())
                                 .addToBackStack(KEY_STACK)
                                 .commit()
                         }
-                        SETTING_POSITION_DIRECTORY -> {}
+                        SETTING_POSITION_DIRECTORY -> {
+                            // replace fragment
+                            activity!!.supportFragmentManager
+                                .beginTransaction()
+                                .replace(R.id.fragment_setting, ManageDirectoryFragment.newInstance())
+                                .addToBackStack(KEY_STACK)
+                                .commit()
+                        }
                         else -> return@setOnClickListener
                     }
                 }

@@ -7,7 +7,6 @@ import android.view.View.*
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Toast
-import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -20,21 +19,21 @@ import com.pleiades.pleione.slotgallery.content.ContentChangeObserver
 import com.pleiades.pleione.slotgallery.slot.SlotController
 import java.util.*
 
-class SlotFragment : Fragment() {
+class ManageSlotFragment : Fragment() {
     companion object {
-        fun newInstance(): SlotFragment {
-            return SlotFragment()
+        fun newInstance(): ManageSlotFragment {
+            return ManageSlotFragment()
         }
     }
 
     private lateinit var rootView: View
     private lateinit var slotController: SlotController
     private lateinit var slotLinkedList: LinkedList<SlotController.Slot>
-    private lateinit var slotRecyclerAdapter: SlotRecyclerAdapter
+    private lateinit var recyclerAdapter: ManageSlotRecyclerAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         // initialize root view
-        rootView = inflater.inflate(R.layout.fragment_slot, container, false)
+        rootView = inflater.inflate(R.layout.fragment_manage, container, false)
 
         // set title
         activity?.title = resources.getStringArray(R.array.setting)[SETTING_POSITION_SLOT]
@@ -49,28 +48,28 @@ class SlotFragment : Fragment() {
         slotLinkedList = slotController.getSlotLinkedList()
 
         // initialize slot recycler adapter
-        slotRecyclerAdapter = SlotRecyclerAdapter()
+        recyclerAdapter = ManageSlotRecyclerAdapter()
 
         // initialize slot recycler view
-        val recyclerView = rootView.findViewById<RecyclerView>(R.id.recycler_slot)
+        val recyclerView = rootView.findViewById<RecyclerView>(R.id.recycler_manage)
         recyclerView.setHasFixedSize(true)
         recyclerView.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.adapter = slotRecyclerAdapter
+        recyclerView.adapter = recyclerAdapter
 
         return rootView
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         // case default
-        inflater.inflate(R.menu.menu_slot, menu)
+        inflater.inflate(R.menu.menu_manage, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.add -> {
                 slotLinkedList.add(SlotController.Slot(getString(R.string.name_new_slot)))
-                slotRecyclerAdapter.notifyItemInserted(slotLinkedList.size - 1)
+                recyclerAdapter.notifyItemInserted(slotLinkedList.size - 1)
                 slotController.putSlotLinkedList(slotLinkedList)
                 true
             }
@@ -78,8 +77,8 @@ class SlotFragment : Fragment() {
         }
     }
 
-    inner class SlotRecyclerAdapter : RecyclerView.Adapter<SlotRecyclerAdapter.SlotViewHolder>() {
-        inner class SlotViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ManageSlotRecyclerAdapter : RecyclerView.Adapter<ManageSlotRecyclerAdapter.ManageSlotViewHolder>() {
+        inner class ManageSlotViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             val titleEditText: EditText = itemView.findViewById(R.id.title_edit)
             val layout: ConstraintLayout = itemView.findViewById(R.id.layout_edit)
             private val saveButton: ImageButton = itemView.findViewById(R.id.save_edit)
@@ -127,8 +126,8 @@ class SlotFragment : Fragment() {
                         slotController.putSelectedSlotPosition(position)
 
                         // notify item changed
-                        slotRecyclerAdapter.notifyItemChanged(beforeSelectedSlotPosition)
-                        slotRecyclerAdapter.notifyItemChanged(position)
+                        recyclerAdapter.notifyItemChanged(beforeSelectedSlotPosition)
+                        recyclerAdapter.notifyItemChanged(position)
 
                         // set is content changed true
                         ContentChangeObserver.isContentChanged = true
@@ -167,7 +166,7 @@ class SlotFragment : Fragment() {
                     slotLinkedList.removeAt(position)
 
                     // notify item removed
-                    slotRecyclerAdapter.notifyItemRemoved(position)
+                    recyclerAdapter.notifyItemRemoved(position)
 
                     // initialize selected slot position
                     val selectedSlotPosition = slotController.getSelectedSlotPosition()
@@ -180,7 +179,7 @@ class SlotFragment : Fragment() {
                     else if (position == selectedSlotPosition) {
                         val beforePosition = 0.coerceAtLeast(position - 1)
                         slotController.putSelectedSlotPosition(beforePosition)
-                        slotRecyclerAdapter.notifyItemChanged(beforePosition)
+                        recyclerAdapter.notifyItemChanged(beforePosition)
                     }
 
                     // put slot linked list
@@ -189,11 +188,11 @@ class SlotFragment : Fragment() {
             }
         }
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SlotViewHolder {
-            return SlotViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.recycler_edit, parent, false))
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ManageSlotViewHolder {
+            return ManageSlotViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.recycler_edit, parent, false))
         }
 
-        override fun onBindViewHolder(holder: SlotViewHolder, position: Int) {
+        override fun onBindViewHolder(holder: ManageSlotViewHolder, position: Int) {
             // case title
             holder.titleEditText.setText(slotLinkedList[position].name)
 
