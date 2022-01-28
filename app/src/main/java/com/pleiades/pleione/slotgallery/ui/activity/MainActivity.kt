@@ -7,6 +7,7 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_PERMISSION
@@ -39,6 +40,7 @@ class MainActivity : AppCompatActivity() {
         if (checkSelfPermission(PERMISSION_STORAGE[0]) == PackageManager.PERMISSION_GRANTED) {
             initialize()
         } else {
+            // request permission
             val defaultDialogFragment = DefaultDialogFragment(DIALOG_TYPE_PERMISSION)
             defaultDialogFragment.show(supportFragmentManager, DIALOG_TYPE_PERMISSION.toString())
         }

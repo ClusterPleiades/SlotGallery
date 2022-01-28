@@ -2,8 +2,4 @@
 <resources>
     <color name="color_blue">#437BFE</color>
     <color name="color_red">#E65F3E</color>
-    <color name="color_sky_blue">#D7E6FF</color>
-    <color name="color_light_gray">#B9B9B9</color>
-    <color name="color_stroke_gray">#80B9B9B9</color>
-    <color name="color_dark_gray">#484a51</color>
 </resources>

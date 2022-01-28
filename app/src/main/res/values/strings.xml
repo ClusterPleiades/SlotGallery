@@ -5,4 +5,13 @@
     <string name="dialog_confirm">Confirm</string>
 
     <string name="dialog_message_permission">Please allow to access storage.</string>
+
+    <!-- action -->
+    <string name="action_slot">Slot</string>
+    <string name="action_search">Search</string>
+    <string name="action_sort">Sort</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_select_all">Select All</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_exclude">Exclude</string>
 </resources>

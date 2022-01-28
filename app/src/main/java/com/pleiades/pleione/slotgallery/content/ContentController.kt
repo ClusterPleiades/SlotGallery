@@ -8,7 +8,12 @@ import java.io.File
 
 class ContentController(private val context: Context) {
     companion object {
+        var directoryInfoHashSet: HashSet<ContentInfo> = HashSet()
         var contentInfoHashSet: HashSet<ContentInfo> = HashSet()
+    }
+
+    fun initialize() {
+
     }
 
     fun initializeContentInfoHashSet() {
