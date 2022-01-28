@@ -87,37 +87,40 @@ class SlotFragment : Fragment() {
             init {
                 titleEditText.setOnFocusChangeListener { _: View, b: Boolean ->
                     // case error
-                    if (adapterPosition == RecyclerView.NO_POSITION)
+                    val position = adapterPosition
+                    if (position == RecyclerView.NO_POSITION)
                         return@setOnFocusChangeListener
 
                     if (b)
                         saveButton.visibility = VISIBLE
                     else {
                         saveButton.visibility = GONE
-                        titleEditText.setText(slotLinkedList[adapterPosition].name)
+                        titleEditText.setText(slotLinkedList[position].name)
                     }
 
                 }
                 layout.setOnClickListener {
                     // case error
-                    if (adapterPosition == RecyclerView.NO_POSITION)
+                    val position = adapterPosition
+                    if (position == RecyclerView.NO_POSITION)
                         return@setOnClickListener
 
                     layout.requestFocus()
                     titleEditText.clearFocus()
 
-                    val beforeSelectedSlot = slotController.getSelectedSlot()
-                    slotController.putSelectedSlot(adapterPosition)
+                    val beforeSelectedSlot = slotController.getSelectedSlotPosition()
+                    slotController.putSelectedSlotPosition(position)
 
                     slotRecyclerAdapter.notifyItemChanged(beforeSelectedSlot)
-                    slotRecyclerAdapter.notifyItemChanged(adapterPosition)
+                    slotRecyclerAdapter.notifyItemChanged(position)
                 }
                 saveButton.setOnClickListener {
                     // case error
-                    if (adapterPosition == RecyclerView.NO_POSITION)
+                    val position = adapterPosition
+                    if (position == RecyclerView.NO_POSITION)
                         return@setOnClickListener
 
-                    slotLinkedList[adapterPosition].name = titleEditText.text.toString()
+                    slotLinkedList[position].name = titleEditText.text.toString()
                     saveButton.visibility = GONE
                     titleEditText.clearFocus()
                     slotController.putSlotLinkedList(slotLinkedList)
@@ -125,11 +128,22 @@ class SlotFragment : Fragment() {
                 }
                 removeButton.setOnClickListener {
                     // case error
-                    if (adapterPosition == RecyclerView.NO_POSITION)
+                    val position = adapterPosition
+                    if (position == RecyclerView.NO_POSITION)
                         return@setOnClickListener
 
-                    slotLinkedList.removeAt(adapterPosition)
-                    slotRecyclerAdapter.notifyItemRemoved(adapterPosition)
+                    slotLinkedList.removeAt(position)
+                    slotRecyclerAdapter.notifyItemRemoved(position)
+
+                    val selectedSlotPosition = slotController.getSelectedSlotPosition()
+                    if (position < selectedSlotPosition) {
+                        slotController.putSelectedSlotPosition(selectedSlotPosition - 1)
+                    } else if (position == selectedSlotPosition) {
+                        val beforePosition = 0.coerceAtLeast(position - 1)
+                        slotController.putSelectedSlotPosition(beforePosition)
+                        slotRecyclerAdapter.notifyItemChanged(beforePosition)
+                    }
+
                     slotController.putSlotLinkedList(slotLinkedList)
                 }
             }
@@ -144,7 +158,7 @@ class SlotFragment : Fragment() {
             holder.titleEditText.setText(slotLinkedList[position].name)
 
             // case layout
-            val backgroundColor = if (position == slotController.getSelectedSlot()) ContextCompat.getColor(context!!, R.color.color_light_gray) else Color.WHITE
+            val backgroundColor = if (position == slotController.getSelectedSlotPosition()) ContextCompat.getColor(context!!, R.color.color_light_gray) else Color.WHITE
             holder.layout.setBackgroundColor(backgroundColor)
         }
 

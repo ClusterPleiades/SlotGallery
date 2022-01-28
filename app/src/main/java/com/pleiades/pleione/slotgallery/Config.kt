@@ -27,6 +27,6 @@ class Config {
         // prefs
         const val PREFS = "prefs"
         const val KEY_SLOT_LIST = "slot_list"
-        const val KEY_SELECTED_SLOT = "selected_slot"
+        const val KEY_SELECTED_SLOT_POSITION = "selected_slot"
     }
 }

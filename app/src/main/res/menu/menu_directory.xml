@@ -2,20 +2,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/slot"
-        android:orderInCategory="0"
-        android:title="@string/action_slot"
-        app:showAsAction="never" />
-
-    <item
         android:id="@+id/sort"
-        android:orderInCategory="1"
+        android:orderInCategory="0"
         android:title="@string/action_sort"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/setting"
-        android:orderInCategory="2"
+        android:orderInCategory="1"
         android:title="@string/action_settings"
         app:showAsAction="never" />
 

@@ -5,7 +5,7 @@ import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.pleiades.pleione.slotgallery.Config.Companion.KEY_SELECTED_SLOT
+import com.pleiades.pleione.slotgallery.Config.Companion.KEY_SELECTED_SLOT_POSITION
 import com.pleiades.pleione.slotgallery.Config.Companion.KEY_SLOT_LIST
 import com.pleiades.pleione.slotgallery.Config.Companion.PREFS
 import java.util.*
@@ -31,13 +31,13 @@ class SlotController(context: Context) {
         }
     }
 
-    fun putSelectedSlot(position: Int) {
-        editor.putInt(KEY_SELECTED_SLOT, position)
+    fun putSelectedSlotPosition(position: Int) {
+        editor.putInt(KEY_SELECTED_SLOT_POSITION, position)
         editor.apply()
     }
 
-    fun getSelectedSlot(): Int {
-        return prefs.getInt(KEY_SELECTED_SLOT, 0)
+    fun getSelectedSlotPosition(): Int {
+        return prefs.getInt(KEY_SELECTED_SLOT_POSITION, 0)
     }
 
     class Slot(var name: String) {
