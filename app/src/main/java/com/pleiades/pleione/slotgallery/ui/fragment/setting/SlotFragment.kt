@@ -3,12 +3,12 @@ package com.pleiades.pleione.slotgallery.ui.fragment.setting
 import android.graphics.Color
 import android.os.Bundle
 import android.view.*
-import android.view.View.GONE
-import android.view.View.VISIBLE
+import android.view.View.*
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pleiades.pleione.slotgallery.Config.Companion.SETTING_POSITION_SLOT
 import com.pleiades.pleione.slotgallery.R
+import com.pleiades.pleione.slotgallery.content.ContentChangeObserver
 import com.pleiades.pleione.slotgallery.slot.SlotController
 import java.util.*
 
@@ -79,78 +80,117 @@ class SlotFragment : Fragment() {
 
     inner class SlotRecyclerAdapter : RecyclerView.Adapter<SlotRecyclerAdapter.SlotViewHolder>() {
         inner class SlotViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-            val titleEditText: EditText = itemView.findViewById(R.id.title_slot)
-            val layout: LinearLayoutCompat = itemView.findViewById(R.id.layout_slot)
-            private val saveButton: ImageButton = itemView.findViewById(R.id.save_slot)
-            private val removeButton: ImageButton = itemView.findViewById(R.id.remove_slot)
+            val titleEditText: EditText = itemView.findViewById(R.id.title_edit)
+            val layout: ConstraintLayout = itemView.findViewById(R.id.layout_edit)
+            private val saveButton: ImageButton = itemView.findViewById(R.id.save_edit)
+            private val removeButton: ImageButton = itemView.findViewById(R.id.remove_edit)
 
             init {
+                // case click title edit text
                 titleEditText.setOnFocusChangeListener { _: View, b: Boolean ->
                     // case error
                     val position = adapterPosition
                     if (position == RecyclerView.NO_POSITION)
                         return@setOnFocusChangeListener
 
-                    if (b)
-                        saveButton.visibility = VISIBLE
+                    // case focused
+                    if (b) saveButton.visibility = VISIBLE
+                    // case not focused
                     else {
-                        saveButton.visibility = GONE
+                        // set save button visibility
+                        saveButton.visibility = INVISIBLE
+
+                        // rollback title text
                         titleEditText.setText(slotLinkedList[position].name)
                     }
 
                 }
+                // case click layout
                 layout.setOnClickListener {
                     // case error
                     val position = adapterPosition
                     if (position == RecyclerView.NO_POSITION)
                         return@setOnClickListener
 
+                    // request focus to layout
                     layout.requestFocus()
+
+                    // clear focus from title edit text
                     titleEditText.clearFocus()
 
-                    val beforeSelectedSlot = slotController.getSelectedSlotPosition()
-                    slotController.putSelectedSlotPosition(position)
+                    // initialize selected slot position
+                    val beforeSelectedSlotPosition = slotController.getSelectedSlotPosition()
 
-                    slotRecyclerAdapter.notifyItemChanged(beforeSelectedSlot)
-                    slotRecyclerAdapter.notifyItemChanged(position)
+                    // case selected slot position changed
+                    if (beforeSelectedSlotPosition != position) {
+                        // put selected slot position
+                        slotController.putSelectedSlotPosition(position)
+
+                        // notify item changed
+                        slotRecyclerAdapter.notifyItemChanged(beforeSelectedSlotPosition)
+                        slotRecyclerAdapter.notifyItemChanged(position)
+
+                        // set is content changed true
+                        ContentChangeObserver.isContentChanged = true
+                    }
                 }
+                // case click save button
                 saveButton.setOnClickListener {
                     // case error
                     val position = adapterPosition
                     if (position == RecyclerView.NO_POSITION)
                         return@setOnClickListener
 
+                    // set save button visibility
+                    saveButton.visibility = INVISIBLE
+
+                    // update slot name
                     slotLinkedList[position].name = titleEditText.text.toString()
-                    saveButton.visibility = GONE
+
+                    // clear focus from title edit text
                     titleEditText.clearFocus()
+
+                    // put slot linked list
                     slotController.putSlotLinkedList(slotLinkedList)
+
+                    // show toast
                     Toast.makeText(context, R.string.toast_saved, Toast.LENGTH_SHORT).show()
                 }
+                // case click remove button
                 removeButton.setOnClickListener {
                     // case error
                     val position = adapterPosition
                     if (position == RecyclerView.NO_POSITION)
                         return@setOnClickListener
 
+                    // remove slot
                     slotLinkedList.removeAt(position)
+
+                    // notify item removed
                     slotRecyclerAdapter.notifyItemRemoved(position)
 
+                    // initialize selected slot position
                     val selectedSlotPosition = slotController.getSelectedSlotPosition()
+
+                    // case position is lower
                     if (position < selectedSlotPosition) {
                         slotController.putSelectedSlotPosition(selectedSlotPosition - 1)
-                    } else if (position == selectedSlotPosition) {
+                    }
+                    // case position is same to selected slot position
+                    else if (position == selectedSlotPosition) {
                         val beforePosition = 0.coerceAtLeast(position - 1)
                         slotController.putSelectedSlotPosition(beforePosition)
                         slotRecyclerAdapter.notifyItemChanged(beforePosition)
                     }
 
+                    // put slot linked list
                     slotController.putSlotLinkedList(slotLinkedList)
                 }
             }
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SlotViewHolder {
-            return SlotViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.layout_slot, parent, false))
+            return SlotViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.recycler_edit, parent, false))
         }
 
         override fun onBindViewHolder(holder: SlotViewHolder, position: Int) {

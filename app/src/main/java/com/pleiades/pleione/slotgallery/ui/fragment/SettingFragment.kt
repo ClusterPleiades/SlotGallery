@@ -13,6 +13,7 @@ import com.pleiades.pleione.slotgallery.Config.Companion.KEY_STACK
 import com.pleiades.pleione.slotgallery.Config.Companion.SETTING_POSITION_DIRECTORY
 import com.pleiades.pleione.slotgallery.Config.Companion.SETTING_POSITION_SLOT
 import com.pleiades.pleione.slotgallery.R
+import com.pleiades.pleione.slotgallery.slot.SlotController
 import com.pleiades.pleione.slotgallery.ui.fragment.setting.SlotFragment
 
 class SettingFragment : Fragment() {
@@ -69,11 +70,19 @@ class SettingFragment : Fragment() {
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SettingViewHolder {
-            return SettingViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.layout_setting, parent, false))
+            return SettingViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.recycler_setting, parent, false))
         }
 
         override fun onBindViewHolder(holder: SettingViewHolder, position: Int) {
+            // case title
             holder.titleTextView.text = settingArray[position]
+
+            // case content
+            if (position == SETTING_POSITION_DIRECTORY) {
+                val slotController = SlotController(requireContext())
+                val selectedSlotPosition = slotController.getSelectedSlotPosition()
+                holder.contentTextView.text = SlotController(requireContext()).getSlotLinkedList()[selectedSlotPosition].name
+            }
         }
 
         override fun getItemCount(): Int {
