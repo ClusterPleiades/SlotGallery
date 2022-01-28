@@ -1,11 +1,12 @@
 package com.pleiades.pleione.slotgallery.ui.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import com.pleiades.pleione.slotgallery.R
+import com.pleiades.pleione.slotgallery.ui.activity.SettingActivity
 
 class DirectoryFragment : Fragment() {
     companion object {
@@ -41,6 +42,11 @@ class DirectoryFragment : Fragment() {
         val id = item.itemId
         if (id == android.R.id.home) {
             onBackPressed()
+            return true
+        }
+        if (id == R.id.setting) {
+            val intent = Intent(context, SettingActivity::class.java)
+            startActivity(intent)
             return true
         }
 

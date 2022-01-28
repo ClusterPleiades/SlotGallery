@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="sort">
+        <item>By Name</item>
+        <item>By Newest</item>
+        <item>By Oldest</item>
+    </string-array>
+
+    <string-array name="interval_slide">
+        <item>0.5 seconds</item>
+        <item>1 second</item>
+        <item>3 seconds</item>
+        <item>5 seconds</item>
+    </string-array>
+
+    <string-array name="setting">
+        <item>Manage Slot</item>
+        <item>Manage Directory</item>
+    </string-array>
+</resources>

@@ -16,6 +16,8 @@
         <item name="android:actionButtonStyle">@style/ActionButtonStyle</item> <!-- action bar button -->
 
         <!-- text -->
+        <item name="android:textColorPrimary">@android:color/black</item>
+        <item name="android:textColor">@android:color/black</item>
         <item name="android:textSize">@dimen/text_size_default</item>
 
         <!-- window -->
