@@ -88,8 +88,11 @@ class SettingFragment : Fragment() {
             // case content
             if (position == SETTING_POSITION_DIRECTORY) {
                 val slotController = SlotController(requireContext())
-                val selectedSlotPosition = slotController.getSelectedSlotPosition()
-                holder.contentTextView.text = SlotController(requireContext()).getSlotLinkedList()[selectedSlotPosition].name
+                val slotLinkedList = slotController.getSlotLinkedList()
+                if (slotLinkedList.size > 0) {
+                    val selectedSlotPosition = slotController.getSelectedSlotPosition()
+                    holder.contentTextView.text = slotController.getSlotLinkedList()[selectedSlotPosition].name
+                }
             }
         }
 
