@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -64,12 +65,17 @@ class SettingFragment : Fragment() {
                                 .commit()
                         }
                         SETTING_POSITION_DIRECTORY -> {
-                            // replace fragment
-                            activity!!.supportFragmentManager
-                                .beginTransaction()
-                                .replace(R.id.fragment_setting, ManageDirectoryFragment.newInstance())
-                                .addToBackStack(KEY_STACK)
-                                .commit()
+                            if (SlotController(requireContext()).getSelectedSlot() == null) {
+                                // show toast
+                                Toast.makeText(context, R.string.toast_error_no_slot, Toast.LENGTH_SHORT).show()
+                            } else {
+                                // replace fragment
+                                activity!!.supportFragmentManager
+                                    .beginTransaction()
+                                    .replace(R.id.fragment_setting, ManageDirectoryFragment.newInstance())
+                                    .addToBackStack(KEY_STACK)
+                                    .commit()
+                            }
                         }
                         else -> return@setOnClickListener
                     }
@@ -87,12 +93,8 @@ class SettingFragment : Fragment() {
 
             // case content
             if (position == SETTING_POSITION_DIRECTORY) {
-                val slotController = SlotController(requireContext())
-                val slotLinkedList = slotController.getSlotLinkedList()
-                if (slotLinkedList.size > 0) {
-                    val selectedSlotPosition = slotController.getSelectedSlotPosition()
-                    holder.contentTextView.text = slotController.getSlotLinkedList()[selectedSlotPosition].name
-                }
+                val selectedSlot = SlotController(requireContext()).getSelectedSlot()
+                holder.contentTextView.text = selectedSlot?.name
             }
         }
 

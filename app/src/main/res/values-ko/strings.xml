@@ -10,7 +10,8 @@
     <string name="name_new_slot">새 슬롯</string>
 
     <!-- toast -->
-    <string name="toast_saved">저장됨.</string>
+    <string name="toast_saved">저장되었습니다.</string>
+    <string name="toast_error_no_slot">슬롯을 먼저 생성하세요.</string>
 
     <!-- action -->
     <string name="action_add">추가</string>

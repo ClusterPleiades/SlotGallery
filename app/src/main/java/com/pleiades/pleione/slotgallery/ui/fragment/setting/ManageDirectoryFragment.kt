@@ -1,16 +1,29 @@
 package com.pleiades.pleione.slotgallery.ui.fragment.setting
 
+import android.content.Intent
 import android.os.Bundle
+import android.provider.DocumentsContract
+import android.provider.OpenableColumns
 import android.view.*
+import android.view.View.GONE
+import android.view.View.NOT_FOCUSABLE
 import android.widget.EditText
 import android.widget.ImageButton
-import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
+import androidx.documentfile.provider.DocumentFile
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.pleiades.pleione.slotgallery.Config.Companion.COUNT_DEFAULT_DIRECTORY
 import com.pleiades.pleione.slotgallery.Config.Companion.SETTING_POSITION_DIRECTORY
 import com.pleiades.pleione.slotgallery.R
+import com.pleiades.pleione.slotgallery.content.ContentChangeObserver
+import com.pleiades.pleione.slotgallery.slot.SlotController
+import java.util.*
+
 
 class ManageDirectoryFragment : Fragment() {
     companion object {
@@ -20,6 +33,10 @@ class ManageDirectoryFragment : Fragment() {
     }
 
     private lateinit var rootView: View
+    private lateinit var resultLauncher: ActivityResultLauncher<Intent>
+
+    private lateinit var slotController: SlotController
+    private lateinit var selectedSlot: SlotController.Slot
     private lateinit var recyclerAdapter: ManageDirectoryRecyclerAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -31,6 +48,34 @@ class ManageDirectoryFragment : Fragment() {
 
         // set options menu
         setHasOptionsMenu(true)
+
+        // initialize result launcher
+        resultLauncher = registerForActivityResult(StartActivityForResult()) { result: ActivityResult ->
+            result.data!!.data.also { uri ->
+                // persist permission
+                val contentResolver = requireContext().contentResolver
+                val takeFlags: Int = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                contentResolver.takePersistableUriPermission(uri!!, takeFlags)
+
+                // add directory
+                selectedSlot.directoryLinkedList.add(SlotController.Directory(uri))
+
+                // notify item inserted
+                recyclerAdapter.notifyItemInserted(selectedSlot.directoryLinkedList.size - 1)
+
+                // put selected slot
+                slotController.putSelectedSlot(selectedSlot)
+
+                // set is content changed true
+                ContentChangeObserver.isContentChanged = true
+            }
+        }
+
+        // initialize slot controller
+        slotController = SlotController(requireContext())
+
+        // initialize slot linked list
+        selectedSlot = slotController.getSelectedSlot()!!
 
         // initialize slot recycler adapter
         recyclerAdapter = ManageDirectoryRecyclerAdapter()
@@ -53,7 +98,7 @@ class ManageDirectoryFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.add -> {
-                // TODO
+                resultLauncher.launch(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE))
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -63,10 +108,38 @@ class ManageDirectoryFragment : Fragment() {
     inner class ManageDirectoryRecyclerAdapter : RecyclerView.Adapter<ManageDirectoryRecyclerAdapter.ManageDirectoryViewHolder>() {
         inner class ManageDirectoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             val titleEditText: EditText = itemView.findViewById(R.id.title_edit)
-            val layout: ConstraintLayout = itemView.findViewById(R.id.layout_edit)
+            var removeButton: ImageButton = itemView.findViewById(R.id.remove_edit)
             private val saveButton: ImageButton = itemView.findViewById(R.id.save_edit)
-            private val removeButton: ImageButton = itemView.findViewById(R.id.remove_edit)
 
+            init {
+                // set default attribute settings
+                titleEditText.isClickable = false
+                titleEditText.isFocusable = false
+                titleEditText.isLongClickable = false
+                saveButton.visibility = GONE
+
+                // set remove button on click listener
+                removeButton.setOnClickListener {
+                    // case error
+                    val position = adapterPosition
+                    if (position == RecyclerView.NO_POSITION)
+                        return@setOnClickListener
+
+                    if (position < COUNT_DEFAULT_DIRECTORY) {
+                        selectedSlot.directoryLinkedList[position].isVisible = !selectedSlot.directoryLinkedList[position].isVisible
+                        notifyItemChanged(position)
+                    } else {
+                        selectedSlot.directoryLinkedList.removeAt(position)
+                        notifyItemRemoved(position)
+                    }
+
+                    // put selected slot
+                    slotController.putSelectedSlot(selectedSlot)
+
+                    // set is content changed true
+                    ContentChangeObserver.isContentChanged = true
+                }
+            }
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ManageDirectoryViewHolder {
@@ -74,10 +147,22 @@ class ManageDirectoryFragment : Fragment() {
         }
 
         override fun onBindViewHolder(holder: ManageDirectoryViewHolder, position: Int) {
+            // case title
+            holder.titleEditText.setText(selectedSlot.directoryLinkedList[position].lastPathSegment)
+
+            // case remove button
+            if (position < COUNT_DEFAULT_DIRECTORY) {
+                if (selectedSlot.directoryLinkedList[position].isVisible)
+                    holder.removeButton.setImageResource(R.drawable.icon_visible)
+                else
+                    holder.removeButton.setImageResource(R.drawable.icon_invisible)
+            } else {
+                holder.removeButton.setImageResource(R.drawable.icon_remove)
+            }
         }
 
         override fun getItemCount(): Int {
-            return 1
+            return selectedSlot.directoryLinkedList.size
         }
     }
 }

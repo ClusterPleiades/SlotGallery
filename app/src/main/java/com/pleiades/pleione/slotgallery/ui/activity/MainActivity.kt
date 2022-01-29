@@ -24,6 +24,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // set title
+        title = ""
+
         // set navigation color
         window.navigationBarColor = Color.WHITE
 

@@ -52,7 +52,4 @@ dependencies {
 
     // gson
     implementation 'com.google.code.gson:gson:2.8.8'
-
-    // file picker
-    implementation 'com.github.TutorialsAndroid:FilePicker:v8.0.19'
 }

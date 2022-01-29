@@ -27,6 +27,7 @@ class ManageSlotFragment : Fragment() {
     }
 
     private lateinit var rootView: View
+
     private lateinit var slotController: SlotController
     private lateinit var slotLinkedList: LinkedList<SlotController.Slot>
     private lateinit var recyclerAdapter: ManageSlotRecyclerAdapter
@@ -85,7 +86,7 @@ class ManageSlotFragment : Fragment() {
             private val removeButton: ImageButton = itemView.findViewById(R.id.remove_edit)
 
             init {
-                // case click title edit text
+                // set title edit text on focus change listener
                 titleEditText.setOnFocusChangeListener { _: View, b: Boolean ->
                     // case error
                     val position = adapterPosition
@@ -104,7 +105,7 @@ class ManageSlotFragment : Fragment() {
                     }
 
                 }
-                // case click layout
+                // set layout on click listener
                 layout.setOnClickListener {
                     // case error
                     val position = adapterPosition
@@ -133,7 +134,7 @@ class ManageSlotFragment : Fragment() {
                         ContentChangeObserver.isContentChanged = true
                     }
                 }
-                // case click save button
+                // set save button on click listener
                 saveButton.setOnClickListener {
                     // case error
                     val position = adapterPosition
@@ -155,7 +156,7 @@ class ManageSlotFragment : Fragment() {
                     // show toast
                     Toast.makeText(context, R.string.toast_saved, Toast.LENGTH_SHORT).show()
                 }
-                // case click remove button
+                // set remove button on click listener
                 removeButton.setOnClickListener {
                     // case error
                     val position = adapterPosition
@@ -180,6 +181,9 @@ class ManageSlotFragment : Fragment() {
                         val beforePosition = 0.coerceAtLeast(position - 1)
                         slotController.putSelectedSlotPosition(beforePosition)
                         recyclerAdapter.notifyItemChanged(beforePosition)
+
+                        // set is content changed true
+                        ContentChangeObserver.isContentChanged = true
                     }
 
                     // put slot linked list

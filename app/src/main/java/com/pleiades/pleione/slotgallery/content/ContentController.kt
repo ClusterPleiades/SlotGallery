@@ -12,6 +12,42 @@ class ContentController(private val context: Context) {
         var contentInfoHashSet: HashSet<ContentInfo> = HashSet()
     }
 
+    /*
+    *                 val cursor = requireContext().contentResolver.query(
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                    arrayOf(
+                        MediaStore.Images.Media.DISPLAY_NAME,
+                        MediaStore.Images.Media.RELATIVE_PATH,
+                        MediaStore.Images.Media.SIZE,
+                        MediaStore.Images.Media.WIDTH,
+                        MediaStore.Images.Media.HEIGHT,
+                        MediaStore.Images.Media.DATE_MODIFIED
+                    ),
+                    "${MediaStore.Images.Media.RELATIVE_PATH} LIKE ?",
+                    arrayOf("Download%"),
+                    null
+                )!!
+                cursor.moveToFirst()
+                while (cursor.moveToNext()) {
+
+                    var index: Int = cursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME)
+                    val name = if (index >= 0) cursor.getString(index) else continue
+
+                    index = cursor.getColumnIndex(MediaStore.Images.Media.SIZE)
+                    val size = if (index >= 0) cursor.getString(index) else continue
+
+                    index = cursor.getColumnIndex(MediaStore.Images.Media.WIDTH)
+                    val width = if (index >= 0) cursor.getString(index) else continue
+
+                    index = cursor.getColumnIndex(MediaStore.Images.Media.HEIGHT)
+                    val height = if (index >= 0) cursor.getString(index) else continue
+
+                    index = cursor.getColumnIndex(MediaStore.Images.Media.DATE_MODIFIED)
+                    val date = if (index >= 0) cursor.getString(index) else continue
+                }
+                cursor.close()
+    * */
+
     fun initialize() {
         putContentInfo(
             context.contentResolver.query(

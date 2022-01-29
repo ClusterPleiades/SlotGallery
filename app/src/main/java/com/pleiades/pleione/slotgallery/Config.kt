@@ -16,13 +16,15 @@ class Config {
         // fragment
         const val KEY_STACK = "stack"
 
-        // recycler view
-        const val KEY_SCROLL_POSITION = "scroll_position"
-        const val SPAN_COUNT_DIRECTORY = 2
-
         // setting
         const val SETTING_POSITION_SLOT = 0
         const val SETTING_POSITION_DIRECTORY = 1
+
+        // directory
+        const val PATH_DOWNLOAD = "Download"
+        const val PATH_CAMERA = "DCIM/Camera"
+        const val PATH_SCREENSHOTS = "Pictures/ScreenShots"
+        const val COUNT_DEFAULT_DIRECTORY = 3
 
         // prefs
         const val PREFS = "prefs"
