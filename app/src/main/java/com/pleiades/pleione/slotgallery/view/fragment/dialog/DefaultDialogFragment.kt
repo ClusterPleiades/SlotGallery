@@ -1,4 +1,4 @@
-package com.pleiades.pleione.slotgallery.ui.fragment.dialog
+package com.pleiades.pleione.slotgallery.view.fragment.dialog
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -15,7 +15,7 @@ import androidx.fragment.app.FragmentActivity
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_PERMISSION
 import com.pleiades.pleione.slotgallery.Config.Companion.PERMISSION_STORAGE
 import com.pleiades.pleione.slotgallery.Config.Companion.REQUEST_CODE_PERMISSION
-import com.pleiades.pleione.slotgallery.DeviceController
+import com.pleiades.pleione.slotgallery.controller.DeviceController
 import com.pleiades.pleione.slotgallery.R
 
 class DefaultDialogFragment(private val type: Int) : androidx.fragment.app.DialogFragment() {

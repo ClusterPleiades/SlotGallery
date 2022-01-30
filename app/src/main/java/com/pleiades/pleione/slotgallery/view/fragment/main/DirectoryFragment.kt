@@ -1,4 +1,4 @@
-package com.pleiades.pleione.slotgallery.ui.fragment
+package com.pleiades.pleione.slotgallery.view.fragment.main
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,12 +6,12 @@ import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.pleiades.pleione.slotgallery.R
-import com.pleiades.pleione.slotgallery.ui.activity.SettingActivity
+import com.pleiades.pleione.slotgallery.view.activity.SettingActivity
 
-class MainFragment : Fragment() {
+class DirectoryFragment : Fragment() {
     companion object {
-        fun newInstance(): MainFragment {
-            return MainFragment()
+        fun newInstance(): DirectoryFragment {
+            return DirectoryFragment()
         }
     }
 

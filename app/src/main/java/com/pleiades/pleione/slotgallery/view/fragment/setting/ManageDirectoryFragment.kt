@@ -1,18 +1,14 @@
-package com.pleiades.pleione.slotgallery.ui.fragment.setting
+package com.pleiades.pleione.slotgallery.view.fragment.setting
 
 import android.content.Intent
 import android.os.Bundle
-import android.provider.DocumentsContract
-import android.provider.OpenableColumns
 import android.view.*
 import android.view.View.GONE
-import android.view.View.NOT_FOCUSABLE
 import android.widget.EditText
 import android.widget.ImageButton
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
-import androidx.documentfile.provider.DocumentFile
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,9 +16,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.pleiades.pleione.slotgallery.Config.Companion.COUNT_DEFAULT_DIRECTORY
 import com.pleiades.pleione.slotgallery.Config.Companion.SETTING_POSITION_DIRECTORY
 import com.pleiades.pleione.slotgallery.R
-import com.pleiades.pleione.slotgallery.content.ContentChangeObserver
-import com.pleiades.pleione.slotgallery.slot.SlotController
-import java.util.*
+import com.pleiades.pleione.slotgallery.ContentChangeObserver
+import com.pleiades.pleione.slotgallery.model.Directory
+import com.pleiades.pleione.slotgallery.model.Slot
+import com.pleiades.pleione.slotgallery.controller.SlotController
 
 
 class ManageDirectoryFragment : Fragment() {
@@ -36,7 +33,7 @@ class ManageDirectoryFragment : Fragment() {
     private lateinit var resultLauncher: ActivityResultLauncher<Intent>
 
     private lateinit var slotController: SlotController
-    private lateinit var selectedSlot: SlotController.Slot
+    private lateinit var selectedSlot: Slot
     private lateinit var recyclerAdapter: ManageDirectoryRecyclerAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -58,7 +55,7 @@ class ManageDirectoryFragment : Fragment() {
                 contentResolver.takePersistableUriPermission(uri!!, takeFlags)
 
                 // add directory
-                selectedSlot.directoryLinkedList.add(SlotController.Directory(uri))
+                selectedSlot.directoryLinkedList.add(Directory(uri))
 
                 // notify item inserted
                 recyclerAdapter.notifyItemInserted(selectedSlot.directoryLinkedList.size - 1)

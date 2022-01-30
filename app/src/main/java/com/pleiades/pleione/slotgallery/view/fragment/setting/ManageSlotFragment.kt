@@ -1,4 +1,4 @@
-package com.pleiades.pleione.slotgallery.ui.fragment.setting
+package com.pleiades.pleione.slotgallery.view.fragment.setting
 
 import android.graphics.Color
 import android.os.Bundle
@@ -15,8 +15,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pleiades.pleione.slotgallery.Config.Companion.SETTING_POSITION_SLOT
 import com.pleiades.pleione.slotgallery.R
-import com.pleiades.pleione.slotgallery.content.ContentChangeObserver
-import com.pleiades.pleione.slotgallery.slot.SlotController
+import com.pleiades.pleione.slotgallery.ContentChangeObserver
+import com.pleiades.pleione.slotgallery.model.Slot
+import com.pleiades.pleione.slotgallery.controller.SlotController
 import java.util.*
 
 class ManageSlotFragment : Fragment() {
@@ -29,7 +30,7 @@ class ManageSlotFragment : Fragment() {
     private lateinit var rootView: View
 
     private lateinit var slotController: SlotController
-    private lateinit var slotLinkedList: LinkedList<SlotController.Slot>
+    private lateinit var slotLinkedList: LinkedList<Slot>
     private lateinit var recyclerAdapter: ManageSlotRecyclerAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -69,7 +70,7 @@ class ManageSlotFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.add -> {
-                slotLinkedList.add(SlotController.Slot(getString(R.string.name_new_slot)))
+                slotLinkedList.add(Slot(getString(R.string.name_new_slot)))
                 recyclerAdapter.notifyItemInserted(slotLinkedList.size - 1)
                 slotController.putSlotLinkedList(slotLinkedList)
                 true

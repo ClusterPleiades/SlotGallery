@@ -1,4 +1,4 @@
-package com.pleiades.pleione.slotgallery
+package com.pleiades.pleione.slotgallery.controller
 
 import android.content.Context
 import android.view.WindowManager

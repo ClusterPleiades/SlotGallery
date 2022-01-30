@@ -1,4 +1,4 @@
-package com.pleiades.pleione.slotgallery.content
+package com.pleiades.pleione.slotgallery
 
 import android.database.ContentObserver
 import android.os.Handler

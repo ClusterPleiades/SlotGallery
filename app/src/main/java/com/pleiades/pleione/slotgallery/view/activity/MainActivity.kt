@@ -1,4 +1,4 @@
-package com.pleiades.pleione.slotgallery.ui.activity
+package com.pleiades.pleione.slotgallery.view.activity
 
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -12,9 +12,9 @@ import androidx.appcompat.widget.Toolbar
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_PERMISSION
 import com.pleiades.pleione.slotgallery.Config.Companion.PERMISSION_STORAGE
 import com.pleiades.pleione.slotgallery.R
-import com.pleiades.pleione.slotgallery.content.ContentChangeObserver
-import com.pleiades.pleione.slotgallery.ui.fragment.MainFragment
-import com.pleiades.pleione.slotgallery.ui.fragment.dialog.DefaultDialogFragment
+import com.pleiades.pleione.slotgallery.ContentChangeObserver
+import com.pleiades.pleione.slotgallery.view.fragment.main.DirectoryFragment
+import com.pleiades.pleione.slotgallery.view.fragment.dialog.DefaultDialogFragment
 
 class MainActivity : AppCompatActivity() {
     private lateinit var contentChangeObserver: ContentChangeObserver
@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         var result = false
-        val fragment = supportFragmentManager.findFragmentById(R.id.fragment_main) as MainFragment?
+        val fragment = supportFragmentManager.findFragmentById(R.id.fragment_main) as DirectoryFragment?
         if (fragment != null) {
             result = fragment.onBackPressed()
         }
@@ -77,7 +77,7 @@ class MainActivity : AppCompatActivity() {
 
         // add fragment
         val fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction.add(R.id.fragment_main, MainFragment.newInstance()).commit()
+        fragmentTransaction.add(R.id.fragment_main, DirectoryFragment.newInstance()).commit()
 
         // register content change observer
         val handler = Handler(Looper.getMainLooper())

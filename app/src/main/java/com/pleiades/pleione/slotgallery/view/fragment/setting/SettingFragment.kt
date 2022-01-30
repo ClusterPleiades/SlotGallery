@@ -1,4 +1,4 @@
-package com.pleiades.pleione.slotgallery.ui.fragment
+package com.pleiades.pleione.slotgallery.view.fragment.setting
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,9 +14,7 @@ import com.pleiades.pleione.slotgallery.Config.Companion.KEY_STACK
 import com.pleiades.pleione.slotgallery.Config.Companion.SETTING_POSITION_DIRECTORY
 import com.pleiades.pleione.slotgallery.Config.Companion.SETTING_POSITION_SLOT
 import com.pleiades.pleione.slotgallery.R
-import com.pleiades.pleione.slotgallery.slot.SlotController
-import com.pleiades.pleione.slotgallery.ui.fragment.setting.ManageDirectoryFragment
-import com.pleiades.pleione.slotgallery.ui.fragment.setting.ManageSlotFragment
+import com.pleiades.pleione.slotgallery.controller.SlotController
 
 class SettingFragment : Fragment() {
     companion object {

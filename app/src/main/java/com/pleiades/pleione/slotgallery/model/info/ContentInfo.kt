@@ -1,6 +1,4 @@
-package com.pleiades.pleione.slotgallery.content.info
-
-import android.media.MediaMetadataRetriever
+package com.pleiades.pleione.slotgallery.model.info
 
 class ContentInfo(
     private val isVideo: Boolean,
@@ -10,7 +8,4 @@ class ContentInfo(
     private val width: String,
     private val height: String,
     private val date: String
-) {
-    private val directoryPath = path.substringBeforeLast("/")
-    private val directoryName = directoryPath.substringAfterLast("/")
-}
+)

@@ -1,9 +1,9 @@
-package com.pleiades.pleione.slotgallery.content
+package com.pleiades.pleione.slotgallery.controller
 
 import android.content.Context
 import android.database.Cursor
 import android.provider.MediaStore
-import com.pleiades.pleione.slotgallery.content.info.ContentInfo
+import com.pleiades.pleione.slotgallery.model.info.ContentInfo
 import java.io.File
 
 class ContentController(private val context: Context) {
