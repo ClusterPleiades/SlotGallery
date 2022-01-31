@@ -9,9 +9,9 @@
 
     <string name="name_new_slot">New Slot</string>
 
-    <!-- toast -->
-    <string name="toast_saved">It\'s saved.</string>
-    <string name="toast_error_no_slot">Create a slot first.</string>
+    <!-- message -->
+    <string name="message_saved">It\'s saved.</string>
+    <string name="message_error_no_slot">Create a slot first.</string>
 
     <!-- action -->
     <string name="action_add">Add</string>

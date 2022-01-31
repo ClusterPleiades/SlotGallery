@@ -1,4 +1,4 @@
-package com.pleiades.pleione.slotgallery.view.fragment.setting
+package com.pleiades.pleione.slotgallery.ui.fragment.setting
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -63,9 +63,9 @@ class SettingFragment : Fragment() {
                                 .commit()
                         }
                         SETTING_POSITION_DIRECTORY -> {
-                            if (SlotController(requireContext()).getSelectedSlot() == null) {
+                            if (SlotController(requireContext()).getSelectedSlotInfo() == null) {
                                 // show toast
-                                Toast.makeText(context, R.string.toast_error_no_slot, Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, R.string.message_error_no_slot, Toast.LENGTH_SHORT).show()
                             } else {
                                 // replace fragment
                                 activity!!.supportFragmentManager
@@ -91,7 +91,7 @@ class SettingFragment : Fragment() {
 
             // case content
             if (position == SETTING_POSITION_DIRECTORY) {
-                val selectedSlot = SlotController(requireContext()).getSelectedSlot()
+                val selectedSlot = SlotController(requireContext()).getSelectedSlotInfo()
                 holder.contentTextView.text = selectedSlot?.name
             }
         }

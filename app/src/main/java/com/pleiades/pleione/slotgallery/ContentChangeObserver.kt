@@ -5,7 +5,7 @@ import android.os.Handler
 
 class ContentChangeObserver(handler: Handler?) : ContentObserver(handler) {
     companion object {
-        var isContentChanged = false
+        var isContentChanged = true
     }
 
     override fun onChange(selfChange: Boolean) {

@@ -16,7 +16,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".view.activity.MainActivity"
+            android:name=".ui.activity.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,7 +26,7 @@
         </activity>
 
         <activity
-            android:name=".view.activity.SettingActivity"
+            android:name=".ui.activity.SettingActivity"
             android:exported="true"/>
     </application>
 

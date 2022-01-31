@@ -7,20 +7,21 @@ class Config {
         // permission
         val PERMISSION_STORAGE = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
 
-        // dialog
-        const val DIALOG_TYPE_PERMISSION = 0
-
         // request code
         const val REQUEST_CODE_PERMISSION = 1000
+
+        // dialog
+        const val DIALOG_TYPE_PERMISSION = 0
 
         // fragment
         const val KEY_STACK = "stack"
 
+        // recycler view
+        const val SPAN_COUNT_DIRECTORY = 2
+
         // setting
         const val SETTING_POSITION_SLOT = 0
         const val SETTING_POSITION_DIRECTORY = 1
-
-        // directory
         const val PATH_DOWNLOAD = "Download"
         const val PATH_CAMERA = "DCIM/Camera"
         const val PATH_SCREENSHOTS = "Pictures/ScreenShots"

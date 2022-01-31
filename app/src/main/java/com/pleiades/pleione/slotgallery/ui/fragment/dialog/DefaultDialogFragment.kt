@@ -1,4 +1,4 @@
-package com.pleiades.pleione.slotgallery.view.fragment.dialog
+package com.pleiades.pleione.slotgallery.ui.fragment.dialog
 
 import android.annotation.SuppressLint
 import android.app.Activity

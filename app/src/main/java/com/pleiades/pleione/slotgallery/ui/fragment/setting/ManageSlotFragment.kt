@@ -1,4 +1,4 @@
-package com.pleiades.pleione.slotgallery.view.fragment.setting
+package com.pleiades.pleione.slotgallery.ui.fragment.setting
 
 import android.graphics.Color
 import android.os.Bundle
@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.pleiades.pleione.slotgallery.Config.Companion.SETTING_POSITION_SLOT
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.ContentChangeObserver
-import com.pleiades.pleione.slotgallery.model.Slot
+import com.pleiades.pleione.slotgallery.info.SlotInfo
 import com.pleiades.pleione.slotgallery.controller.SlotController
 import java.util.*
 
@@ -30,7 +30,7 @@ class ManageSlotFragment : Fragment() {
     private lateinit var rootView: View
 
     private lateinit var slotController: SlotController
-    private lateinit var slotLinkedList: LinkedList<Slot>
+    private lateinit var slotInfoLinkedList: LinkedList<SlotInfo>
     private lateinit var recyclerAdapter: ManageSlotRecyclerAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -47,7 +47,7 @@ class ManageSlotFragment : Fragment() {
         slotController = SlotController(requireContext())
 
         // initialize slot linked list
-        slotLinkedList = slotController.getSlotLinkedList()
+        slotInfoLinkedList = slotController.getSlotInfoLinkedList()
 
         // initialize slot recycler adapter
         recyclerAdapter = ManageSlotRecyclerAdapter()
@@ -70,9 +70,9 @@ class ManageSlotFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.add -> {
-                slotLinkedList.add(Slot(getString(R.string.name_new_slot)))
-                recyclerAdapter.notifyItemInserted(slotLinkedList.size - 1)
-                slotController.putSlotLinkedList(slotLinkedList)
+                slotInfoLinkedList.add(SlotInfo(getString(R.string.name_new_slot)))
+                recyclerAdapter.notifyItemInserted(slotInfoLinkedList.size - 1)
+                slotController.putSlotInfoLinkedList(slotInfoLinkedList)
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -102,7 +102,7 @@ class ManageSlotFragment : Fragment() {
                         saveButton.visibility = INVISIBLE
 
                         // rollback title text
-                        titleEditText.setText(slotLinkedList[position].name)
+                        titleEditText.setText(slotInfoLinkedList[position].name)
                     }
 
                 }
@@ -120,12 +120,12 @@ class ManageSlotFragment : Fragment() {
                     titleEditText.clearFocus()
 
                     // initialize selected slot position
-                    val beforeSelectedSlotPosition = slotController.getSelectedSlotPosition()
+                    val beforeSelectedSlotPosition = slotController.getSelectedSlotInfoPosition()
 
                     // case selected slot position changed
                     if (beforeSelectedSlotPosition != position) {
                         // put selected slot position
-                        slotController.putSelectedSlotPosition(position)
+                        slotController.putSelectedSlotInfoPosition(position)
 
                         // notify item changed
                         recyclerAdapter.notifyItemChanged(beforeSelectedSlotPosition)
@@ -146,16 +146,16 @@ class ManageSlotFragment : Fragment() {
                     saveButton.visibility = INVISIBLE
 
                     // update slot name
-                    slotLinkedList[position].name = titleEditText.text.toString()
+                    slotInfoLinkedList[position].name = titleEditText.text.toString()
 
                     // clear focus from title edit text
                     titleEditText.clearFocus()
 
                     // put slot linked list
-                    slotController.putSlotLinkedList(slotLinkedList)
+                    slotController.putSlotInfoLinkedList(slotInfoLinkedList)
 
                     // show toast
-                    Toast.makeText(context, R.string.toast_saved, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, R.string.message_saved, Toast.LENGTH_SHORT).show()
                 }
                 // set remove button on click listener
                 removeButton.setOnClickListener {
@@ -165,22 +165,22 @@ class ManageSlotFragment : Fragment() {
                         return@setOnClickListener
 
                     // remove slot
-                    slotLinkedList.removeAt(position)
+                    slotInfoLinkedList.removeAt(position)
 
                     // notify item removed
                     recyclerAdapter.notifyItemRemoved(position)
 
                     // initialize selected slot position
-                    val selectedSlotPosition = slotController.getSelectedSlotPosition()
+                    val selectedSlotPosition = slotController.getSelectedSlotInfoPosition()
 
                     // case position is lower
                     if (position < selectedSlotPosition) {
-                        slotController.putSelectedSlotPosition(selectedSlotPosition - 1)
+                        slotController.putSelectedSlotInfoPosition(selectedSlotPosition - 1)
                     }
                     // case position is same to selected slot position
                     else if (position == selectedSlotPosition) {
                         val beforePosition = 0.coerceAtLeast(position - 1)
-                        slotController.putSelectedSlotPosition(beforePosition)
+                        slotController.putSelectedSlotInfoPosition(beforePosition)
                         recyclerAdapter.notifyItemChanged(beforePosition)
 
                         // set is content changed true
@@ -188,7 +188,7 @@ class ManageSlotFragment : Fragment() {
                     }
 
                     // put slot linked list
-                    slotController.putSlotLinkedList(slotLinkedList)
+                    slotController.putSlotInfoLinkedList(slotInfoLinkedList)
                 }
             }
         }
@@ -199,15 +199,15 @@ class ManageSlotFragment : Fragment() {
 
         override fun onBindViewHolder(holder: ManageSlotViewHolder, position: Int) {
             // case title
-            holder.titleEditText.setText(slotLinkedList[position].name)
+            holder.titleEditText.setText(slotInfoLinkedList[position].name)
 
             // case layout
-            val backgroundColor = if (position == slotController.getSelectedSlotPosition()) ContextCompat.getColor(context!!, R.color.color_light_gray) else Color.WHITE
+            val backgroundColor = if (position == slotController.getSelectedSlotInfoPosition()) ContextCompat.getColor(context!!, R.color.color_light_gray) else Color.WHITE
             holder.layout.setBackgroundColor(backgroundColor)
         }
 
         override fun getItemCount(): Int {
-            return slotLinkedList.size
+            return slotInfoLinkedList.size
         }
     }
 }

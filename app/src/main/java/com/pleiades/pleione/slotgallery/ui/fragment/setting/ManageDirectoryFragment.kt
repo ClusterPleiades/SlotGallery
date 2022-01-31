@@ -1,4 +1,4 @@
-package com.pleiades.pleione.slotgallery.view.fragment.setting
+package com.pleiades.pleione.slotgallery.ui.fragment.setting
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,17 +9,17 @@ import android.widget.ImageButton
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pleiades.pleione.slotgallery.Config.Companion.COUNT_DEFAULT_DIRECTORY
 import com.pleiades.pleione.slotgallery.Config.Companion.SETTING_POSITION_DIRECTORY
-import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.ContentChangeObserver
-import com.pleiades.pleione.slotgallery.model.Directory
-import com.pleiades.pleione.slotgallery.model.Slot
+import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.controller.SlotController
+import com.pleiades.pleione.slotgallery.info.SlotInfo
 
 
 class ManageDirectoryFragment : Fragment() {
@@ -33,7 +33,7 @@ class ManageDirectoryFragment : Fragment() {
     private lateinit var resultLauncher: ActivityResultLauncher<Intent>
 
     private lateinit var slotController: SlotController
-    private lateinit var selectedSlot: Slot
+    private lateinit var selectedSlotInfo: SlotInfo
     private lateinit var recyclerAdapter: ManageDirectoryRecyclerAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -55,13 +55,13 @@ class ManageDirectoryFragment : Fragment() {
                 contentResolver.takePersistableUriPermission(uri!!, takeFlags)
 
                 // add directory
-                selectedSlot.directoryLinkedList.add(Directory(uri))
+                selectedSlotInfo.directoryPathInfoLinkedList.add(SlotInfo.DirectoryPathInfo(uri))
 
                 // notify item inserted
-                recyclerAdapter.notifyItemInserted(selectedSlot.directoryLinkedList.size - 1)
+                recyclerAdapter.notifyItemInserted(selectedSlotInfo.directoryPathInfoLinkedList.size - 1)
 
                 // put selected slot
-                slotController.putSelectedSlot(selectedSlot)
+                slotController.putSelectedSlotInfo(selectedSlotInfo)
 
                 // set is content changed true
                 ContentChangeObserver.isContentChanged = true
@@ -72,7 +72,7 @@ class ManageDirectoryFragment : Fragment() {
         slotController = SlotController(requireContext())
 
         // initialize slot linked list
-        selectedSlot = slotController.getSelectedSlot()!!
+        selectedSlotInfo = slotController.getSelectedSlotInfo()!!
 
         // initialize slot recycler adapter
         recyclerAdapter = ManageDirectoryRecyclerAdapter()
@@ -106,6 +106,7 @@ class ManageDirectoryFragment : Fragment() {
         inner class ManageDirectoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             val titleEditText: EditText = itemView.findViewById(R.id.title_edit)
             var removeButton: ImageButton = itemView.findViewById(R.id.remove_edit)
+            private val layout: ConstraintLayout = itemView.findViewById(R.id.layout_edit)
             private val saveButton: ImageButton = itemView.findViewById(R.id.save_edit)
 
             init {
@@ -113,6 +114,8 @@ class ManageDirectoryFragment : Fragment() {
                 titleEditText.isClickable = false
                 titleEditText.isFocusable = false
                 titleEditText.isLongClickable = false
+                layout.isClickable = false
+                layout.isFocusable = false
                 saveButton.visibility = GONE
 
                 // set remove button on click listener
@@ -123,15 +126,15 @@ class ManageDirectoryFragment : Fragment() {
                         return@setOnClickListener
 
                     if (position < COUNT_DEFAULT_DIRECTORY) {
-                        selectedSlot.directoryLinkedList[position].isVisible = !selectedSlot.directoryLinkedList[position].isVisible
+                        selectedSlotInfo.directoryPathInfoLinkedList[position].isVisible = !selectedSlotInfo.directoryPathInfoLinkedList[position].isVisible
                         notifyItemChanged(position)
                     } else {
-                        selectedSlot.directoryLinkedList.removeAt(position)
+                        selectedSlotInfo.directoryPathInfoLinkedList.removeAt(position)
                         notifyItemRemoved(position)
                     }
 
                     // put selected slot
-                    slotController.putSelectedSlot(selectedSlot)
+                    slotController.putSelectedSlotInfo(selectedSlotInfo)
 
                     // set is content changed true
                     ContentChangeObserver.isContentChanged = true
@@ -145,11 +148,11 @@ class ManageDirectoryFragment : Fragment() {
 
         override fun onBindViewHolder(holder: ManageDirectoryViewHolder, position: Int) {
             // case title
-            holder.titleEditText.setText(selectedSlot.directoryLinkedList[position].lastPathSegment)
+            holder.titleEditText.setText(selectedSlotInfo.directoryPathInfoLinkedList[position].lastPathSegment)
 
             // case remove button
             if (position < COUNT_DEFAULT_DIRECTORY) {
-                if (selectedSlot.directoryLinkedList[position].isVisible)
+                if (selectedSlotInfo.directoryPathInfoLinkedList[position].isVisible)
                     holder.removeButton.setImageResource(R.drawable.icon_visible)
                 else
                     holder.removeButton.setImageResource(R.drawable.icon_invisible)
@@ -159,7 +162,7 @@ class ManageDirectoryFragment : Fragment() {
         }
 
         override fun getItemCount(): Int {
-            return selectedSlot.directoryLinkedList.size
+            return selectedSlotInfo.directoryPathInfoLinkedList.size
         }
     }
 }
