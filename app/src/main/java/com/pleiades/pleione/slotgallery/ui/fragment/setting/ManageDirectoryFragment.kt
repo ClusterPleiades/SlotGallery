@@ -48,23 +48,28 @@ class ManageDirectoryFragment : Fragment() {
 
         // initialize result launcher
         resultLauncher = registerForActivityResult(StartActivityForResult()) { result: ActivityResult ->
-            result.data!!.data.also { uri ->
-                // persist permission
-                val contentResolver = requireContext().contentResolver
-                val takeFlags: Int = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-                contentResolver.takePersistableUriPermission(uri!!, takeFlags)
+            if (result.data != null) {
+                result.data!!.data.also { uri ->
+                    // persist permission
+                    val contentResolver = requireContext().contentResolver
+                    val takeFlags: Int = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                    contentResolver.takePersistableUriPermission(uri!!, takeFlags)
 
-                // add directory
-                selectedSlot.directoryPathLinkedList.add(uri.lastPathSegment!!)
+                    // case not duplicated
+                    if (!selectedSlot.directoryPathLinkedList.contains(uri.lastPathSegment!!)) {
+                        // add directory
+                        selectedSlot.directoryPathLinkedList.add(uri.lastPathSegment!!)
 
-                // notify item inserted
-                recyclerAdapter.notifyItemInserted(selectedSlot.directoryPathLinkedList.size - 1)
+                        // notify item inserted
+                        recyclerAdapter.notifyItemInserted(selectedSlot.directoryPathLinkedList.size - 1)
 
-                // put selected slot
-                slotController.putSelectedSlotInfo(selectedSlot)
+                        // put selected slot
+                        slotController.putSelectedSlotInfo(selectedSlot)
 
-                // set is content changed true
-                ContentChangeObserver.isContentChanged = true
+                        // set is content changed true
+                        ContentChangeObserver.isContentChanged = true
+                    }
+                }
             }
         }
 
