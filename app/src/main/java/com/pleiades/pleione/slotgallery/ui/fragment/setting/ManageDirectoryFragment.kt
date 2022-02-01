@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pleiades.pleione.slotgallery.Config.Companion.COUNT_DEFAULT_DIRECTORY
 import com.pleiades.pleione.slotgallery.Config.Companion.SETTING_POSITION_DIRECTORY
-import com.pleiades.pleione.slotgallery.ContentChangeObserver
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.controller.SlotController
 import com.pleiades.pleione.slotgallery.info.Slot
@@ -65,9 +64,6 @@ class ManageDirectoryFragment : Fragment() {
 
                         // put selected slot
                         slotController.putSelectedSlotInfo(selectedSlot)
-
-                        // set is content changed true
-                        ContentChangeObserver.isContentChanged = true
                     }
                 }
             }
@@ -140,9 +136,6 @@ class ManageDirectoryFragment : Fragment() {
 
                     // put selected slot
                     slotController.putSelectedSlotInfo(selectedSlot)
-
-                    // set is content changed true
-                    ContentChangeObserver.isContentChanged = true
                 }
             }
         }

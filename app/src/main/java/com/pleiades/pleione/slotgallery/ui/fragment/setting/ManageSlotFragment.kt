@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pleiades.pleione.slotgallery.Config.Companion.SETTING_POSITION_SLOT
 import com.pleiades.pleione.slotgallery.R
-import com.pleiades.pleione.slotgallery.ContentChangeObserver
 import com.pleiades.pleione.slotgallery.info.Slot
 import com.pleiades.pleione.slotgallery.controller.SlotController
 import java.util.*
@@ -130,9 +129,6 @@ class ManageSlotFragment : Fragment() {
                         // notify item changed
                         recyclerAdapter.notifyItemChanged(beforeSelectedSlotPosition)
                         recyclerAdapter.notifyItemChanged(position)
-
-                        // set is content changed true
-                        ContentChangeObserver.isContentChanged = true
                     }
                 }
                 // set save button on click listener
@@ -182,9 +178,6 @@ class ManageSlotFragment : Fragment() {
                         val beforePosition = 0.coerceAtLeast(position - 1)
                         slotController.putSelectedSlotInfoPosition(beforePosition)
                         recyclerAdapter.notifyItemChanged(beforePosition)
-
-                        // set is content changed true
-                        ContentChangeObserver.isContentChanged = true
                     }
 
                     // put slot linked list

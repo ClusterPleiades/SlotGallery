@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.pleiades.pleione.slotgallery.Config.Companion.SPAN_COUNT_DIRECTORY
-import com.pleiades.pleione.slotgallery.ContentChangeObserver
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.controller.ContentController
 import com.pleiades.pleione.slotgallery.controller.DeviceController
@@ -62,31 +61,26 @@ class DirectoryFragment : Fragment() {
 
     override fun onResume() {
         // check is content changed
-        if (ContentChangeObserver.isContentChanged) {
-            val selectedSlot = slotController.getSelectedSlot()
-            val messageTextView = rootView.findViewById<TextView>(R.id.message_main)
+        val selectedSlot = slotController.getSelectedSlot()
+        val messageTextView = rootView.findViewById<TextView>(R.id.message_main)
 
-            // case no slot
-            if (selectedSlot == null) {
-                messageTextView.setText(R.string.message_error_no_slot)
-                messageTextView.visibility = VISIBLE
-            } else {
-                messageTextView.visibility = GONE
+        // case no slot
+        if (selectedSlot == null) {
+            messageTextView.setText(R.string.message_error_no_slot)
+            messageTextView.visibility = VISIBLE
+        } else {
+            messageTextView.visibility = GONE
 
-                // clear directory linked list
-                ContentController.directoryLinkedList.clear()
+            // clear directory linked list
+            ContentController.directoryLinkedList.clear()
 
-                // initialize contents
-                contentController.initializeContents()
+            // initialize contents
+            contentController.initializeContents()
 
-                // initialize recycler adapter
-                recyclerAdapter = DirectoryRecyclerAdapter()
-                recyclerAdapter.setHasStableIds(true)
-                recyclerView.adapter = recyclerAdapter
-
-                // set is content changed
-                ContentChangeObserver.isContentChanged = false
-            }
+            // initialize recycler adapter
+            recyclerAdapter = DirectoryRecyclerAdapter()
+            recyclerAdapter.setHasStableIds(true)
+            recyclerView.adapter = recyclerAdapter
         }
 
         super.onResume()
