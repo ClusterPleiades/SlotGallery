@@ -19,7 +19,7 @@ import com.pleiades.pleione.slotgallery.Config.Companion.SETTING_POSITION_DIRECT
 import com.pleiades.pleione.slotgallery.ContentChangeObserver
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.controller.SlotController
-import com.pleiades.pleione.slotgallery.info.SlotInfo
+import com.pleiades.pleione.slotgallery.info.Slot
 
 
 class ManageDirectoryFragment : Fragment() {
@@ -33,7 +33,7 @@ class ManageDirectoryFragment : Fragment() {
     private lateinit var resultLauncher: ActivityResultLauncher<Intent>
 
     private lateinit var slotController: SlotController
-    private lateinit var selectedSlotInfo: SlotInfo
+    private lateinit var selectedSlot: Slot
     private lateinit var recyclerAdapter: ManageDirectoryRecyclerAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -55,13 +55,13 @@ class ManageDirectoryFragment : Fragment() {
                 contentResolver.takePersistableUriPermission(uri!!, takeFlags)
 
                 // add directory
-                selectedSlotInfo.directoryPathInfoLinkedList.add(SlotInfo.DirectoryPathInfo(uri))
+                selectedSlot.directoryPathLinkedList.add(uri.lastPathSegment!!)
 
                 // notify item inserted
-                recyclerAdapter.notifyItemInserted(selectedSlotInfo.directoryPathInfoLinkedList.size - 1)
+                recyclerAdapter.notifyItemInserted(selectedSlot.directoryPathLinkedList.size - 1)
 
                 // put selected slot
-                slotController.putSelectedSlotInfo(selectedSlotInfo)
+                slotController.putSelectedSlotInfo(selectedSlot)
 
                 // set is content changed true
                 ContentChangeObserver.isContentChanged = true
@@ -72,7 +72,7 @@ class ManageDirectoryFragment : Fragment() {
         slotController = SlotController(requireContext())
 
         // initialize slot linked list
-        selectedSlotInfo = slotController.getSelectedSlotInfo()!!
+        selectedSlot = slotController.getSelectedSlot()!!
 
         // initialize slot recycler adapter
         recyclerAdapter = ManageDirectoryRecyclerAdapter()
@@ -126,15 +126,15 @@ class ManageDirectoryFragment : Fragment() {
                         return@setOnClickListener
 
                     if (position < COUNT_DEFAULT_DIRECTORY) {
-                        selectedSlotInfo.directoryPathInfoLinkedList[position].isVisible = !selectedSlotInfo.directoryPathInfoLinkedList[position].isVisible
+                        selectedSlot.isVisible[position] = !selectedSlot.isVisible[position]
                         notifyItemChanged(position)
                     } else {
-                        selectedSlotInfo.directoryPathInfoLinkedList.removeAt(position)
+                        selectedSlot.directoryPathLinkedList.removeAt(position)
                         notifyItemRemoved(position)
                     }
 
                     // put selected slot
-                    slotController.putSelectedSlotInfo(selectedSlotInfo)
+                    slotController.putSelectedSlotInfo(selectedSlot)
 
                     // set is content changed true
                     ContentChangeObserver.isContentChanged = true
@@ -148,11 +148,11 @@ class ManageDirectoryFragment : Fragment() {
 
         override fun onBindViewHolder(holder: ManageDirectoryViewHolder, position: Int) {
             // case title
-            holder.titleEditText.setText(selectedSlotInfo.directoryPathInfoLinkedList[position].lastPathSegment)
+            holder.titleEditText.setText(selectedSlot.directoryPathLinkedList[position])
 
             // case remove button
             if (position < COUNT_DEFAULT_DIRECTORY) {
-                if (selectedSlotInfo.directoryPathInfoLinkedList[position].isVisible)
+                if (selectedSlot.isVisible[position])
                     holder.removeButton.setImageResource(R.drawable.icon_visible)
                 else
                     holder.removeButton.setImageResource(R.drawable.icon_invisible)
@@ -162,7 +162,7 @@ class ManageDirectoryFragment : Fragment() {
         }
 
         override fun getItemCount(): Int {
-            return selectedSlotInfo.directoryPathInfoLinkedList.size
+            return selectedSlot.directoryPathLinkedList.size
         }
     }
 }

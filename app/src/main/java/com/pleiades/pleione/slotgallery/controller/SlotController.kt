@@ -8,26 +8,26 @@ import com.google.gson.reflect.TypeToken
 import com.pleiades.pleione.slotgallery.Config.Companion.KEY_SELECTED_SLOT_POSITION
 import com.pleiades.pleione.slotgallery.Config.Companion.KEY_SLOT_LIST
 import com.pleiades.pleione.slotgallery.Config.Companion.PREFS
-import com.pleiades.pleione.slotgallery.info.SlotInfo
+import com.pleiades.pleione.slotgallery.info.Slot
 import java.util.*
 
 class SlotController(context: Context) {
     private val prefs: SharedPreferences = context.getSharedPreferences(PREFS, MODE_PRIVATE)
     private val editor = prefs.edit()
 
-    fun putSlotInfoLinkedList(slotInfoLinkedList: LinkedList<SlotInfo>) {
-        editor.putString(KEY_SLOT_LIST, Gson().toJson(slotInfoLinkedList))
+    fun putSlotInfoLinkedList(slotLinkedList: LinkedList<Slot>) {
+        editor.putString(KEY_SLOT_LIST, Gson().toJson(slotLinkedList))
         editor.apply()
     }
 
-    fun getSlotInfoLinkedList(): LinkedList<SlotInfo> {
+    fun getSlotInfoLinkedList(): LinkedList<Slot> {
         val gson = Gson()
         val json: String? = prefs.getString(KEY_SLOT_LIST, null)
 
         return if (json == null)
             LinkedList()
         else {
-            val type = object : TypeToken<LinkedList<SlotInfo>>() {}.type
+            val type = object : TypeToken<LinkedList<Slot>>() {}.type
             gson.fromJson(json, type)
         }
     }
@@ -41,14 +41,14 @@ class SlotController(context: Context) {
         return prefs.getInt(KEY_SELECTED_SLOT_POSITION, 0)
     }
 
-    fun putSelectedSlotInfo(slotInfo: SlotInfo) {
+    fun putSelectedSlotInfo(slot: Slot) {
         val slotInfoLinkedList = getSlotInfoLinkedList()
         val selectedSlotPosition = getSelectedSlotInfoPosition()
-        slotInfoLinkedList[selectedSlotPosition] = slotInfo
+        slotInfoLinkedList[selectedSlotPosition] = slot
         putSlotInfoLinkedList(slotInfoLinkedList)
     }
 
-    fun getSelectedSlotInfo(): SlotInfo? {
+    fun getSelectedSlot(): Slot? {
         val slotLinkedList = getSlotInfoLinkedList()
         return if (slotLinkedList.size == 0) null else slotLinkedList[getSelectedSlotInfoPosition()]
     }

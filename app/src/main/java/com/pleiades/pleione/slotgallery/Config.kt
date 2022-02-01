@@ -22,9 +22,10 @@ class Config {
         // setting
         const val SETTING_POSITION_SLOT = 0
         const val SETTING_POSITION_DIRECTORY = 1
+        const val PATH_PRIMARY = "primary"
         const val PATH_DOWNLOAD = "Download"
         const val PATH_CAMERA = "DCIM/Camera"
-        const val PATH_SCREENSHOTS = "Pictures/ScreenShots"
+        const val PATH_SCREENSHOTS = "Pictures/Screenshots"
         const val COUNT_DEFAULT_DIRECTORY = 3
 
         // prefs

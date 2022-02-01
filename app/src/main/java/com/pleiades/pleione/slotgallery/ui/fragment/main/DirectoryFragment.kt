@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.pleiades.pleione.slotgallery.Config.Companion.SPAN_COUNT_DIRECTORY
 import com.pleiades.pleione.slotgallery.ContentChangeObserver
@@ -64,7 +63,7 @@ class DirectoryFragment : Fragment() {
     override fun onResume() {
         // check is content changed
         if (ContentChangeObserver.isContentChanged) {
-            val selectedSlot = slotController.getSelectedSlotInfo()
+            val selectedSlot = slotController.getSelectedSlot()
             val messageTextView = rootView.findViewById<TextView>(R.id.message_main)
 
             // case no slot
@@ -73,6 +72,9 @@ class DirectoryFragment : Fragment() {
                 messageTextView.visibility = VISIBLE
             } else {
                 messageTextView.visibility = GONE
+
+                // clear directory linked list
+                ContentController.directoryLinkedList.clear()
 
                 // initialize contents
                 contentController.initializeContents()
@@ -133,11 +135,11 @@ class DirectoryFragment : Fragment() {
         }
 
         override fun onBindViewHolder(holder: DirectoryViewHolder, position: Int) {
-            val directoryInfo = ContentController.directoryInfoLinkedList[position]
+            val directory = ContentController.directoryLinkedList[position]
 
             // case thumbnail
-            val contentInfo = directoryInfo.contentInfoLinkedList[0]
-            val contentData = contentController.getContentData(directoryInfo.isDefault, contentInfo)
+            val content = directory.contentLinkedList[0]
+            val contentData = contentController.getContentData(content)
             Glide.with(context!!)
                 .load(contentData)
                 .centerCrop()
@@ -150,14 +152,14 @@ class DirectoryFragment : Fragment() {
             holder.selectImageView.visibility = if (selectedHashSet.contains(position)) VISIBLE else GONE
 
             // case title
-            holder.titleTextView.text = directoryInfo.name
+            holder.titleTextView.text = directory.name
 
             // case content
-            holder.contentTextView.text = directoryInfo.contentInfoLinkedList.size.toString()
+            holder.contentTextView.text = directory.contentLinkedList.size.toString()
         }
 
         override fun getItemCount(): Int {
-            return ContentController.directoryInfoLinkedList.size
+            return ContentController.directoryLinkedList.size
         }
 
     }

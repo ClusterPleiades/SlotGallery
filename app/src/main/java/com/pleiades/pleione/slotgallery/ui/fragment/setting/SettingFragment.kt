@@ -63,7 +63,7 @@ class SettingFragment : Fragment() {
                                 .commit()
                         }
                         SETTING_POSITION_DIRECTORY -> {
-                            if (SlotController(requireContext()).getSelectedSlotInfo() == null) {
+                            if (SlotController(requireContext()).getSelectedSlot() == null) {
                                 // show toast
                                 Toast.makeText(context, R.string.message_error_no_slot, Toast.LENGTH_SHORT).show()
                             } else {
@@ -91,7 +91,7 @@ class SettingFragment : Fragment() {
 
             // case content
             if (position == SETTING_POSITION_DIRECTORY) {
-                val selectedSlot = SlotController(requireContext()).getSelectedSlotInfo()
+                val selectedSlot = SlotController(requireContext()).getSelectedSlot()
                 holder.contentTextView.text = selectedSlot?.name
             }
         }
