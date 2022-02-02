@@ -19,6 +19,7 @@ import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_SORT_DIRECT
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_WIDTH_PERCENTAGE_RECYCLER
 import com.pleiades.pleione.slotgallery.Config.Companion.KEY_DIRECTORY_SORT_ORDER
 import com.pleiades.pleione.slotgallery.Config.Companion.PREFS
+import com.pleiades.pleione.slotgallery.NonScrollLinearLayoutManager
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.controller.DeviceController
 
@@ -37,7 +38,7 @@ class RecyclerDialogFragment(private val type: Int) : androidx.fragment.app.Dial
             // initialize recycler view
             val dialogRecyclerView: RecyclerView = dialogView.findViewById(R.id.recycler_dialog)
             dialogRecyclerView.setHasFixedSize(true)
-            dialogRecyclerView.layoutManager = LinearLayoutManager(context)
+            dialogRecyclerView.layoutManager = NonScrollLinearLayoutManager(requireContext())
             dialogRecyclerView.adapter = DialogRecyclerAdapter()
 
             // set dialog view
