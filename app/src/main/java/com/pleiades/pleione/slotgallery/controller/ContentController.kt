@@ -1,9 +1,15 @@
 package com.pleiades.pleione.slotgallery.controller
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.database.Cursor
 import android.provider.MediaStore
+import com.pleiades.pleione.slotgallery.Config
 import com.pleiades.pleione.slotgallery.Config.Companion.COUNT_DEFAULT_DIRECTORY
+import com.pleiades.pleione.slotgallery.Config.Companion.KEY_DIRECTORY_SORT_ORDER
+import com.pleiades.pleione.slotgallery.Config.Companion.SORT_POSITION_BY_NAME
+import com.pleiades.pleione.slotgallery.Config.Companion.SORT_POSITION_BY_NEWEST
+import com.pleiades.pleione.slotgallery.Config.Companion.SORT_POSITION_BY_OLDEST
 import com.pleiades.pleione.slotgallery.info.Directory
 import java.util.*
 import kotlin.collections.HashSet
@@ -12,6 +18,8 @@ class ContentController(private val context: Context) {
     companion object {
         val directoryLinkedList: LinkedList<Directory> = LinkedList()
     }
+
+    private val prefs: SharedPreferences = context.getSharedPreferences(Config.PREFS, Context.MODE_PRIVATE)
 
     fun initializeContents() {
         val selectedSlot = SlotController(context).getSelectedSlot()
@@ -23,10 +31,14 @@ class ContentController(private val context: Context) {
                     // add default directory
                     addDirectory(false, directoryPath)
                 }
-            } else
-            // add user directory
+            } else {
+                // add user directory
                 addDirectory(true, directoryPath)
+            }
         }
+
+        // sort directory linked list
+        sortDirectoryLinkedList()
     }
 
     private fun addDirectory(allowSubDirectory: Boolean, directoryPath: String) {
@@ -57,8 +69,11 @@ class ContentController(private val context: Context) {
             val size = imageCursor.getString(2)
             val width = imageCursor.getString(3)
             val height = imageCursor.getString(4)
-            val date = imageCursor.getString(5)
+            val date = imageCursor.getString(5).toLong()
             val relativePath = imageCursor.getString(6)
+
+            // update directory date
+            directory.date = date.coerceAtLeast(directory.date)
 
             // case allow sub directory
             if (allowSubDirectory) {
@@ -101,8 +116,11 @@ class ContentController(private val context: Context) {
             val size = videoCursor.getString(2)
             val width = videoCursor.getString(3)
             val height = videoCursor.getString(4)
-            val date = videoCursor.getString(5)
+            val date = videoCursor.getString(5).toLong()
             val relativePath = videoCursor.getString(6)
+
+            // update directory date
+            directory.date = date.coerceAtLeast(directory.date)
 
             // case allow sub directory
             if (allowSubDirectory) {
@@ -155,5 +173,13 @@ class ContentController(private val context: Context) {
         val data = cursor.getString(0)
         cursor.close()
         return data
+    }
+
+    fun sortDirectoryLinkedList() {
+        when (prefs.getInt(KEY_DIRECTORY_SORT_ORDER, 0)) {
+            SORT_POSITION_BY_NAME -> directoryLinkedList.sortBy { it.name }
+            SORT_POSITION_BY_NEWEST -> directoryLinkedList.sortBy { it.date }
+            SORT_POSITION_BY_OLDEST -> directoryLinkedList.sortByDescending { it.date }
+        }
     }
 }

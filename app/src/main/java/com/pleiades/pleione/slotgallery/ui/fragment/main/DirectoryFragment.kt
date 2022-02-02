@@ -2,6 +2,7 @@ package com.pleiades.pleione.slotgallery.ui.fragment.main
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -9,17 +10,21 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentResultListener
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_SORT_DIRECTORY
+import com.pleiades.pleione.slotgallery.Config.Companion.KEY_DIRECTORY_SORT_ORDER
 import com.pleiades.pleione.slotgallery.Config.Companion.SPAN_COUNT_DIRECTORY
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.controller.ContentController
 import com.pleiades.pleione.slotgallery.controller.DeviceController
 import com.pleiades.pleione.slotgallery.controller.SlotController
 import com.pleiades.pleione.slotgallery.ui.activity.SettingActivity
-import java.util.*
+import com.pleiades.pleione.slotgallery.ui.fragment.dialog.RecyclerDialogFragment
 
 class DirectoryFragment : Fragment() {
     companion object {
@@ -55,6 +60,14 @@ class DirectoryFragment : Fragment() {
         recyclerView = rootView.findViewById(R.id.recycler_thumbnail)
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = GridLayoutManager(context, SPAN_COUNT_DIRECTORY)
+
+        // initialize fragment result listener
+        (context as FragmentActivity).supportFragmentManager.setFragmentResultListener(KEY_DIRECTORY_SORT_ORDER, viewLifecycleOwner) { key: String, _: Bundle ->
+            if (key == KEY_DIRECTORY_SORT_ORDER) {
+                contentController.sortDirectoryLinkedList()
+                recyclerAdapter.notifyItemRangeChanged(0, ContentController.directoryLinkedList.size)
+            }
+        }
 
         return rootView
     }
@@ -99,6 +112,9 @@ class DirectoryFragment : Fragment() {
         if (id == android.R.id.home) {
             onBackPressed()
             return true
+        }
+        if (id == R.id.sort) {
+            RecyclerDialogFragment(DIALOG_TYPE_SORT_DIRECTORY).show((context as FragmentActivity).supportFragmentManager, DIALOG_TYPE_SORT_DIRECTORY.toString())
         }
         if (id == R.id.setting) {
             val intent = Intent(context, SettingActivity::class.java)
@@ -156,5 +172,8 @@ class DirectoryFragment : Fragment() {
             return ContentController.directoryLinkedList.size
         }
 
+        override fun getItemId(position: Int): Long {
+            return ContentController.directoryLinkedList[position].path.hashCode().toLong()
+        }
     }
 }

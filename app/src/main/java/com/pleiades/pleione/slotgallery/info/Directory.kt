@@ -5,6 +5,7 @@ import java.util.*
 class Directory(val path: String) {
     val name = path.substringAfterLast("/")
     val contentLinkedList: LinkedList<Content> = LinkedList()
+    var date = 0L
 
     class Content(
         val isVideo: Boolean,
@@ -13,6 +14,6 @@ class Directory(val path: String) {
         val size: String,
         val width: String,
         val height: String,
-        val date: String
+        val date: Long
     )
 }

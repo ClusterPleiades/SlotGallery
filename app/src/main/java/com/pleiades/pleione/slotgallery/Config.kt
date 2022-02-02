@@ -12,6 +12,10 @@ class Config {
 
         // dialog
         const val DIALOG_TYPE_PERMISSION = 0
+        const val DIALOG_TYPE_SORT_DIRECTORY = 10
+        const val DIALOG_TYPE_SORT_IMAGE = 11
+        const val DIALOG_WIDTH_PERCENTAGE_DEFAULT = 0.85
+        const val DIALOG_WIDTH_PERCENTAGE_RECYCLER = 0.65
 
         // fragment
         const val KEY_STACK = "stack"
@@ -31,5 +35,9 @@ class Config {
         const val PREFS = "prefs"
         const val KEY_SLOT_LIST = "slot_list"
         const val KEY_SELECTED_SLOT_POSITION = "selected_slot"
+        const val KEY_DIRECTORY_SORT_ORDER = "directory_sort_order"
+        const val SORT_POSITION_BY_NAME = 0
+        const val SORT_POSITION_BY_NEWEST = 1
+        const val SORT_POSITION_BY_OLDEST = 2
     }
 }

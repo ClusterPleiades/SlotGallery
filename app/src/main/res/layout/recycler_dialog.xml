@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="@dimen/margin_large"
+    android:paddingTop="@dimen/margin_very_small"
+    android:paddingBottom="@dimen/margin_very_small"
+    android:paddingEnd="@dimen/margin_default">
+
+    <RadioButton
+        android:id="@+id/radio_dialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="textStart"
+        android:layoutDirection="rtl" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>

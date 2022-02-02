@@ -13,6 +13,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.FragmentActivity
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_PERMISSION
+import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_WIDTH_PERCENTAGE_DEFAULT
 import com.pleiades.pleione.slotgallery.Config.Companion.PERMISSION_STORAGE
 import com.pleiades.pleione.slotgallery.Config.Companion.REQUEST_CODE_PERMISSION
 import com.pleiades.pleione.slotgallery.controller.DeviceController
@@ -80,7 +81,7 @@ class DefaultDialogFragment(private val type: Int) : androidx.fragment.app.Dialo
     override fun onStart() {
         super.onStart()
 
-        val width = (DeviceController.getWidthMax(requireContext()) * 0.85).toInt()
+        val width = (DeviceController.getWidthMax(requireContext()) * DIALOG_WIDTH_PERCENTAGE_DEFAULT).toInt()
         val height = ViewGroup.LayoutParams.WRAP_CONTENT
         dialog!!.window!!.setLayout(width, height)
 
