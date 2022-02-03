@@ -16,7 +16,7 @@ import kotlin.collections.HashSet
 
 class ContentController(private val context: Context) {
     companion object {
-        val directoryLinkedList: LinkedList<Directory> = LinkedList()
+        val directoryArrayList: ArrayList<Directory> = ArrayList()
     }
 
     private val prefs: SharedPreferences = context.getSharedPreferences(Config.PREFS, Context.MODE_PRIVATE)
@@ -37,7 +37,7 @@ class ContentController(private val context: Context) {
             }
         }
 
-        // sort directory linked list
+        // sort directory array list
         sortDirectoryLinkedList()
     }
 
@@ -142,7 +142,7 @@ class ContentController(private val context: Context) {
 
         // add directory
         if (directory.contentLinkedList.size > 0)
-            directoryLinkedList.add(directory)
+            directoryArrayList.add(directory)
 
         // add sub directory
         for (subDirectoryPath in subDirectoryPathHashSet) {
@@ -177,9 +177,9 @@ class ContentController(private val context: Context) {
 
     fun sortDirectoryLinkedList() {
         when (prefs.getInt(KEY_DIRECTORY_SORT_ORDER, 0)) {
-            SORT_POSITION_BY_NAME -> directoryLinkedList.sortBy { it.name }
-            SORT_POSITION_BY_NEWEST -> directoryLinkedList.sortBy { it.date }
-            SORT_POSITION_BY_OLDEST -> directoryLinkedList.sortByDescending { it.date }
+            SORT_POSITION_BY_NAME -> directoryArrayList.sortBy { it.name }
+            SORT_POSITION_BY_NEWEST -> directoryArrayList.sortBy { it.date }
+            SORT_POSITION_BY_OLDEST -> directoryArrayList.sortByDescending { it.date }
         }
     }
 }

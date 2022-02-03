@@ -72,7 +72,7 @@ class ManageDirectoryFragment : Fragment() {
         // initialize slot controller
         slotController = SlotController(requireContext())
 
-        // initialize slot linked list
+        // initialize slot array list
         selectedSlot = slotController.getSelectedSlot()!!
 
         // initialize slot recycler adapter

@@ -19,6 +19,7 @@ class Config {
 
         // fragment
         const val KEY_STACK = "stack"
+        const val KEY_PARCELABLE = "parcelable"
 
         // recycler view
         const val SPAN_COUNT_DIRECTORY = 2

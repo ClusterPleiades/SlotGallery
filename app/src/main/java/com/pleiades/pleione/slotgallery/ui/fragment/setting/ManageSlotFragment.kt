@@ -45,7 +45,7 @@ class ManageSlotFragment : Fragment() {
         // initialize slot controller
         slotController = SlotController(requireContext())
 
-        // initialize slot linked list
+        // initialize slot array list
         slotLinkedList = slotController.getSlotInfoLinkedList()
 
         // initialize slot recycler adapter
@@ -147,7 +147,7 @@ class ManageSlotFragment : Fragment() {
                     // clear focus from title edit text
                     titleEditText.clearFocus()
 
-                    // put slot linked list
+                    // put slot array list
                     slotController.putSlotInfoLinkedList(slotLinkedList)
 
                     // show toast
@@ -180,7 +180,7 @@ class ManageSlotFragment : Fragment() {
                         recyclerAdapter.notifyItemChanged(beforePosition)
                     }
 
-                    // put slot linked list
+                    // put slot array list
                     slotController.putSlotInfoLinkedList(slotLinkedList)
                 }
             }
