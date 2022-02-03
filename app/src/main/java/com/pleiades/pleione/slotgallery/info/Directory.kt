@@ -1,10 +1,11 @@
 package com.pleiades.pleione.slotgallery.info
 
 import java.util.*
+import kotlin.collections.ArrayList
 
 class Directory(val path: String) {
     val name = path.substringAfterLast("/")
-    val contentLinkedList: LinkedList<Content> = LinkedList()
+    val contentArrayList: ArrayList<Content> = ArrayList()
     var date = 0L
 
     class Content(

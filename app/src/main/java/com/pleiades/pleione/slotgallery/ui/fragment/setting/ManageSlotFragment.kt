@@ -89,7 +89,7 @@ class ManageSlotFragment : Fragment() {
                 // set title edit text on focus change listener
                 titleEditText.setOnFocusChangeListener { _: View, b: Boolean ->
                     // case error
-                    val position = adapterPosition
+                    val position = bindingAdapterPosition
                     if (position == RecyclerView.NO_POSITION)
                         return@setOnFocusChangeListener
 
@@ -108,7 +108,7 @@ class ManageSlotFragment : Fragment() {
                 // set layout on click listener
                 layout.setOnClickListener {
                     // case error
-                    val position = adapterPosition
+                    val position = bindingAdapterPosition
                     if (position == RecyclerView.NO_POSITION)
                         return@setOnClickListener
 
@@ -134,7 +134,7 @@ class ManageSlotFragment : Fragment() {
                 // set save button on click listener
                 saveButton.setOnClickListener {
                     // case error
-                    val position = adapterPosition
+                    val position = bindingAdapterPosition
                     if (position == RecyclerView.NO_POSITION)
                         return@setOnClickListener
 
@@ -156,7 +156,7 @@ class ManageSlotFragment : Fragment() {
                 // set remove button on click listener
                 removeButton.setOnClickListener {
                     // case error
-                    val position = adapterPosition
+                    val position = bindingAdapterPosition
                     if (position == RecyclerView.NO_POSITION)
                         return@setOnClickListener
 

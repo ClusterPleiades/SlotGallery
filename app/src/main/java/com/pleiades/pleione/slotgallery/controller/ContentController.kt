@@ -6,6 +6,7 @@ import android.database.Cursor
 import android.provider.MediaStore
 import com.pleiades.pleione.slotgallery.Config
 import com.pleiades.pleione.slotgallery.Config.Companion.COUNT_DEFAULT_DIRECTORY
+import com.pleiades.pleione.slotgallery.Config.Companion.KEY_CONTENT_SORT_ORDER
 import com.pleiades.pleione.slotgallery.Config.Companion.KEY_DIRECTORY_SORT_ORDER
 import com.pleiades.pleione.slotgallery.Config.Companion.SORT_POSITION_BY_NAME
 import com.pleiades.pleione.slotgallery.Config.Companion.SORT_POSITION_BY_NEWEST
@@ -38,7 +39,7 @@ class ContentController(private val context: Context) {
         }
 
         // sort directory array list
-        sortDirectoryLinkedList()
+        sortDirectoryArrayList()
     }
 
     private fun addDirectory(allowSubDirectory: Boolean, directoryPath: String) {
@@ -79,14 +80,14 @@ class ContentController(private val context: Context) {
             if (allowSubDirectory) {
                 if (relativePath == directoryRelativePath) {
                     // add image
-                    directory.contentLinkedList.add(Directory.Content(false, bucketId, name, size, width, height, date))
+                    directory.contentArrayList.add(Directory.Content(false, bucketId, name, size, width, height, date))
                 } else {
                     // case sub directory
                     subDirectoryPathHashSet.add(directoryPath.substringBefore(":") + ":" + relativePath.substringBeforeLast("/"))
                 }
             } else {
                 // add image
-                directory.contentLinkedList.add(Directory.Content(false, bucketId, name, size, width, height, date))
+                directory.contentArrayList.add(Directory.Content(false, bucketId, name, size, width, height, date))
             }
         }
 
@@ -126,23 +127,28 @@ class ContentController(private val context: Context) {
             if (allowSubDirectory) {
                 if (relativePath == directoryRelativePath) {
                     // add image
-                    directory.contentLinkedList.add(Directory.Content(true, bucketId, name, size, width, height, date))
+                    directory.contentArrayList.add(Directory.Content(true, bucketId, name, size, width, height, date))
                 } else {
                     // case sub directory
                     subDirectoryPathHashSet.add(directoryPath.substringBefore(":") + ":" + relativePath.substringBeforeLast("/"))
                 }
             } else {
                 // add image
-                directory.contentLinkedList.add(Directory.Content(true, bucketId, name, size, width, height, date))
+                directory.contentArrayList.add(Directory.Content(true, bucketId, name, size, width, height, date))
             }
         }
 
         // close video cursor
         videoCursor.close()
 
-        // add directory
-        if (directory.contentLinkedList.size > 0)
+        // case contents exist
+        if (directory.contentArrayList.size > 0) {
+            // sort content array list
+            sortContentArrayList(directory.contentArrayList)
+
+            // add directory
             directoryArrayList.add(directory)
+        }
 
         // add sub directory
         for (subDirectoryPath in subDirectoryPathHashSet) {
@@ -175,11 +181,19 @@ class ContentController(private val context: Context) {
         return data
     }
 
-    fun sortDirectoryLinkedList() {
+    fun sortDirectoryArrayList() {
         when (prefs.getInt(KEY_DIRECTORY_SORT_ORDER, 0)) {
             SORT_POSITION_BY_NAME -> directoryArrayList.sortBy { it.name }
             SORT_POSITION_BY_NEWEST -> directoryArrayList.sortBy { it.date }
             SORT_POSITION_BY_OLDEST -> directoryArrayList.sortByDescending { it.date }
+        }
+    }
+
+    fun sortContentArrayList(contentArrayList: ArrayList<Directory.Content>) {
+        when (prefs.getInt(KEY_CONTENT_SORT_ORDER, 0)) {
+            SORT_POSITION_BY_NAME -> contentArrayList.sortBy { it.name }
+            SORT_POSITION_BY_NEWEST -> contentArrayList.sortBy { it.date }
+            SORT_POSITION_BY_OLDEST -> contentArrayList.sortByDescending { it.date }
         }
     }
 }

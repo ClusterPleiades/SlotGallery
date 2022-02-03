@@ -85,8 +85,9 @@ class RecyclerDialogFragment(private val type: Int) : androidx.fragment.app.Dial
             init {
                 radioButton.setOnClickListener {
                     // case error
-                    val position = adapterPosition
-                    if (position == RecyclerView.NO_POSITION) return@setOnClickListener
+                    val position = bindingAdapterPosition
+                    if (position == RecyclerView.NO_POSITION)
+                        return@setOnClickListener
 
                     when (type) {
                         DIALOG_TYPE_SORT_DIRECTORY -> {

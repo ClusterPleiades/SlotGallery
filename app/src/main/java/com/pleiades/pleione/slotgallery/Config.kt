@@ -37,6 +37,7 @@ class Config {
         const val KEY_SLOT_LIST = "slot_list"
         const val KEY_SELECTED_SLOT_POSITION = "selected_slot"
         const val KEY_DIRECTORY_SORT_ORDER = "directory_sort_order"
+        const val KEY_CONTENT_SORT_ORDER = "content_sort_order"
         const val SORT_POSITION_BY_NAME = 0
         const val SORT_POSITION_BY_NEWEST = 1
         const val SORT_POSITION_BY_OLDEST = 2

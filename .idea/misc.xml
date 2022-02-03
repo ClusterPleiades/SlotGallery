@@ -12,8 +12,10 @@
         <entry key="..\:/Users/speed/Primary/GitHub/SlotGallery/app/src/main/res/drawable/icon_add.xml" value="0.1515" />
         <entry key="..\:/Users/speed/Primary/GitHub/SlotGallery/app/src/main/res/drawable/icon_edit.xml" value="0.2185" />
         <entry key="..\:/Users/speed/Primary/GitHub/SlotGallery/app/src/main/res/drawable/icon_invisible.xml" value="0.1455" />
+        <entry key="..\:/Users/speed/Primary/GitHub/SlotGallery/app/src/main/res/drawable/icon_play.xml" value="0.2285" />
         <entry key="..\:/Users/speed/Primary/GitHub/SlotGallery/app/src/main/res/drawable/icon_remove.xml" value="0.2955" />
         <entry key="..\:/Users/speed/Primary/GitHub/SlotGallery/app/src/main/res/drawable/icon_save.xml" value="0.2185" />
+        <entry key="..\:/Users/speed/Primary/GitHub/SlotGallery/app/src/main/res/drawable/icon_select.xml" value="0.2285" />
         <entry key="..\:/Users/speed/Primary/GitHub/SlotGallery/app/src/main/res/drawable/icon_visible.xml" value="0.1455" />
         <entry key="..\:/Users/speed/Primary/GitHub/SlotGallery/app/src/main/res/layout/activity_main.xml" value="0.19427558257345492" />
         <entry key="..\:/Users/speed/Primary/GitHub/SlotGallery/app/src/main/res/layout/activity_setting.xml" value="0.2" />
@@ -33,6 +35,7 @@
         <entry key="..\:/Users/speed/Primary/GitHub/SlotGallery/app/src/main/res/layout/recycler_thumbnail.xml" value="0.19427558257345492" />
         <entry key="..\:/Users/speed/Primary/GitHub/SlotGallery/app/src/main/res/menu/menu_directory.xml" value="0.3933333333333333" />
         <entry key="..\:/Users/speed/Primary/GitHub/SlotGallery/app/src/main/res/menu/menu_directory_select.xml" value="0.3933333333333333" />
+        <entry key="..\:/Users/speed/Primary/GitHub/SlotGallery/app/src/main/res/menu/menu_manage.xml" value="0.26927083333333335" />
         <entry key="..\:/Users/speed/Primary/GitHub/SlotGallery/app/src/main/res/menu/menu_slot.xml" value="0.25555555555555554" />
       </map>
     </option>

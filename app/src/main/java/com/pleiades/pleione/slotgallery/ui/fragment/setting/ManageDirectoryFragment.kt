@@ -122,7 +122,7 @@ class ManageDirectoryFragment : Fragment() {
                 // set remove button on click listener
                 removeButton.setOnClickListener {
                     // case error
-                    val position = adapterPosition
+                    val position = bindingAdapterPosition
                     if (position == RecyclerView.NO_POSITION)
                         return@setOnClickListener
 
