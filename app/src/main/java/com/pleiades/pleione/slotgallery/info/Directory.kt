@@ -16,5 +16,7 @@ class Directory(val path: String) {
         val width: String,
         val height: String,
         val date: Long
-    )
+    ){
+        var temp:String = ""
+    }
 }

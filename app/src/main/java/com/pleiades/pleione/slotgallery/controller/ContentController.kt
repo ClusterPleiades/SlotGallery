@@ -184,16 +184,16 @@ class ContentController(private val context: Context) {
     fun sortDirectoryArrayList() {
         when (prefs.getInt(KEY_DIRECTORY_SORT_ORDER, 0)) {
             SORT_POSITION_BY_NAME -> directoryArrayList.sortBy { it.name }
-            SORT_POSITION_BY_NEWEST -> directoryArrayList.sortBy { it.date }
-            SORT_POSITION_BY_OLDEST -> directoryArrayList.sortByDescending { it.date }
+            SORT_POSITION_BY_NEWEST -> directoryArrayList.sortByDescending { it.date }
+            SORT_POSITION_BY_OLDEST -> directoryArrayList.sortBy { it.date }
         }
     }
 
     fun sortContentArrayList(contentArrayList: ArrayList<Directory.Content>) {
         when (prefs.getInt(KEY_CONTENT_SORT_ORDER, 0)) {
             SORT_POSITION_BY_NAME -> contentArrayList.sortBy { it.name }
-            SORT_POSITION_BY_NEWEST -> contentArrayList.sortBy { it.date }
-            SORT_POSITION_BY_OLDEST -> contentArrayList.sortByDescending { it.date }
+            SORT_POSITION_BY_NEWEST -> contentArrayList.sortByDescending { it.date }
+            SORT_POSITION_BY_OLDEST -> contentArrayList.sortBy { it.date }
         }
     }
 }

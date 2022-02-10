@@ -4,7 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
-import android.view.View.*
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -62,8 +63,6 @@ class DirectoryFragment : Fragment() {
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = GridLayoutManager(context, SPAN_COUNT_DIRECTORY)
         recyclerView.itemAnimator = null
-//        val simpleItemAnimator = recyclerView.itemAnimator.
-//        if (simpleItemAnimator != null) simpleItemAnimator.supportsChangeAnimations = false
 
         // initialize recycler adapter
         recyclerAdapter = DirectoryRecyclerAdapter()
@@ -145,18 +144,24 @@ class DirectoryFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val id = item.itemId
-        if (id == android.R.id.home) {
-            onBackPressed()
-            return true
-        }
-        if (id == R.id.sort) {
-            RecyclerDialogFragment(DIALOG_TYPE_SORT_DIRECTORY).show((context as FragmentActivity).supportFragmentManager, DIALOG_TYPE_SORT_DIRECTORY.toString())
-        }
-        if (id == R.id.setting) {
-            val intent = Intent(context, SettingActivity::class.java)
-            startActivity(intent)
-            return true
+        when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+                return true
+            }
+            R.id.sort -> {
+                RecyclerDialogFragment(DIALOG_TYPE_SORT_DIRECTORY).show((context as FragmentActivity).supportFragmentManager, DIALOG_TYPE_SORT_DIRECTORY.toString())
+                return true
+            }
+            R.id.setting -> {
+                val intent = Intent(context, SettingActivity::class.java)
+                startActivity(intent)
+                return true
+            }
+            R.id.select_all -> {
+                recyclerAdapter.setSelectedAll(true)
+                return true
+            }
         }
 
         return super.onOptionsItemSelected(item)
