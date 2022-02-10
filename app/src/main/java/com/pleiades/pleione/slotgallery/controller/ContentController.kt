@@ -3,6 +3,7 @@ package com.pleiades.pleione.slotgallery.controller
 import android.content.Context
 import android.content.SharedPreferences
 import android.database.Cursor
+import android.net.Uri
 import android.provider.MediaStore
 import com.pleiades.pleione.slotgallery.Config
 import com.pleiades.pleione.slotgallery.Config.Companion.COUNT_DEFAULT_DIRECTORY
@@ -51,7 +52,7 @@ class ContentController(private val context: Context) {
         // initialize image parameters
         val imageUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
         val imageProjection = arrayOf(
-            MediaStore.Images.Media.BUCKET_ID,
+            MediaStore.Images.Media._ID,
             MediaStore.Images.Media.DISPLAY_NAME,
             MediaStore.Images.Media.SIZE,
             MediaStore.Images.Media.WIDTH,
@@ -65,13 +66,14 @@ class ContentController(private val context: Context) {
         // initialize image cursor
         val imageCursor = context.contentResolver.query(imageUri, imageProjection, imageSelection, imageSelectionArgs, null)!!
         while (imageCursor.moveToNext()) {
-            val bucketId = imageCursor.getString(0)
+            val id = imageCursor.getString(0)
             val name = imageCursor.getString(1)
             val size = imageCursor.getString(2)
             val width = imageCursor.getString(3)
             val height = imageCursor.getString(4)
             val date = imageCursor.getString(5).toLong()
             val relativePath = imageCursor.getString(6)
+            val uri = Uri.withAppendedPath(imageUri, id.toString())
 
             // update directory date
             directory.date = date.coerceAtLeast(directory.date)
@@ -80,14 +82,14 @@ class ContentController(private val context: Context) {
             if (allowSubDirectory) {
                 if (relativePath == directoryRelativePath) {
                     // add image
-                    directory.contentArrayList.add(Directory.Content(false, bucketId, name, size, width, height, date))
+                    directory.contentArrayList.add(Directory.Content(false, id, name, size, width, height, date, uri))
                 } else {
                     // case sub directory
                     subDirectoryPathHashSet.add(directoryPath.substringBefore(":") + ":" + relativePath.substringBeforeLast("/"))
                 }
             } else {
                 // add image
-                directory.contentArrayList.add(Directory.Content(false, bucketId, name, size, width, height, date))
+                directory.contentArrayList.add(Directory.Content(false, id, name, size, width, height, date, uri))
             }
         }
 
@@ -98,7 +100,7 @@ class ContentController(private val context: Context) {
         // initialize video parameters
         val videoUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
         val videoProjection = arrayOf(
-            MediaStore.Video.Media.BUCKET_ID,
+            MediaStore.Video.Media._ID,
             MediaStore.Video.Media.DISPLAY_NAME,
             MediaStore.Video.Media.SIZE,
             MediaStore.Video.Media.WIDTH,
@@ -112,13 +114,14 @@ class ContentController(private val context: Context) {
         // initialize video cursor
         val videoCursor = context.contentResolver.query(videoUri, videoProjection, videoSelection, videoSelectionArgs, null)!!
         while (videoCursor.moveToNext()) {
-            val bucketId = videoCursor.getString(0)
+            val id = videoCursor.getString(0)
             val name = videoCursor.getString(1)
             val size = videoCursor.getString(2)
             val width = videoCursor.getString(3)
             val height = videoCursor.getString(4)
             val date = videoCursor.getString(5).toLong()
             val relativePath = videoCursor.getString(6)
+            val uri = Uri.withAppendedPath(videoUri, id.toString())
 
             // update directory date
             directory.date = date.coerceAtLeast(directory.date)
@@ -127,14 +130,14 @@ class ContentController(private val context: Context) {
             if (allowSubDirectory) {
                 if (relativePath == directoryRelativePath) {
                     // add image
-                    directory.contentArrayList.add(Directory.Content(true, bucketId, name, size, width, height, date))
+                    directory.contentArrayList.add(Directory.Content(true, id, name, size, width, height, date, uri))
                 } else {
                     // case sub directory
                     subDirectoryPathHashSet.add(directoryPath.substringBefore(":") + ":" + relativePath.substringBeforeLast("/"))
                 }
             } else {
                 // add image
-                directory.contentArrayList.add(Directory.Content(true, bucketId, name, size, width, height, date))
+                directory.contentArrayList.add(Directory.Content(true, id, name, size, width, height, date, uri))
             }
         }
 
@@ -156,30 +159,30 @@ class ContentController(private val context: Context) {
         }
     }
 
-    fun getContentData(content: Directory.Content): String {
-        val cursor: Cursor
-        if (content.isVideo) {
-            cursor = context.contentResolver.query(
-                MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
-                arrayOf(MediaStore.Video.Media.DATA),
-                "${MediaStore.Video.Media.BUCKET_ID} = ? and ${MediaStore.Video.Media.DISPLAY_NAME} = ?",
-                arrayOf(content.bucketId, content.name),
-                null
-            )!!
-        } else {
-            cursor = context.contentResolver.query(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                arrayOf(MediaStore.Images.Media.DATA),
-                "${MediaStore.Images.Media.BUCKET_ID} = ? and ${MediaStore.Images.Media.DISPLAY_NAME} = ?",
-                arrayOf(content.bucketId, content.name),
-                null
-            )!!
-        }
-        cursor.moveToNext()
-        val data = cursor.getString(0)
-        cursor.close()
-        return data
-    }
+//    fun getContentData(content: Directory.Content): String {
+//        val cursor: Cursor
+//        if (content.isVideo) {
+//            cursor = context.contentResolver.query(
+//                MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+//                arrayOf(MediaStore.Video.Media.DATA),
+//                "${MediaStore.Video.Media.BUCKET_ID} = ? and ${MediaStore.Video.Media.DISPLAY_NAME} = ?",
+//                arrayOf(content.bucketId, content.name),
+//                null
+//            )!!
+//        } else {
+//            cursor = context.contentResolver.query(
+//                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+//                arrayOf(MediaStore.Images.Media.DATA),
+//                "${MediaStore.Images.Media.BUCKET_ID} = ? and ${MediaStore.Images.Media.DISPLAY_NAME} = ?",
+//                arrayOf(content.bucketId, content.name),
+//                null
+//            )!!
+//        }
+//        cursor.moveToNext()
+//        val data = cursor.getString(0)
+//        cursor.close()
+//        return data
+//    }
 
     fun sortDirectoryArrayList() {
         when (prefs.getInt(KEY_DIRECTORY_SORT_ORDER, 0)) {

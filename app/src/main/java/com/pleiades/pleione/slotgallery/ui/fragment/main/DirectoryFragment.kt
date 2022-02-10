@@ -243,12 +243,11 @@ class DirectoryFragment : Fragment() {
 
         override fun onBindViewHolder(holder: DirectoryViewHolder, position: Int) {
             val directory = ContentController.directoryArrayList[position]
+            val content = directory.contentArrayList[0]
 
             // case thumbnail
-            val content = directory.contentArrayList[0]
-            val contentData = contentController.getContentData(content)
             Glide.with(context!!)
-                .load(contentData)
+                .load(content.uri)
                 .centerCrop()
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .override(screenWidth / SPAN_COUNT_DIRECTORY)

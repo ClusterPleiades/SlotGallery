@@ -1,5 +1,6 @@
 package com.pleiades.pleione.slotgallery.info
 
+import android.net.Uri
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -10,13 +11,12 @@ class Directory(val path: String) {
 
     class Content(
         val isVideo: Boolean,
-        val bucketId: String,
+        val id: String,
         val name: String,
         val size: String,
         val width: String,
         val height: String,
-        val date: Long
-    ){
-        var temp:String = ""
-    }
+        val date: Long,
+        val uri: Uri
+    )
 }
