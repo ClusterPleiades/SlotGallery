@@ -2,7 +2,6 @@ package com.pleiades.pleione.slotgallery.controller
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.database.Cursor
 import android.net.Uri
 import android.provider.MediaStore
 import com.pleiades.pleione.slotgallery.Config
@@ -13,8 +12,6 @@ import com.pleiades.pleione.slotgallery.Config.Companion.SORT_POSITION_BY_NAME
 import com.pleiades.pleione.slotgallery.Config.Companion.SORT_POSITION_BY_NEWEST
 import com.pleiades.pleione.slotgallery.Config.Companion.SORT_POSITION_BY_OLDEST
 import com.pleiades.pleione.slotgallery.info.Directory
-import java.util.*
-import kotlin.collections.HashSet
 
 class ContentController(private val context: Context) {
     companion object {
@@ -158,31 +155,6 @@ class ContentController(private val context: Context) {
             addDirectory(false, subDirectoryPath)
         }
     }
-
-//    fun getContentData(content: Directory.Content): String {
-//        val cursor: Cursor
-//        if (content.isVideo) {
-//            cursor = context.contentResolver.query(
-//                MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
-//                arrayOf(MediaStore.Video.Media.DATA),
-//                "${MediaStore.Video.Media.BUCKET_ID} = ? and ${MediaStore.Video.Media.DISPLAY_NAME} = ?",
-//                arrayOf(content.bucketId, content.name),
-//                null
-//            )!!
-//        } else {
-//            cursor = context.contentResolver.query(
-//                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-//                arrayOf(MediaStore.Images.Media.DATA),
-//                "${MediaStore.Images.Media.BUCKET_ID} = ? and ${MediaStore.Images.Media.DISPLAY_NAME} = ?",
-//                arrayOf(content.bucketId, content.name),
-//                null
-//            )!!
-//        }
-//        cursor.moveToNext()
-//        val data = cursor.getString(0)
-//        cursor.close()
-//        return data
-//    }
 
     fun sortDirectoryArrayList() {
         when (prefs.getInt(KEY_DIRECTORY_SORT_ORDER, 0)) {

@@ -1,13 +1,20 @@
 package com.pleiades.pleione.slotgallery.ui.fragment.main
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.*
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -35,6 +42,7 @@ class DirectoryFragment : Fragment() {
     }
 
     private lateinit var rootView: View
+    private val resultLauncher: ActivityResultLauncher<IntentSenderRequest> = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { }
 
     private lateinit var slotController: SlotController
     private lateinit var contentController: ContentController
@@ -62,7 +70,6 @@ class DirectoryFragment : Fragment() {
         recyclerView = rootView.findViewById(R.id.recycler_thumbnail)
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = GridLayoutManager(context, SPAN_COUNT_DIRECTORY)
-        recyclerView.itemAnimator = null
 
         // initialize recycler adapter
         recyclerAdapter = DirectoryRecyclerAdapter()
@@ -94,7 +101,7 @@ class DirectoryFragment : Fragment() {
         (context as FragmentActivity).supportFragmentManager.setFragmentResultListener(KEY_DIRECTORY_SORT_ORDER, viewLifecycleOwner) { key: String, _: Bundle ->
             if (key == KEY_DIRECTORY_SORT_ORDER) {
                 contentController.sortDirectoryArrayList()
-                recyclerAdapter.notifyItemRangeChanged(0, ContentController.directoryArrayList.size)
+                recyclerAdapter.notifyItemRangeChanged(0, ContentController.directoryArrayList.size, false)
             }
         }
 
@@ -160,6 +167,10 @@ class DirectoryFragment : Fragment() {
             }
             R.id.select_all -> {
                 recyclerAdapter.setSelectedAll(true)
+                return true
+            }
+            R.id.delete -> {
+                recyclerAdapter.delete()
                 return true
             }
         }
@@ -275,7 +286,7 @@ class DirectoryFragment : Fragment() {
         fun setSelected(position: Int, isSelected: Boolean) {
             if (isSelected) selectedHashSet.add(position)
             else selectedHashSet.remove(position)
-            notifyItemChanged(position)
+            notifyItemChanged(position, false)
             activity!!.title = selectedHashSet.size.toString() + "/" + itemCount
         }
 
@@ -283,7 +294,7 @@ class DirectoryFragment : Fragment() {
             for (position in startPosition..endPosition) {
                 if (isSelected) selectedHashSet.add(position)
                 else selectedHashSet.remove(position)
-                notifyItemChanged(position)
+                notifyItemChanged(position, false)
             }
             activity!!.title = selectedHashSet.size.toString() + "/" + itemCount
         }
@@ -293,15 +304,47 @@ class DirectoryFragment : Fragment() {
                 for (i in 0 until itemCount) selectedHashSet.add(i)
             } else
                 selectedHashSet.clear()
-            notifyItemRangeChanged(0, itemCount)
+            notifyItemRangeChanged(0, itemCount, false)
             activity!!.title = selectedHashSet.size.toString() + "/" + itemCount
         }
 
         fun toggleSelected(position: Int) {
             if (selectedHashSet.contains(position)) selectedHashSet.remove(position)
             else selectedHashSet.add(position)
-            notifyItemChanged(position)
+            notifyItemChanged(position, false)
             activity!!.title = selectedHashSet.size.toString() + "/" + itemCount
+        }
+
+        fun delete() {
+            // initialize selected array
+            val selectedArray = selectedHashSet.toIntArray()
+            selectedArray.reverse()
+
+            // clear selected hash set
+            selectedHashSet.clear()
+
+            // set is selecting false
+            recyclerAdapter.isSelecting = false
+
+            // refresh action bar menu
+            (context as FragmentActivity).invalidateOptionsMenu()
+
+            // initialize content uri array list
+            val contentUriLinkedList: ArrayList<Uri> = ArrayList()
+            for (position in selectedArray) {
+                // initialize directory
+                val directory = ContentController.directoryArrayList[position]
+
+                // add content uris
+                for (content in directory.contentArrayList) contentUriLinkedList.add(content.uri)
+            }
+
+            // initialize create delete request pending intent
+            val pendingIntent = MediaStore.createDeleteRequest(requireContext().contentResolver, contentUriLinkedList)
+            val intentSenderRequest = IntentSenderRequest.Builder(pendingIntent.intentSender).build()
+
+            // launch intent sender request
+            resultLauncher.launch(intentSenderRequest)
         }
     }
 }
