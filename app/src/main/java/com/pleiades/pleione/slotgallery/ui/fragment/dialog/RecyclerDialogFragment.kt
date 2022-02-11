@@ -15,8 +15,10 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_SORT_CONTENT
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_SORT_DIRECTORY
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_WIDTH_PERCENTAGE_RECYCLER
+import com.pleiades.pleione.slotgallery.Config.Companion.KEY_CONTENT_SORT_ORDER
 import com.pleiades.pleione.slotgallery.Config.Companion.KEY_DIRECTORY_SORT_ORDER
 import com.pleiades.pleione.slotgallery.Config.Companion.PREFS
 import com.pleiades.pleione.slotgallery.NonScrollLinearLayoutManager
@@ -76,8 +78,16 @@ class RecyclerDialogFragment(private val type: Int) : androidx.fragment.app.Dial
     inner class DialogRecyclerAdapter : RecyclerView.Adapter<DialogRecyclerAdapter.DialogViewHolder>() {
         private val prefs = requireContext().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
         private val editor = prefs.edit()
-        private val radioPosition = prefs.getInt(KEY_DIRECTORY_SORT_ORDER, 0)
-        private lateinit var textArray: Array<String>
+        private val radioPosition = when (type) {
+            DIALOG_TYPE_SORT_DIRECTORY -> prefs.getInt(KEY_DIRECTORY_SORT_ORDER, 0)
+            DIALOG_TYPE_SORT_CONTENT -> prefs.getInt(KEY_CONTENT_SORT_ORDER, 0)
+            else -> 0
+        }
+        private val textArray: Array<String> = when (type) {
+            DIALOG_TYPE_SORT_DIRECTORY -> context!!.resources.getStringArray(R.array.sort)
+            DIALOG_TYPE_SORT_CONTENT -> context!!.resources.getStringArray(R.array.sort)
+            else -> arrayOf("")
+        }
 
         inner class DialogViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             val radioButton: RadioButton = itemView.findViewById(R.id.radio_dialog)
@@ -99,18 +109,20 @@ class RecyclerDialogFragment(private val type: Int) : androidx.fragment.app.Dial
                             resultBundle.putInt(KEY_DIRECTORY_SORT_ORDER, position)
                             parentFragmentManager.setFragmentResult(KEY_DIRECTORY_SORT_ORDER, resultBundle)
                         }
+                        DIALOG_TYPE_SORT_CONTENT -> {
+                            editor.putInt(KEY_CONTENT_SORT_ORDER, position)
+                            editor.apply()
+
+                            // set fragment result
+                            val resultBundle = Bundle()
+                            resultBundle.putInt(KEY_CONTENT_SORT_ORDER, position)
+                            parentFragmentManager.setFragmentResult(KEY_CONTENT_SORT_ORDER, resultBundle)
+                        }
                     }
 
                     // dismiss dialog
                     dismiss()
                 }
-            }
-        }
-
-        // constructor
-        init {
-            if (type == DIALOG_TYPE_SORT_DIRECTORY) {
-                textArray = context!!.resources.getStringArray(R.array.sort)
             }
         }
 

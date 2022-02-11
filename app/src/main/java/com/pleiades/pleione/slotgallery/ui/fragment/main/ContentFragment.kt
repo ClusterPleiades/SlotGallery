@@ -1,6 +1,7 @@
 package com.pleiades.pleione.slotgallery.ui.fragment.main
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -10,10 +11,12 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.GridLayoutManager
@@ -22,29 +25,31 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.michaelflisar.dragselectrecyclerview.DragSelectTouchListener
 import com.michaelflisar.dragselectrecyclerview.DragSelectTouchListener.OnDragSelectListener
-import com.pleiades.pleione.slotgallery.Config
+import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_SORT_CONTENT
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_SORT_DIRECTORY
+import com.pleiades.pleione.slotgallery.Config.Companion.KEY_CONTENT_SORT_ORDER
 import com.pleiades.pleione.slotgallery.Config.Companion.KEY_DIRECTORY_SORT_ORDER
+import com.pleiades.pleione.slotgallery.Config.Companion.SPAN_COUNT_CONTENT
 import com.pleiades.pleione.slotgallery.Config.Companion.SPAN_COUNT_DIRECTORY
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.controller.ContentController
 import com.pleiades.pleione.slotgallery.controller.DeviceController
 import com.pleiades.pleione.slotgallery.controller.SlotController
+import com.pleiades.pleione.slotgallery.info.Directory
 import com.pleiades.pleione.slotgallery.ui.activity.SettingActivity
 import com.pleiades.pleione.slotgallery.ui.fragment.dialog.RecyclerDialogFragment
 
-class DirectoryFragment : Fragment() {
+class ContentFragment(val directoryPosition: Int) : Fragment() {
     companion object {
-        fun newInstance(): DirectoryFragment {
-            return DirectoryFragment()
+        fun newInstance(directoryPosition: Int): ContentFragment {
+            return ContentFragment(directoryPosition)
         }
     }
 
     private lateinit var rootView: View
-    private val resultLauncher: ActivityResultLauncher<IntentSenderRequest> = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
-
-    }
-    private var backupDirectoryArrayListDate = 0L
+    private val resultLauncher: ActivityResultLauncher<IntentSenderRequest> = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { }
+    private var directory = ContentController.directoryArrayList[directoryPosition]
+    private val backupDirectoryDate = directory.date
 
     private lateinit var slotController: SlotController
     private lateinit var contentController: ContentController
@@ -68,7 +73,7 @@ class DirectoryFragment : Fragment() {
         // initialize directory recycler view
         recyclerView = rootView.findViewById(R.id.recycler_thumbnail)
         recyclerView.setHasFixedSize(true)
-        recyclerView.layoutManager = GridLayoutManager(context, SPAN_COUNT_DIRECTORY)
+        recyclerView.layoutManager = GridLayoutManager(context, SPAN_COUNT_CONTENT)
 
         // initialize recycler adapter
         recyclerAdapter = DirectoryRecyclerAdapter()
@@ -86,27 +91,18 @@ class DirectoryFragment : Fragment() {
             // set drag selection listener
             .withSelectListener(onDragSelectionListener)
             // set options
-            .withMaxScrollDistance(24)    // default: 16; 	defines the speed of the auto scrolling
-        //.withTopOffset(toolbarHeight)       // default: 0; 		set an offset for the touch region on top of the RecyclerView
-        //.withBottomOffset(toolbarHeight)    // default: 0; 		set an offset for the touch region on bottom of the RecyclerView
-        //.withScrollAboveTopRegion(enabled)  // default: true; 	enable auto scrolling, even if the finger is moved above the top region
-        //.withScrollBelowTopRegion(enabled)  // default: true; 	enable auto scrolling, even if the finger is moved below the top region
-        //.withDebug(enabled);                // default: false;
+            .withMaxScrollDistance(24)
 
         // add on item touch listener to recycler view
         recyclerView.addOnItemTouchListener(dragSelectTouchListener)
 
         // initialize fragment result listener
-        (context as FragmentActivity).supportFragmentManager.setFragmentResultListener(KEY_DIRECTORY_SORT_ORDER, viewLifecycleOwner) { key: String, _: Bundle ->
-            if (key == KEY_DIRECTORY_SORT_ORDER) {
-                contentController.sortDirectoryArrayList()
-                recyclerAdapter.notifyItemRangeChanged(0, ContentController.directoryArrayList.size, false)
+        (context as FragmentActivity).supportFragmentManager.setFragmentResultListener(KEY_CONTENT_SORT_ORDER, viewLifecycleOwner) { key: String, _: Bundle ->
+            if (key == KEY_CONTENT_SORT_ORDER) {
+                contentController.sortContentArrayList(directory.contentArrayList)
+                recyclerAdapter.notifyItemRangeChanged(0, directory.contentArrayList.size, false)
             }
         }
-
-        // refresh
-        if (ContentController.directoryArrayList.size == 0)
-            refresh()
 
         return rootView
     }
@@ -114,16 +110,17 @@ class DirectoryFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         val actionBar = (activity as AppCompatActivity).supportActionBar!!
 
+        // set display home as up enabled true
+        actionBar.setDisplayHomeAsUpEnabled(true)
+
         // case is selecting
         if (recyclerAdapter.isSelecting) {
-            inflater.inflate(R.menu.menu_directory_select, menu)
-            actionBar.setDisplayHomeAsUpEnabled(true)
+            inflater.inflate(R.menu.menu_content_select, menu)
         }
         // case default
         else {
-            inflater.inflate(R.menu.menu_directory, menu)
-            actionBar.setDisplayHomeAsUpEnabled(false)
-            requireActivity().title = ""
+            inflater.inflate(R.menu.menu_content, menu)
+            requireActivity().title = directory.name
         }
     }
 
@@ -134,12 +131,7 @@ class DirectoryFragment : Fragment() {
                 return true
             }
             R.id.sort -> {
-                RecyclerDialogFragment(DIALOG_TYPE_SORT_DIRECTORY).show((context as FragmentActivity).supportFragmentManager, DIALOG_TYPE_SORT_DIRECTORY.toString())
-                return true
-            }
-            R.id.setting -> {
-                val intent = Intent(context, SettingActivity::class.java)
-                startActivity(intent)
+                RecyclerDialogFragment(DIALOG_TYPE_SORT_CONTENT).show((context as FragmentActivity).supportFragmentManager, DIALOG_TYPE_SORT_CONTENT.toString())
                 return true
             }
             R.id.select_all -> {
@@ -157,36 +149,21 @@ class DirectoryFragment : Fragment() {
 
     @SuppressLint("NotifyDataSetChanged")
     fun refresh() {
-        // check is content changed
-        val selectedSlot = slotController.getSelectedSlot()
-        val messageTextView = rootView.findViewById<TextView>(R.id.message_main)
+        // clear directory array list
+        ContentController.directoryArrayList.clear()
 
-        // case no slot
-        if (selectedSlot == null) {
-            messageTextView.setText(R.string.message_error_no_slot)
-            messageTextView.visibility = VISIBLE
-        } else {
-            messageTextView.visibility = GONE
+        // initialize contents
+        contentController.initializeContents()
 
-            // clear directory array list
-            ContentController.directoryArrayList.clear()
+        // initialize directory
+        directory = ContentController.directoryArrayList[directoryPosition]
 
-            // initialize contents
-            contentController.initializeContents()
+        // case directory changed
+        if (directory.date != backupDirectoryDate) {
+            recyclerAdapter.isSelecting = false
 
-            if (backupDirectoryArrayListDate == 0L) {
-                backupDirectoryArrayListDate = ContentController.directoryArrayList.maxOf { it.date }
-                recyclerAdapter.notifyDataSetChanged()
-            } else {
-                val directoryArrayListDate = ContentController.directoryArrayList.maxOf { it.date }
-                if (directoryArrayListDate != backupDirectoryArrayListDate) {
-                    backupDirectoryArrayListDate = directoryArrayListDate
-                    recyclerAdapter.selectedHashSet.clear()
-                    recyclerAdapter.isSelecting = false
-                    recyclerAdapter.notifyDataSetChanged()
-                }
-            }
-
+            // return to directory fragment
+            requireActivity().onBackPressed()
         }
     }
 
@@ -202,16 +179,19 @@ class DirectoryFragment : Fragment() {
 
     inner class DirectoryRecyclerAdapter : RecyclerView.Adapter<DirectoryRecyclerAdapter.DirectoryViewHolder>() {
         private val screenWidth = DeviceController.getWidthMax(requireContext())
-        val selectedHashSet: HashSet<Int> = HashSet()
+        private val selectedHashSet: HashSet<Int> = HashSet()
         var isSelecting = false
 
         inner class DirectoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             val thumbnailImageView: ImageView = itemView.findViewById(R.id.image_thumbnail)
             val selectImageView: ImageView = itemView.findViewById(R.id.select_thumbnail)
-            val titleTextView: TextView = itemView.findViewById(R.id.title_thumbnail)
-            val contentTextView: TextView = itemView.findViewById(R.id.content_thumbnail)
+            private val descriptionLinearLayout: LinearLayoutCompat = itemView.findViewById(R.id.description_thumbnail)
 
             init {
+                // set description linear layout gone
+                descriptionLinearLayout.visibility = GONE
+
+                // set item view on click listener
                 itemView.setOnClickListener {
                     // initialize position
                     val position = bindingAdapterPosition
@@ -231,12 +211,7 @@ class DirectoryFragment : Fragment() {
                             (context as FragmentActivity).invalidateOptionsMenu()
                         }
                     } else {
-                        // replace fragment
-                        activity!!.supportFragmentManager
-                            .beginTransaction()
-                            .replace(R.id.fragment_main, ContentFragment.newInstance(position))
-                            .addToBackStack(Config.KEY_STACK)
-                            .commit()
+                        // TODO
                     }
                 }
                 itemView.setOnLongClickListener { view: View ->
@@ -270,8 +245,7 @@ class DirectoryFragment : Fragment() {
         }
 
         override fun onBindViewHolder(holder: DirectoryViewHolder, position: Int) {
-            val directory = ContentController.directoryArrayList[position]
-            val content = directory.contentArrayList[0]
+            val content = directory.contentArrayList[position]
 
             // case thumbnail
             Glide.with(context!!)
@@ -284,20 +258,14 @@ class DirectoryFragment : Fragment() {
 
             // case select
             holder.selectImageView.visibility = if (selectedHashSet.contains(position)) VISIBLE else GONE
-
-            // case title
-            holder.titleTextView.text = directory.name
-
-            // case content
-            holder.contentTextView.text = directory.contentArrayList.size.toString()
         }
 
         override fun getItemCount(): Int {
-            return ContentController.directoryArrayList.size
+            return directory.contentArrayList.size
         }
 
         override fun getItemId(position: Int): Long {
-            return ContentController.directoryArrayList[position].path.hashCode().toLong()
+            return directory.contentArrayList[position].uri.hashCode().toLong()
         }
 
         fun setSelected(position: Int, isSelected: Boolean) {
@@ -349,11 +317,8 @@ class DirectoryFragment : Fragment() {
             // initialize content uri array list
             val contentUriLinkedList: ArrayList<Uri> = ArrayList()
             for (position in selectedArray) {
-                // initialize directory
-                val directory = ContentController.directoryArrayList[position]
-
-                // add content uris
-                for (content in directory.contentArrayList) contentUriLinkedList.add(content.uri)
+                // add content uri
+                contentUriLinkedList.add(directory.contentArrayList[position].uri)
             }
 
             // initialize create delete request pending intent

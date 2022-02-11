@@ -53,7 +53,7 @@ class SettingFragment : Fragment() {
 
             init {
                 itemView.setOnClickListener {
-                    when (adapterPosition) {
+                    when (bindingAdapterPosition) {
                         SETTING_POSITION_SLOT -> {
                             // replace fragment
                             activity!!.supportFragmentManager

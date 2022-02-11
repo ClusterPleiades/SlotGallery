@@ -13,7 +13,7 @@ class Config {
         // dialog
         const val DIALOG_TYPE_PERMISSION = 0
         const val DIALOG_TYPE_SORT_DIRECTORY = 10
-        const val DIALOG_TYPE_SORT_IMAGE = 11
+        const val DIALOG_TYPE_SORT_CONTENT = 11
         const val DIALOG_WIDTH_PERCENTAGE_DEFAULT = 0.85
         const val DIALOG_WIDTH_PERCENTAGE_RECYCLER = 0.65
 
@@ -23,6 +23,7 @@ class Config {
 
         // recycler view
         const val SPAN_COUNT_DIRECTORY = 2
+        const val SPAN_COUNT_CONTENT = 3
 
         // setting
         const val SETTING_POSITION_SLOT = 0
