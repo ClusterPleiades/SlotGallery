@@ -1,8 +1,6 @@
 package com.pleiades.pleione.slotgallery.ui.fragment.main
 
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -10,8 +8,6 @@ import android.view.*
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.ImageView
-import android.widget.TextView
-import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -26,20 +22,16 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.michaelflisar.dragselectrecyclerview.DragSelectTouchListener
 import com.michaelflisar.dragselectrecyclerview.DragSelectTouchListener.OnDragSelectListener
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_SORT_CONTENT
-import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_SORT_DIRECTORY
 import com.pleiades.pleione.slotgallery.Config.Companion.KEY_CONTENT_SORT_ORDER
-import com.pleiades.pleione.slotgallery.Config.Companion.KEY_DIRECTORY_SORT_ORDER
 import com.pleiades.pleione.slotgallery.Config.Companion.SPAN_COUNT_CONTENT
 import com.pleiades.pleione.slotgallery.Config.Companion.SPAN_COUNT_DIRECTORY
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.controller.ContentController
 import com.pleiades.pleione.slotgallery.controller.DeviceController
 import com.pleiades.pleione.slotgallery.controller.SlotController
-import com.pleiades.pleione.slotgallery.info.Directory
-import com.pleiades.pleione.slotgallery.ui.activity.SettingActivity
 import com.pleiades.pleione.slotgallery.ui.fragment.dialog.RecyclerDialogFragment
 
-class ContentFragment(val directoryPosition: Int) : Fragment() {
+class ContentFragment(private val directoryPosition: Int) : Fragment() {
     companion object {
         fun newInstance(directoryPosition: Int): ContentFragment {
             return ContentFragment(directoryPosition)
@@ -49,7 +41,6 @@ class ContentFragment(val directoryPosition: Int) : Fragment() {
     private lateinit var rootView: View
     private val resultLauncher: ActivityResultLauncher<IntentSenderRequest> = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { }
     private var directory = ContentController.directoryArrayList[directoryPosition]
-    private val backupDirectoryDate = directory.date
 
     private lateinit var slotController: SlotController
     private lateinit var contentController: ContentController
@@ -99,7 +90,7 @@ class ContentFragment(val directoryPosition: Int) : Fragment() {
         // initialize fragment result listener
         (context as FragmentActivity).supportFragmentManager.setFragmentResultListener(KEY_CONTENT_SORT_ORDER, viewLifecycleOwner) { key: String, _: Bundle ->
             if (key == KEY_CONTENT_SORT_ORDER) {
-                contentController.sortContentArrayList(directory.contentArrayList)
+                contentController.sortContentArrayList()
                 recyclerAdapter.notifyItemRangeChanged(0, directory.contentArrayList.size, false)
             }
         }
@@ -149,8 +140,8 @@ class ContentFragment(val directoryPosition: Int) : Fragment() {
 
     @SuppressLint("NotifyDataSetChanged")
     fun refresh() {
-        // clear directory array list
-        ContentController.directoryArrayList.clear()
+        // backup directory
+        val backupDirectory = directory
 
         // initialize contents
         contentController.initializeContents()
@@ -158,11 +149,9 @@ class ContentFragment(val directoryPosition: Int) : Fragment() {
         // initialize directory
         directory = ContentController.directoryArrayList[directoryPosition]
 
-        // case directory changed
-        if (directory.date != backupDirectoryDate) {
+        // case content changed
+        if (directory != backupDirectory) {
             recyclerAdapter.isSelecting = false
-
-            // return to directory fragment
             requireActivity().onBackPressed()
         }
     }
@@ -179,7 +168,7 @@ class ContentFragment(val directoryPosition: Int) : Fragment() {
 
     inner class DirectoryRecyclerAdapter : RecyclerView.Adapter<DirectoryRecyclerAdapter.DirectoryViewHolder>() {
         private val screenWidth = DeviceController.getWidthMax(requireContext())
-        private val selectedHashSet: HashSet<Int> = HashSet()
+        val selectedHashSet: HashSet<Int> = HashSet()
         var isSelecting = false
 
         inner class DirectoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

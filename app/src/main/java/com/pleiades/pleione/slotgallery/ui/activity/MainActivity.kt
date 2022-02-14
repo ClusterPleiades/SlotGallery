@@ -3,6 +3,9 @@ package com.pleiades.pleione.slotgallery.ui.activity
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -34,12 +37,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onResume() {
-        Log.d("test", "onresume")
         // check permission
         if (checkSelfPermission(PERMISSION_STORAGE[0]) == PackageManager.PERMISSION_GRANTED) {
             // add fragment
             if (!isFragmentAdded)
-                AddFragment()
+                addFragment()
 
             // initialize fragment
             when (val fragment = supportFragmentManager.findFragmentById(R.id.fragment_main)) {
@@ -73,11 +75,11 @@ class MainActivity : AppCompatActivity() {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            AddFragment()
+            addFragment()
         }
     }
 
-    private fun AddFragment() {
+    private fun addFragment() {
         // add fragment
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction.add(R.id.fragment_main, DirectoryFragment.newInstance()).commit()

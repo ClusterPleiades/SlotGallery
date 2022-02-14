@@ -2,7 +2,6 @@ package com.pleiades.pleione.slotgallery.info
 
 import android.net.Uri
 import java.util.*
-import kotlin.collections.ArrayList
 
 class Directory(val path: String) {
     val name = path.substringAfterLast("/")
@@ -18,5 +17,41 @@ class Directory(val path: String) {
         val height: String,
         val date: Long,
         val uri: Uri
-    )
+    ) {
+        override fun equals(other: Any?): Boolean {
+            if (other == null) return false
+            if (javaClass != other.javaClass) return false
+            return id == (other as Content).id
+        }
+
+        override fun hashCode(): Int {
+            var result = isVideo.hashCode()
+            result = 31 * result + id.hashCode()
+            result = 31 * result + name.hashCode()
+            result = 31 * result + size.hashCode()
+            result = 31 * result + width.hashCode()
+            result = 31 * result + height.hashCode()
+            result = 31 * result + date.hashCode()
+            result = 31 * result + uri.hashCode()
+            return result
+        }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other == null) return false
+        if (javaClass != other.javaClass) return false
+
+        val otherDirectory = other as Directory
+        return path == otherDirectory.path
+                && date == otherDirectory.date
+                && contentArrayList == otherDirectory.contentArrayList
+    }
+
+    override fun hashCode(): Int {
+        var result = path.hashCode()
+        result = 31 * result + name.hashCode()
+        result = 31 * result + contentArrayList.hashCode()
+        result = 31 * result + date.hashCode()
+        return result
+    }
 }

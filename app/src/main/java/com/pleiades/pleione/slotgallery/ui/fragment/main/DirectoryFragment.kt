@@ -1,6 +1,7 @@
 package com.pleiades.pleione.slotgallery.ui.fragment.main
 
 import android.annotation.SuppressLint
+import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -10,6 +11,7 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -30,6 +32,7 @@ import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.controller.ContentController
 import com.pleiades.pleione.slotgallery.controller.DeviceController
 import com.pleiades.pleione.slotgallery.controller.SlotController
+import com.pleiades.pleione.slotgallery.info.Directory
 import com.pleiades.pleione.slotgallery.ui.activity.SettingActivity
 import com.pleiades.pleione.slotgallery.ui.fragment.dialog.RecyclerDialogFragment
 
@@ -41,10 +44,7 @@ class DirectoryFragment : Fragment() {
     }
 
     private lateinit var rootView: View
-    private val resultLauncher: ActivityResultLauncher<IntentSenderRequest> = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
-
-    }
-    private var backupDirectoryArrayListDate = 0L
+    private lateinit var deleteResultLauncher: ActivityResultLauncher<IntentSenderRequest>
 
     private lateinit var slotController: SlotController
     private lateinit var contentController: ContentController
@@ -58,6 +58,20 @@ class DirectoryFragment : Fragment() {
 
         // set options menu
         setHasOptionsMenu(true)
+
+        // initialize activity result launcher
+        deleteResultLauncher = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result: ActivityResult ->
+            if (result.resultCode == RESULT_OK) {
+                // clear selected hash set
+                recyclerAdapter.selectedHashSet.clear()
+
+                // set is selecting false
+                recyclerAdapter.isSelecting = false
+
+                // refresh action bar menu
+                (context as FragmentActivity).invalidateOptionsMenu()
+            }
+        }
 
         // initialize slot controller
         slotController = SlotController(requireContext())
@@ -86,12 +100,7 @@ class DirectoryFragment : Fragment() {
             // set drag selection listener
             .withSelectListener(onDragSelectionListener)
             // set options
-            .withMaxScrollDistance(24)    // default: 16; 	defines the speed of the auto scrolling
-        //.withTopOffset(toolbarHeight)       // default: 0; 		set an offset for the touch region on top of the RecyclerView
-        //.withBottomOffset(toolbarHeight)    // default: 0; 		set an offset for the touch region on bottom of the RecyclerView
-        //.withScrollAboveTopRegion(enabled)  // default: true; 	enable auto scrolling, even if the finger is moved above the top region
-        //.withScrollBelowTopRegion(enabled)  // default: true; 	enable auto scrolling, even if the finger is moved below the top region
-        //.withDebug(enabled);                // default: false;
+            .withMaxScrollDistance(24)
 
         // add on item touch listener to recycler view
         recyclerView.addOnItemTouchListener(dragSelectTouchListener)
@@ -104,9 +113,11 @@ class DirectoryFragment : Fragment() {
             }
         }
 
-        // refresh
-        if (ContentController.directoryArrayList.size == 0)
+        // case launch application
+        if (ContentController.directoryArrayList.size == 0) {
+            // refresh
             refresh()
+        }
 
         return rootView
     }
@@ -168,25 +179,25 @@ class DirectoryFragment : Fragment() {
         } else {
             messageTextView.visibility = GONE
 
-            // clear directory array list
-            ContentController.directoryArrayList.clear()
+            // backup directory array list
+            val backupDirectoryArrayList: ArrayList<Directory> = ArrayList()
+            for (directory in ContentController.directoryArrayList) backupDirectoryArrayList.add(directory)
 
             // initialize contents
             contentController.initializeContents()
 
-            if (backupDirectoryArrayListDate == 0L) {
-                backupDirectoryArrayListDate = ContentController.directoryArrayList.maxOf { it.date }
-                recyclerAdapter.notifyDataSetChanged()
-            } else {
-                val directoryArrayListDate = ContentController.directoryArrayList.maxOf { it.date }
-                if (directoryArrayListDate != backupDirectoryArrayListDate) {
-                    backupDirectoryArrayListDate = directoryArrayListDate
+            // case content changed
+            if (ContentController.directoryArrayList != backupDirectoryArrayList) {
+                // case launch application
+                if (backupDirectoryArrayList.size == 0)
+                    recyclerAdapter.notifyDataSetChanged()
+                else {
                     recyclerAdapter.selectedHashSet.clear()
                     recyclerAdapter.isSelecting = false
+                    (context as FragmentActivity).invalidateOptionsMenu()
                     recyclerAdapter.notifyDataSetChanged()
                 }
             }
-
         }
     }
 
@@ -337,15 +348,6 @@ class DirectoryFragment : Fragment() {
             val selectedArray = selectedHashSet.toIntArray()
             selectedArray.reverse()
 
-            // clear selected hash set
-            selectedHashSet.clear()
-
-            // set is selecting false
-            recyclerAdapter.isSelecting = false
-
-            // refresh action bar menu
-            (context as FragmentActivity).invalidateOptionsMenu()
-
             // initialize content uri array list
             val contentUriLinkedList: ArrayList<Uri> = ArrayList()
             for (position in selectedArray) {
@@ -361,7 +363,7 @@ class DirectoryFragment : Fragment() {
             val intentSenderRequest = IntentSenderRequest.Builder(pendingIntent.intentSender).build()
 
             // launch intent sender request
-            resultLauncher.launch(intentSenderRequest)
+            deleteResultLauncher.launch(intentSenderRequest)
         }
     }
 }

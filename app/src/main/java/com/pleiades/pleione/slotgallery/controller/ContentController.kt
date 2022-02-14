@@ -21,6 +21,10 @@ class ContentController(private val context: Context) {
     private val prefs: SharedPreferences = context.getSharedPreferences(Config.PREFS, Context.MODE_PRIVATE)
 
     fun initializeContents() {
+        // clear directory array list
+        directoryArrayList.clear()
+
+        // initialize selected slot
         val selectedSlot = SlotController(context).getSelectedSlot()
 
         for (i in selectedSlot!!.directoryPathLinkedList.indices) {
@@ -38,6 +42,9 @@ class ContentController(private val context: Context) {
 
         // sort directory array list
         sortDirectoryArrayList()
+
+        // sort content array list
+        sortContentArrayList()
     }
 
     private fun addDirectory(allowSubDirectory: Boolean, directoryPath: String) {
@@ -143,9 +150,6 @@ class ContentController(private val context: Context) {
 
         // case contents exist
         if (directory.contentArrayList.size > 0) {
-            // sort content array list
-            sortContentArrayList(directory.contentArrayList)
-
             // add directory
             directoryArrayList.add(directory)
         }
@@ -164,11 +168,11 @@ class ContentController(private val context: Context) {
         }
     }
 
-    fun sortContentArrayList(contentArrayList: ArrayList<Directory.Content>) {
+    fun sortContentArrayList() {
         when (prefs.getInt(KEY_CONTENT_SORT_ORDER, 0)) {
-            SORT_POSITION_BY_NAME -> contentArrayList.sortBy { it.name }
-            SORT_POSITION_BY_NEWEST -> contentArrayList.sortByDescending { it.date }
-            SORT_POSITION_BY_OLDEST -> contentArrayList.sortBy { it.date }
+            SORT_POSITION_BY_NAME -> for (directory in directoryArrayList) directory.contentArrayList.sortBy { it.name }
+            SORT_POSITION_BY_NEWEST -> for (directory in directoryArrayList) directory.contentArrayList.sortByDescending { it.date }
+            SORT_POSITION_BY_OLDEST -> for (directory in directoryArrayList) directory.contentArrayList.sortBy { it.date }
         }
     }
 }
