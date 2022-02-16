@@ -40,7 +40,7 @@
         android:id="@+id/description_thumbnail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
+        android:background="@color/color_transparent_white"
         android:orientation="vertical"
         android:paddingLeft="@dimen/margin_very_small"
         android:paddingTop="@dimen/margin_very_small"

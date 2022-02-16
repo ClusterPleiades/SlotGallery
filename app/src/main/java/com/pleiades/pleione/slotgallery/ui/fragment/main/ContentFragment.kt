@@ -1,6 +1,7 @@
 package com.pleiades.pleione.slotgallery.ui.fragment.main
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -8,6 +9,7 @@ import android.view.*
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.ImageView
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -39,7 +41,7 @@ class ContentFragment(private val directoryPosition: Int) : Fragment() {
     }
 
     private lateinit var rootView: View
-    private val resultLauncher: ActivityResultLauncher<IntentSenderRequest> = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { }
+    private lateinit var deleteResultLauncher: ActivityResultLauncher<IntentSenderRequest>
     private var directory = ContentController.directoryArrayList[directoryPosition]
 
     private lateinit var slotController: SlotController
@@ -54,6 +56,20 @@ class ContentFragment(private val directoryPosition: Int) : Fragment() {
 
         // set options menu
         setHasOptionsMenu(true)
+
+        // initialize activity result launcher
+        deleteResultLauncher = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result: ActivityResult ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                // clear selected hash set
+                recyclerAdapter.selectedHashSet.clear()
+
+                // set is selecting false
+                recyclerAdapter.isSelecting = false
+
+                // refresh action bar menu
+                (context as FragmentActivity).invalidateOptionsMenu()
+            }
+        }
 
         // initialize slot controller
         slotController = SlotController(requireContext())
@@ -149,8 +165,16 @@ class ContentFragment(private val directoryPosition: Int) : Fragment() {
         // initialize directory
         directory = ContentController.directoryArrayList[directoryPosition]
 
-        // case content changed
-        if (directory != backupDirectory) {
+        // case same directory
+        if (directory.path == backupDirectory.path) {
+            // case content changed
+            if (directory.contentArrayList != backupDirectory.contentArrayList) {
+                recyclerAdapter.selectedHashSet.clear()
+                recyclerAdapter.isSelecting = false
+                (context as FragmentActivity).invalidateOptionsMenu()
+                recyclerAdapter.notifyDataSetChanged()
+            }
+        } else {
             recyclerAdapter.isSelecting = false
             requireActivity().onBackPressed()
         }
@@ -174,6 +198,7 @@ class ContentFragment(private val directoryPosition: Int) : Fragment() {
         inner class DirectoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             val thumbnailImageView: ImageView = itemView.findViewById(R.id.image_thumbnail)
             val selectImageView: ImageView = itemView.findViewById(R.id.select_thumbnail)
+            val playImageView: ImageView = itemView.findViewById(R.id.play_thumbnail)
             private val descriptionLinearLayout: LinearLayoutCompat = itemView.findViewById(R.id.description_thumbnail)
 
             init {
@@ -247,6 +272,9 @@ class ContentFragment(private val directoryPosition: Int) : Fragment() {
 
             // case select
             holder.selectImageView.visibility = if (selectedHashSet.contains(position)) VISIBLE else GONE
+
+            // case play
+            holder.playImageView.visibility = if (content.isVideo) VISIBLE else GONE
         }
 
         override fun getItemCount(): Int {
@@ -294,15 +322,6 @@ class ContentFragment(private val directoryPosition: Int) : Fragment() {
             val selectedArray = selectedHashSet.toIntArray()
             selectedArray.reverse()
 
-            // clear selected hash set
-            selectedHashSet.clear()
-
-            // set is selecting false
-            recyclerAdapter.isSelecting = false
-
-            // refresh action bar menu
-            (context as FragmentActivity).invalidateOptionsMenu()
-
             // initialize content uri array list
             val contentUriLinkedList: ArrayList<Uri> = ArrayList()
             for (position in selectedArray) {
@@ -315,7 +334,7 @@ class ContentFragment(private val directoryPosition: Int) : Fragment() {
             val intentSenderRequest = IntentSenderRequest.Builder(pendingIntent.intentSender).build()
 
             // launch intent sender request
-            resultLauncher.launch(intentSenderRequest)
+            deleteResultLauncher.launch(intentSenderRequest)
         }
     }
 }
