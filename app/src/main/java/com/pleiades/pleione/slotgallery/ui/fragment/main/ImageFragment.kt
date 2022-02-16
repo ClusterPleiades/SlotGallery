@@ -23,13 +23,12 @@ class ImageFragment(directoryPosition: Int, contentPosition: Int) : Fragment() {
 
     private val content = ContentController.directoryArrayList[directoryPosition].contentArrayList[contentPosition]
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         // initialize root view
         rootView = inflater.inflate(R.layout.fragment_image, container, false)
 
         // initialize photo view
         photoView = rootView.findViewById(R.id.photo_image)
-//        photoView.setImageURI(content.uri)
 
         // case thumbnail
         Glide.with(requireContext())
@@ -38,5 +37,12 @@ class ImageFragment(directoryPosition: Int, contentPosition: Int) : Fragment() {
             .into(photoView)
 
         return rootView
+    }
+
+    override fun onResume() {
+        // set action bar title
+        requireActivity().title = content.name
+
+        super.onResume()
     }
 }

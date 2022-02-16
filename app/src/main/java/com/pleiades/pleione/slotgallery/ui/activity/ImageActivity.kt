@@ -43,6 +43,9 @@ class ImageActivity : AppCompatActivity() {
         viewPager.offscreenPageLimit = 5
         viewPager.adapter = contentsPagerAdapter
         viewPager.setCurrentItem(contentPosition, false)
+
+        // set action bar title
+        title = ContentController.directoryArrayList[directoryPosition].contentArrayList[contentPosition].name
     }
 
     override fun onResume() {
