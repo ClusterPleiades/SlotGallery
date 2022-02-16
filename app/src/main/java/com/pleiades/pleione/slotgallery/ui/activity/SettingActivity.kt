@@ -6,6 +6,8 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import com.pleiades.pleione.slotgallery.Config
+import com.pleiades.pleione.slotgallery.Config.Companion.ACTIVITY_CODE_SETTING
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.ui.fragment.setting.SettingFragment
 
@@ -26,6 +28,13 @@ class SettingActivity : AppCompatActivity() {
         // add fragment
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction.add(R.id.fragment_setting, SettingFragment.newInstance()).commit()
+    }
+
+    override fun onResume() {
+        // set last resumed activity code
+        MainActivity.lastResumedActivityCode = ACTIVITY_CODE_SETTING
+
+        super.onResume()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

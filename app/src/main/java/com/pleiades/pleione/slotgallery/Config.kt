@@ -23,7 +23,9 @@ class Config {
 
         // fragment
         const val KEY_STACK = "stack"
-        const val KEY_PARCELABLE = "parcelable"
+        const val ACTIVITY_CODE_MAIN = 0
+        const val ACTIVITY_CODE_SETTING = 1
+        const val ACTIVITY_CODE_IMAGE = 2
 
         // recycler view
         const val SPAN_COUNT_DIRECTORY = 2

@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import com.pleiades.pleione.slotgallery.Config.Companion.ACTIVITY_CODE_IMAGE
 import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_POSITION_CONTENT
 import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_POSITION_DIRECTORY
 import com.pleiades.pleione.slotgallery.R
@@ -39,8 +40,16 @@ class ImageActivity : AppCompatActivity() {
         // initialize view pager
         val viewPager = findViewById<ViewPager2>(R.id.pager_image)
         val contentsPagerAdapter = ImageFragmentStateAdapter(supportFragmentManager, lifecycle)
+        viewPager.offscreenPageLimit = 5
         viewPager.adapter = contentsPagerAdapter
         viewPager.setCurrentItem(contentPosition, false)
+    }
+
+    override fun onResume() {
+        // set last resumed activity code
+        MainActivity.lastResumedActivityCode = ACTIVITY_CODE_IMAGE
+
+        super.onResume()
     }
 
     inner class ImageFragmentStateAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle) : FragmentStateAdapter(fragmentManager, lifecycle) {

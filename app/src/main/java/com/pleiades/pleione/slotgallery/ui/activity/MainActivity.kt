@@ -3,13 +3,10 @@ package com.pleiades.pleione.slotgallery.ui.activity
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.provider.MediaStore
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import com.pleiades.pleione.slotgallery.Config.Companion.ACTIVITY_CODE_MAIN
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_PERMISSION
 import com.pleiades.pleione.slotgallery.Config.Companion.PERMISSION_STORAGE
 import com.pleiades.pleione.slotgallery.R
@@ -18,6 +15,10 @@ import com.pleiades.pleione.slotgallery.ui.fragment.main.ContentFragment
 import com.pleiades.pleione.slotgallery.ui.fragment.main.DirectoryFragment
 
 class MainActivity : AppCompatActivity() {
+    companion object {
+        var lastResumedActivityCode = ACTIVITY_CODE_MAIN
+    }
+
     private var isFragmentAdded = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,7 +37,7 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
     }
 
-    override fun onResume() {
+    override fun onStart() {
         // check permission
         if (checkSelfPermission(PERMISSION_STORAGE[0]) == PackageManager.PERMISSION_GRANTED) {
             // add fragment
@@ -44,15 +45,23 @@ class MainActivity : AppCompatActivity() {
                 addFragment()
 
             // initialize fragment
-            when (val fragment = supportFragmentManager.findFragmentById(R.id.fragment_main)) {
-                is DirectoryFragment -> fragment.refresh()
-                is ContentFragment -> fragment.refresh()
-            }
+            if (lastResumedActivityCode == ACTIVITY_CODE_MAIN)
+                when (val fragment = supportFragmentManager.findFragmentById(R.id.fragment_main)) {
+                    is DirectoryFragment -> fragment.refresh()
+                    is ContentFragment -> fragment.refresh()
+                }
         } else {
             // request permission
             val defaultDialogFragment = DefaultDialogFragment(DIALOG_TYPE_PERMISSION)
             defaultDialogFragment.show(supportFragmentManager, DIALOG_TYPE_PERMISSION.toString())
         }
+
+        super.onStart()
+    }
+
+    override fun onResume() {
+        // set last resumed activity code
+        lastResumedActivityCode = ACTIVITY_CODE_MAIN
 
         super.onResume()
     }

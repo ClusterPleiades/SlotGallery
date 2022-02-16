@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.github.chrisbanes.photoview.PhotoView
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.controller.ContentController
@@ -27,7 +29,13 @@ class ImageFragment(directoryPosition: Int, contentPosition: Int) : Fragment() {
 
         // initialize photo view
         photoView = rootView.findViewById(R.id.photo_image)
-        photoView.setImageURI(content.uri)
+//        photoView.setImageURI(content.uri)
+
+        // case thumbnail
+        Glide.with(requireContext())
+            .load(content.uri)
+            .transition(DrawableTransitionOptions.withCrossFade())
+            .into(photoView)
 
         return rootView
     }
