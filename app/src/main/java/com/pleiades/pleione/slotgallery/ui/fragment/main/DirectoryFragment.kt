@@ -290,7 +290,6 @@ class DirectoryFragment : Fragment() {
                 .centerCrop()
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .override(screenWidth / SPAN_COUNT_DIRECTORY)
-                .dontAnimate()
                 .into(holder.thumbnailImageView)
 
             // case select

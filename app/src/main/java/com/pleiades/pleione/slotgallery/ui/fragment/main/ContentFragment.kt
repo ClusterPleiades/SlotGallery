@@ -2,6 +2,7 @@ package com.pleiades.pleione.slotgallery.ui.fragment.main
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -9,12 +10,14 @@ import android.view.*
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.GridLayoutManager
@@ -24,6 +27,8 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.michaelflisar.dragselectrecyclerview.DragSelectTouchListener
 import com.michaelflisar.dragselectrecyclerview.DragSelectTouchListener.OnDragSelectListener
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_SORT_CONTENT
+import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_POSITION_CONTENT
+import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_POSITION_DIRECTORY
 import com.pleiades.pleione.slotgallery.Config.Companion.KEY_CONTENT_SORT_ORDER
 import com.pleiades.pleione.slotgallery.Config.Companion.SPAN_COUNT_CONTENT
 import com.pleiades.pleione.slotgallery.Config.Companion.SPAN_COUNT_DIRECTORY
@@ -31,9 +36,13 @@ import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.controller.ContentController
 import com.pleiades.pleione.slotgallery.controller.DeviceController
 import com.pleiades.pleione.slotgallery.controller.SlotController
+import com.pleiades.pleione.slotgallery.info.Directory
+import com.pleiades.pleione.slotgallery.ui.activity.ImageActivity
 import com.pleiades.pleione.slotgallery.ui.fragment.dialog.RecyclerDialogFragment
+import java.util.concurrent.TimeUnit
 
-class ContentFragment(private val directoryPosition: Int) : Fragment() {
+
+class ContentFragment(private var directoryPosition: Int) : Fragment() {
     companion object {
         fun newInstance(directoryPosition: Int): ContentFragment {
             return ContentFragment(directoryPosition)
@@ -42,7 +51,7 @@ class ContentFragment(private val directoryPosition: Int) : Fragment() {
 
     private lateinit var rootView: View
     private lateinit var deleteResultLauncher: ActivityResultLauncher<IntentSenderRequest>
-    private var directory = ContentController.directoryArrayList[directoryPosition]
+    private var directory: Directory = ContentController.directoryArrayList[directoryPosition]
 
     private lateinit var slotController: SlotController
     private lateinit var contentController: ContentController
@@ -162,11 +171,19 @@ class ContentFragment(private val directoryPosition: Int) : Fragment() {
         // initialize contents
         contentController.initializeContents()
 
-        // initialize directory
-        directory = ContentController.directoryArrayList[directoryPosition]
+        // find directory
+        var isFound = false
+        for (i in ContentController.directoryArrayList.indices) {
+            if (ContentController.directoryArrayList[i].path == backupDirectory.path) {
+                directoryPosition = i
+                directory = ContentController.directoryArrayList[i]
+                isFound = true
+                break
+            }
+        }
 
-        // case same directory
-        if (directory.path == backupDirectory.path) {
+        // case same directory found
+        if (isFound) {
             // case content changed
             if (directory.contentArrayList != backupDirectory.contentArrayList) {
                 recyclerAdapter.selectedHashSet.clear()
@@ -199,6 +216,7 @@ class ContentFragment(private val directoryPosition: Int) : Fragment() {
             val thumbnailImageView: ImageView = itemView.findViewById(R.id.image_thumbnail)
             val selectImageView: ImageView = itemView.findViewById(R.id.select_thumbnail)
             val playImageView: ImageView = itemView.findViewById(R.id.play_thumbnail)
+            val timeTextView: TextView = itemView.findViewById(R.id.time_thumbnail)
             private val descriptionLinearLayout: LinearLayoutCompat = itemView.findViewById(R.id.description_thumbnail)
 
             init {
@@ -225,7 +243,10 @@ class ContentFragment(private val directoryPosition: Int) : Fragment() {
                             (context as FragmentActivity).invalidateOptionsMenu()
                         }
                     } else {
-                        // TODO
+                        val intent = Intent(context, ImageActivity::class.java)
+                        intent.putExtra(INTENT_POSITION_DIRECTORY, directoryPosition)
+                        intent.putExtra(INTENT_POSITION_CONTENT, position)
+                        startActivity(intent)
                     }
                 }
                 itemView.setOnLongClickListener { view: View ->
@@ -267,14 +288,28 @@ class ContentFragment(private val directoryPosition: Int) : Fragment() {
                 .centerCrop()
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .override(screenWidth / SPAN_COUNT_DIRECTORY)
-                .dontAnimate()
                 .into(holder.thumbnailImageView)
 
             // case select
             holder.selectImageView.visibility = if (selectedHashSet.contains(position)) VISIBLE else GONE
 
-            // case play
-            holder.playImageView.visibility = if (content.isVideo) VISIBLE else GONE
+            // case video
+            if (content.isVideo) {
+                holder.playImageView.visibility = VISIBLE
+                holder.timeTextView.visibility = VISIBLE
+
+                val minutes = TimeUnit.MILLISECONDS.toMinutes(content.duration)
+                val seconds = TimeUnit.MILLISECONDS.toSeconds(content.duration) % 60
+                val time = "$minutes:$seconds"
+                holder.timeTextView.text = time
+
+                holder.thumbnailImageView.setColorFilter(ContextCompat.getColor(context!!, R.color.color_transparent_black))
+            } else {
+                holder.playImageView.visibility = GONE
+                holder.timeTextView.visibility = GONE
+                holder.thumbnailImageView.clearColorFilter()
+            }
+
         }
 
         override fun getItemCount(): Int {

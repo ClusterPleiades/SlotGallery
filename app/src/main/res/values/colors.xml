@@ -4,6 +4,6 @@
     <color name="color_red">#E65F3E</color>
     <color name="color_gray">#757575</color>
     <color name="color_light_gray">#E5E5E5</color>
-    <color name="color_transparent_white">#E6FFFFFF</color>
-    <color name="color_transparent_black">#80000000</color>
+    <color name="color_transparent_white">#F2FFFFFF</color>
+    <color name="color_transparent_black">#0D000000</color>
 </resources>

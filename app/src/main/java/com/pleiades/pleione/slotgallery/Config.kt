@@ -17,6 +17,10 @@ class Config {
         const val DIALOG_WIDTH_PERCENTAGE_DEFAULT = 0.85
         const val DIALOG_WIDTH_PERCENTAGE_RECYCLER = 0.65
 
+        // activity
+        const val INTENT_POSITION_DIRECTORY = "position_directory"
+        const val INTENT_POSITION_CONTENT = "position_content"
+
         // fragment
         const val KEY_STACK = "stack"
         const val KEY_PARCELABLE = "parcelable"
@@ -28,6 +32,7 @@ class Config {
         // setting
         const val SETTING_POSITION_SLOT = 0
         const val SETTING_POSITION_DIRECTORY = 1
+        const val PATH_PRIMARY = "primary:"
         const val PATH_DOWNLOAD = "Download"
         const val PATH_CAMERA = "DCIM/Camera"
         const val PATH_SCREENSHOTS = "Pictures/Screenshots"

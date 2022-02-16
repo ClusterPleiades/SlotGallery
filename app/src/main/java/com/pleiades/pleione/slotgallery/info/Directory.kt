@@ -1,10 +1,11 @@
 package com.pleiades.pleione.slotgallery.info
 
 import android.net.Uri
+import com.pleiades.pleione.slotgallery.Config.Companion.PATH_PRIMARY
 import java.util.*
 
 class Directory(val path: String) {
-    val name = path.substringAfterLast("/")
+    val name = path.substringAfter(PATH_PRIMARY).substringAfterLast("/")
     val contentArrayList: ArrayList<Content> = ArrayList()
     var date = 0L
 
@@ -16,7 +17,8 @@ class Directory(val path: String) {
         val width: String,
         val height: String,
         val date: Long,
-        val uri: Uri
+        val uri: Uri,
+        val duration:Long
     ) {
         override fun equals(other: Any?): Boolean {
             if (other == null) return false

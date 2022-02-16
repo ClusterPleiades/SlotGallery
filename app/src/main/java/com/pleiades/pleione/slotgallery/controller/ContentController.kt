@@ -62,7 +62,7 @@ class ContentController(private val context: Context) {
             MediaStore.Images.Media.WIDTH,
             MediaStore.Images.Media.HEIGHT,
             MediaStore.Images.Media.DATE_MODIFIED,
-            MediaStore.Images.Media.RELATIVE_PATH,
+            MediaStore.Images.Media.RELATIVE_PATH
         )
         val imageSelection = if (allowSubDirectory) "${MediaStore.Images.Media.RELATIVE_PATH} LIKE ?" else "${MediaStore.Images.Media.RELATIVE_PATH} = ?"
         val imageSelectionArgs = if (allowSubDirectory) arrayOf("$directoryRelativePath%") else arrayOf(directoryRelativePath)
@@ -86,14 +86,14 @@ class ContentController(private val context: Context) {
             if (allowSubDirectory) {
                 if (relativePath == directoryRelativePath) {
                     // add image
-                    directory.contentArrayList.add(Directory.Content(false, id, name, size, width, height, date, uri))
+                    directory.contentArrayList.add(Directory.Content(false, id, name, size, width, height, date, uri, 0L))
                 } else {
                     // case sub directory
                     subDirectoryPathHashSet.add(directoryPath.substringBefore(":") + ":" + relativePath.substringBeforeLast("/"))
                 }
             } else {
                 // add image
-                directory.contentArrayList.add(Directory.Content(false, id, name, size, width, height, date, uri))
+                directory.contentArrayList.add(Directory.Content(false, id, name, size, width, height, date, uri, 0L))
             }
         }
 
@@ -111,6 +111,7 @@ class ContentController(private val context: Context) {
             MediaStore.Video.Media.HEIGHT,
             MediaStore.Video.Media.DATE_MODIFIED,
             MediaStore.Video.Media.RELATIVE_PATH,
+            MediaStore.Video.Media.DURATION
         )
         val videoSelection = if (allowSubDirectory) "${MediaStore.Video.Media.RELATIVE_PATH} LIKE ?" else "${MediaStore.Video.Media.RELATIVE_PATH} = ?"
         val videoSelectionArgs = if (allowSubDirectory) arrayOf("$directoryRelativePath%") else arrayOf(directoryRelativePath)
@@ -126,6 +127,7 @@ class ContentController(private val context: Context) {
             val date = videoCursor.getString(5).toLong()
             val relativePath = videoCursor.getString(6)
             val uri = Uri.withAppendedPath(videoUri, id.toString())
+            val duration = videoCursor.getString(7).toLong()
 
             // update directory date
             directory.date = date.coerceAtLeast(directory.date)
@@ -134,14 +136,14 @@ class ContentController(private val context: Context) {
             if (allowSubDirectory) {
                 if (relativePath == directoryRelativePath) {
                     // add image
-                    directory.contentArrayList.add(Directory.Content(true, id, name, size, width, height, date, uri))
+                    directory.contentArrayList.add(Directory.Content(true, id, name, size, width, height, date, uri, duration))
                 } else {
                     // case sub directory
                     subDirectoryPathHashSet.add(directoryPath.substringBefore(":") + ":" + relativePath.substringBeforeLast("/"))
                 }
             } else {
                 // add image
-                directory.contentArrayList.add(Directory.Content(true, id, name, size, width, height, date, uri))
+                directory.contentArrayList.add(Directory.Content(true, id, name, size, width, height, date, uri, duration))
             }
         }
 

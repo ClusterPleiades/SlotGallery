@@ -21,10 +21,22 @@
         android:layout_height="wrap_content"
         android:src="@drawable/icon_play"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/description_thumbnail"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/time_thumbnail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/text_size_small"
+        android:visibility="gone"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/play_thumbnail" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/select_thumbnail"

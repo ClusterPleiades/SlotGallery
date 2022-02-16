@@ -27,6 +27,10 @@
         <activity
             android:name=".ui.activity.SettingActivity"
             android:exported="true" />
+
+        <activity
+            android:name=".ui.activity.ImageActivity"
+            android:exported="true" />
     </application>
 
 </manifest>
