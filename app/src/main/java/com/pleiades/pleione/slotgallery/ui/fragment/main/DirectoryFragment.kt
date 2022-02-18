@@ -157,6 +157,10 @@ class DirectoryFragment : Fragment() {
                 recyclerAdapter.setSelectedAll(true)
                 return true
             }
+            R.id.share -> {
+                recyclerAdapter.share()
+                return true
+            }
             R.id.delete -> {
                 recyclerAdapter.delete()
                 return true
@@ -344,6 +348,38 @@ class DirectoryFragment : Fragment() {
             else selectedHashSet.add(position)
             notifyItemChanged(position, false)
             activity!!.title = selectedHashSet.size.toString() + "/" + itemCount
+        }
+
+        fun share() {
+            // initialize selected array
+            val selectedArray = selectedHashSet.toIntArray()
+
+            // initialize content uri array list
+            val contentUriLinkedList: ArrayList<Uri> = ArrayList()
+            var isContainVideo = false
+            var isContainImage = false
+            for (position in selectedArray) {
+                // initialize directory
+                val directory = ContentController.directoryArrayList[position]
+
+                // add directory contents
+                for (content in directory.contentArrayList) {
+                    // set is contain video, image
+                    if (content.isVideo) isContainVideo = true
+                    else isContainImage = true
+
+                    // add content uri
+                    contentUriLinkedList.add(content.uri)
+                }
+            }
+
+            // initialize share intent
+            val shareIntent = Intent().apply {
+                action = Intent.ACTION_SEND_MULTIPLE
+                putParcelableArrayListExtra(Intent.EXTRA_STREAM, contentUriLinkedList)
+                type = if (isContainVideo && isContainImage) Config.SHARE_TYPE_ALL else if (isContainVideo) Config.SHARE_TYPE_VIDEO else Config.SHARE_TYPE_IMAGE
+            }
+            startActivity(Intent.createChooser(shareIntent, getString(R.string.action_share)))
         }
 
         fun delete() {

@@ -53,5 +53,6 @@ class Config {
         // others
         const val SHARE_TYPE_IMAGE = "image/*"
         const val SHARE_TYPE_VIDEO = "video/*"
+        const val SHARE_TYPE_ALL = "*/*"
     }
 }

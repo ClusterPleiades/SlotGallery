@@ -30,6 +30,9 @@ import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_SORT_CONTEN
 import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_POSITION_CONTENT
 import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_POSITION_DIRECTORY
 import com.pleiades.pleione.slotgallery.Config.Companion.KEY_CONTENT_SORT_ORDER
+import com.pleiades.pleione.slotgallery.Config.Companion.SHARE_TYPE_ALL
+import com.pleiades.pleione.slotgallery.Config.Companion.SHARE_TYPE_IMAGE
+import com.pleiades.pleione.slotgallery.Config.Companion.SHARE_TYPE_VIDEO
 import com.pleiades.pleione.slotgallery.Config.Companion.SPAN_COUNT_CONTENT
 import com.pleiades.pleione.slotgallery.Config.Companion.SPAN_COUNT_DIRECTORY
 import com.pleiades.pleione.slotgallery.R
@@ -152,6 +155,10 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
             }
             R.id.select_all -> {
                 recyclerAdapter.setSelectedAll(true)
+                return true
+            }
+            R.id.share -> {
+                recyclerAdapter.share()
                 return true
             }
             R.id.delete -> {
@@ -354,6 +361,35 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
             else selectedHashSet.add(position)
             notifyItemChanged(position, false)
             activity!!.title = selectedHashSet.size.toString() + "/" + itemCount
+        }
+
+        fun share() {
+            // initialize selected array
+            val selectedArray = selectedHashSet.toIntArray()
+
+            // initialize content uri array list
+            val contentUriLinkedList: ArrayList<Uri> = ArrayList()
+            var isContainVideo = false
+            var isContainImage = false
+            for (position in selectedArray) {
+                // initialize content
+                val content = directory.contentArrayList[position]
+
+                // set is contain video, image
+                if (content.isVideo) isContainVideo = true
+                else isContainImage = true
+
+                // add content uri
+                contentUriLinkedList.add(content.uri)
+            }
+
+            // initialize share intent
+            val shareIntent = Intent().apply {
+                action = Intent.ACTION_SEND_MULTIPLE
+                putParcelableArrayListExtra(Intent.EXTRA_STREAM, contentUriLinkedList)
+                type = if (isContainVideo && isContainImage) SHARE_TYPE_ALL else if (isContainVideo) SHARE_TYPE_VIDEO else SHARE_TYPE_IMAGE
+            }
+            startActivity(Intent.createChooser(shareIntent, getString(R.string.action_share)))
         }
 
         fun delete() {
