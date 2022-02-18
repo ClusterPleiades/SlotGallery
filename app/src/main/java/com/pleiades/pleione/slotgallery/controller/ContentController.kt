@@ -12,6 +12,8 @@ import com.pleiades.pleione.slotgallery.Config.Companion.SORT_POSITION_BY_NAME
 import com.pleiades.pleione.slotgallery.Config.Companion.SORT_POSITION_BY_NEWEST
 import com.pleiades.pleione.slotgallery.Config.Companion.SORT_POSITION_BY_OLDEST
 import com.pleiades.pleione.slotgallery.info.Directory
+import java.text.CharacterIterator
+import java.text.StringCharacterIterator
 
 class ContentController(private val context: Context) {
     companion object {
@@ -72,9 +74,9 @@ class ContentController(private val context: Context) {
         while (imageCursor.moveToNext()) {
             val id = imageCursor.getString(0)
             val name = imageCursor.getString(1)
-            val size = imageCursor.getString(2)
-            val width = imageCursor.getString(3)
-            val height = imageCursor.getString(4)
+            val size = getByteCountSI(imageCursor.getString(2))
+            val width = imageCursor.getString(3).toInt()
+            val height = imageCursor.getString(4).toInt()
             val date = imageCursor.getString(5).toLong()
             val relativePath = imageCursor.getString(6)
             val uri = Uri.withAppendedPath(imageUri, id.toString())
@@ -85,15 +87,14 @@ class ContentController(private val context: Context) {
             // case allow sub directory
             if (allowSubDirectory) {
                 if (relativePath == directoryRelativePath) {
-                    // add image
-                    directory.contentArrayList.add(Directory.Content(false, id, name, size, width, height, date, uri, 0L))
+                    directory.contentArrayList.add(Directory.Content(false, id, name, size, width, height, date, relativePath, uri, 0L))
                 } else {
                     // case sub directory
                     subDirectoryPathHashSet.add(directoryPath.substringBefore(":") + ":" + relativePath.substringBeforeLast("/"))
                 }
             } else {
                 // add image
-                directory.contentArrayList.add(Directory.Content(false, id, name, size, width, height, date, uri, 0L))
+                directory.contentArrayList.add(Directory.Content(false, id, name, size, width, height, date, relativePath, uri, 0L))
             }
         }
 
@@ -121,9 +122,9 @@ class ContentController(private val context: Context) {
         while (videoCursor.moveToNext()) {
             val id = videoCursor.getString(0)
             val name = videoCursor.getString(1)
-            val size = videoCursor.getString(2)
-            val width = videoCursor.getString(3)
-            val height = videoCursor.getString(4)
+            val size = getByteCountSI(videoCursor.getString(2))
+            val width = videoCursor.getString(3).toInt()
+            val height = videoCursor.getString(4).toInt()
             val date = videoCursor.getString(5).toLong()
             val relativePath = videoCursor.getString(6)
             val uri = Uri.withAppendedPath(videoUri, id.toString())
@@ -136,14 +137,14 @@ class ContentController(private val context: Context) {
             if (allowSubDirectory) {
                 if (relativePath == directoryRelativePath) {
                     // add image
-                    directory.contentArrayList.add(Directory.Content(true, id, name, size, width, height, date, uri, duration))
+                    directory.contentArrayList.add(Directory.Content(true, id, name, size, width, height, date, relativePath, uri, duration))
                 } else {
                     // case sub directory
                     subDirectoryPathHashSet.add(directoryPath.substringBefore(":") + ":" + relativePath.substringBeforeLast("/"))
                 }
             } else {
                 // add image
-                directory.contentArrayList.add(Directory.Content(true, id, name, size, width, height, date, uri, duration))
+                directory.contentArrayList.add(Directory.Content(true, id, name, size, width, height, date, relativePath, uri, duration))
             }
         }
 
@@ -160,6 +161,19 @@ class ContentController(private val context: Context) {
         for (subDirectoryPath in subDirectoryPathHashSet) {
             addDirectory(false, subDirectoryPath)
         }
+    }
+
+    private fun getByteCountSI(size: String): String {
+        // initialize bytes
+        var bytes = size.toLong()
+        if (-1000 < bytes && bytes < 1000) return "$bytes B"
+
+        val characterIterator: CharacterIterator = StringCharacterIterator("kMGTPE")
+        while (bytes <= -999950 || bytes >= 999950) {
+            bytes /= 1000
+            characterIterator.next()
+        }
+        return String.format("%.1f %cB", bytes / 1000.0, characterIterator.current())
     }
 
     fun sortDirectoryArrayList() {

@@ -6,15 +6,18 @@
         <item>과거순</item>
     </string-array>
 
-    <string-array name="interval_slide">
-        <item>0.5 초</item>
-        <item>1 초</item>
-        <item>3 초</item>
-        <item>5 초</item>
-    </string-array>
-
     <string-array name="setting">
         <item>슬롯 관리</item>
         <item>폴더 관리</item>
+    </string-array>
+
+    <string-array name="information">
+        <item>이름</item>
+        <item>날짜</item>
+        <item>시간</item>
+        <item>크기</item>
+        <item>너비</item>
+        <item>높이</item>
+        <item>경로</item>
     </string-array>
 </resources>

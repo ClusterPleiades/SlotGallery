@@ -14,11 +14,12 @@ class Directory(val path: String) {
         val id: String,
         val name: String,
         val size: String,
-        val width: String,
-        val height: String,
+        val width: Int,
+        val height: Int,
         val date: Long,
+        val relativePath: String,
         val uri: Uri,
-        val duration:Long
+        val duration: Long
     ) {
         override fun equals(other: Any?): Boolean {
             if (other == null) return false

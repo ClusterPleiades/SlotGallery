@@ -22,13 +22,17 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import com.pleiades.pleione.slotgallery.Config
 import com.pleiades.pleione.slotgallery.Config.Companion.ACTIVITY_CODE_IMAGE
+import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_INFORMATION
 import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_POSITION_CONTENT
 import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_POSITION_DIRECTORY
 import com.pleiades.pleione.slotgallery.Config.Companion.SHARE_TYPE_IMAGE
 import com.pleiades.pleione.slotgallery.Config.Companion.SHARE_TYPE_VIDEO
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.controller.ContentController
+import com.pleiades.pleione.slotgallery.info.Directory
+import com.pleiades.pleione.slotgallery.ui.fragment.dialog.RecyclerDialogFragment
 import com.pleiades.pleione.slotgallery.ui.fragment.main.ImageFragment
 import java.nio.file.Files.delete
 
@@ -70,7 +74,7 @@ class ImageActivity : AppCompatActivity() {
         }
 
         // initialize view pager
-        viewPager = findViewById<ViewPager2>(R.id.pager_image)
+        viewPager = findViewById(R.id.pager_image)
         contentsPagerAdapter = ImageFragmentStateAdapter(supportFragmentManager, lifecycle)
         viewPager.offscreenPageLimit = 5
         viewPager.adapter = contentsPagerAdapter
@@ -94,7 +98,7 @@ class ImageActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // initialize content
-        val content = ContentController.directoryArrayList[directoryPosition].contentArrayList[viewPager.currentItem]
+        val content = getCurrentContent()
 
         when (item.itemId) {
             R.id.share -> {
@@ -104,6 +108,7 @@ class ImageActivity : AppCompatActivity() {
                     type = if (content.isVideo) SHARE_TYPE_VIDEO else SHARE_TYPE_IMAGE
                 }
                 startActivity(Intent.createChooser(shareIntent, getString(R.string.action_share)))
+                return true
             }
             R.id.delete -> {
                 // initialize create delete request pending intent
@@ -112,9 +117,18 @@ class ImageActivity : AppCompatActivity() {
 
                 // launch intent sender request
                 deleteResultLauncher.launch(intentSenderRequest)
+                return true
+            }
+            R.id.information -> {
+                RecyclerDialogFragment(DIALOG_TYPE_INFORMATION).show(supportFragmentManager, DIALOG_TYPE_INFORMATION.toString())
+                return true
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    fun getCurrentContent(): Directory.Content {
+        return ContentController.directoryArrayList[directoryPosition].contentArrayList[viewPager.currentItem]
     }
 
     inner class ImageFragmentStateAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle) : FragmentStateAdapter(fragmentManager, lifecycle) {

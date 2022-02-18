@@ -6,15 +6,18 @@
         <item>By Oldest</item>
     </string-array>
 
-    <string-array name="interval_slide">
-        <item>0.5 seconds</item>
-        <item>1 second</item>
-        <item>3 seconds</item>
-        <item>5 seconds</item>
-    </string-array>
-
     <string-array name="setting">
         <item>Manage Slot</item>
         <item>Manage Directory</item>
+    </string-array>
+
+    <string-array name="information">
+        <item>Name</item>
+        <item>Date</item>
+        <item>Time</item>
+        <item>Size</item>
+        <item>Width</item>
+        <item>Height</item>
+        <item>Path</item>
     </string-array>
 </resources>

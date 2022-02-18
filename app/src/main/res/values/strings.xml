@@ -20,6 +20,7 @@
     <string name="action_sort">Sort</string>
     <string name="action_settings">Settings</string>
     <string name="action_select_all">Select All</string>
-    <string name="action_delete">Delete</string>
     <string name="action_share">Share</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_information">Information</string>
 </resources>

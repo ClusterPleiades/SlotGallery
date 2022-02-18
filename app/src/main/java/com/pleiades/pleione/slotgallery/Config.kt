@@ -14,6 +14,7 @@ class Config {
         const val DIALOG_TYPE_PERMISSION = 0
         const val DIALOG_TYPE_SORT_DIRECTORY = 10
         const val DIALOG_TYPE_SORT_CONTENT = 11
+        const val DIALOG_TYPE_INFORMATION = 12
         const val DIALOG_WIDTH_PERCENTAGE_DEFAULT = 0.85
         const val DIALOG_WIDTH_PERCENTAGE_RECYCLER = 0.65
 
@@ -30,6 +31,13 @@ class Config {
         // recycler view
         const val SPAN_COUNT_DIRECTORY = 2
         const val SPAN_COUNT_CONTENT = 3
+        const val INFORMATION_POSITION_NAME = 0
+        const val INFORMATION_POSITION_DATE = 1
+        const val INFORMATION_POSITION_TIME = 2
+        const val INFORMATION_POSITION_SIZE = 3
+        const val INFORMATION_POSITION_WIDTH = 4
+        const val INFORMATION_POSITION_HEIGHT = 5
+        const val INFORMATION_POSITION_PATH = 6
 
         // setting
         const val SETTING_POSITION_SLOT = 0
@@ -54,5 +62,7 @@ class Config {
         const val SHARE_TYPE_IMAGE = "image/*"
         const val SHARE_TYPE_VIDEO = "video/*"
         const val SHARE_TYPE_ALL = "*/*"
+        const val FORMAT_DATE = "yyyy-MM-dd"
+        const val FORMAT_TIME = "HH:mm"
     }
 }
