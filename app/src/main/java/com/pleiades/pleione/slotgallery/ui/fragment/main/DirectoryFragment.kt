@@ -166,7 +166,6 @@ class DirectoryFragment : Fragment() {
         return super.onOptionsItemSelected(item)
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     fun refresh() {
         // check is content changed
         val selectedSlot = slotController.getSelectedSlot()
@@ -195,10 +194,15 @@ class DirectoryFragment : Fragment() {
                     recyclerAdapter.selectedHashSet.clear()
                     recyclerAdapter.isSelecting = false
                     (context as FragmentActivity).invalidateOptionsMenu()
-                    recyclerAdapter.notifyDataSetChanged()
+                    notifyDataSetChanged()
                 }
             }
         }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun notifyDataSetChanged() {
+        recyclerAdapter.notifyDataSetChanged()
     }
 
     fun onBackPressed(): Boolean {

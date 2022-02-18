@@ -49,5 +49,9 @@ class Config {
         const val SORT_POSITION_BY_NAME = 0
         const val SORT_POSITION_BY_NEWEST = 1
         const val SORT_POSITION_BY_OLDEST = 2
+
+        // others
+        const val SHARE_TYPE_IMAGE = "image/*"
+        const val SHARE_TYPE_VIDEO = "video/*"
     }
 }

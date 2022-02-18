@@ -1,11 +1,23 @@
 package com.pleiades.pleione.slotgallery.ui.activity
 
+import android.app.Activity
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.provider.MediaStore
+import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -13,12 +25,19 @@ import androidx.viewpager2.widget.ViewPager2
 import com.pleiades.pleione.slotgallery.Config.Companion.ACTIVITY_CODE_IMAGE
 import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_POSITION_CONTENT
 import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_POSITION_DIRECTORY
+import com.pleiades.pleione.slotgallery.Config.Companion.SHARE_TYPE_IMAGE
+import com.pleiades.pleione.slotgallery.Config.Companion.SHARE_TYPE_VIDEO
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.controller.ContentController
 import com.pleiades.pleione.slotgallery.ui.fragment.main.ImageFragment
+import java.nio.file.Files.delete
 
 class ImageActivity : AppCompatActivity() {
     private var directoryPosition = 0
+
+    private lateinit var deleteResultLauncher: ActivityResultLauncher<IntentSenderRequest>
+    private lateinit var viewPager: ViewPager2
+    private lateinit var contentsPagerAdapter: ImageFragmentStateAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,9 +56,22 @@ class ImageActivity : AppCompatActivity() {
         directoryPosition = intent.getIntExtra(INTENT_POSITION_DIRECTORY, 0)
         val contentPosition = intent.getIntExtra(INTENT_POSITION_CONTENT, 0)
 
+        // initialize activity result launcher
+        deleteResultLauncher = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result: ActivityResult ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                // initialize position
+                val position = viewPager.currentItem
+
+                // remove content
+                ContentController.directoryArrayList[directoryPosition].contentArrayList.removeAt(position)
+
+                contentsPagerAdapter.notifyItemRemoved(position)
+            }
+        }
+
         // initialize view pager
-        val viewPager = findViewById<ViewPager2>(R.id.pager_image)
-        val contentsPagerAdapter = ImageFragmentStateAdapter(supportFragmentManager, lifecycle)
+        viewPager = findViewById<ViewPager2>(R.id.pager_image)
+        contentsPagerAdapter = ImageFragmentStateAdapter(supportFragmentManager, lifecycle)
         viewPager.offscreenPageLimit = 5
         viewPager.adapter = contentsPagerAdapter
         viewPager.setCurrentItem(contentPosition, false)
@@ -55,6 +87,36 @@ class ImageActivity : AppCompatActivity() {
         super.onResume()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_image, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // initialize content
+        val content = ContentController.directoryArrayList[directoryPosition].contentArrayList[viewPager.currentItem]
+
+        when (item.itemId) {
+            R.id.share -> {
+                val shareIntent: Intent = Intent().apply {
+                    action = Intent.ACTION_SEND
+                    putExtra(Intent.EXTRA_STREAM, content.uri)
+                    type = if (content.isVideo) SHARE_TYPE_VIDEO else SHARE_TYPE_IMAGE
+                }
+                startActivity(Intent.createChooser(shareIntent, getString(R.string.action_share)))
+            }
+            R.id.delete -> {
+                // initialize create delete request pending intent
+                val pendingIntent = MediaStore.createDeleteRequest(contentResolver, setOf(content.uri))
+                val intentSenderRequest = IntentSenderRequest.Builder(pendingIntent.intentSender).build()
+
+                // launch intent sender request
+                deleteResultLauncher.launch(intentSenderRequest)
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     inner class ImageFragmentStateAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle) : FragmentStateAdapter(fragmentManager, lifecycle) {
         override fun createFragment(position: Int): Fragment {
             return ImageFragment.newInstance(directoryPosition, position)
@@ -62,6 +124,10 @@ class ImageActivity : AppCompatActivity() {
 
         override fun getItemCount(): Int {
             return ContentController.directoryArrayList[directoryPosition].contentArrayList.size
+        }
+
+        override fun getItemId(position: Int): Long {
+            return ContentController.directoryArrayList[directoryPosition].contentArrayList[position].uri.hashCode().toLong()
         }
     }
 }

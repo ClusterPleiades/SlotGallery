@@ -163,7 +163,6 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
         return super.onOptionsItemSelected(item)
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     fun refresh() {
         // backup directory
         val backupDirectory = directory
@@ -189,12 +188,17 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
                 recyclerAdapter.selectedHashSet.clear()
                 recyclerAdapter.isSelecting = false
                 (context as FragmentActivity).invalidateOptionsMenu()
-                recyclerAdapter.notifyDataSetChanged()
+                notifyDataSetChanged()
             }
         } else {
             recyclerAdapter.isSelecting = false
             requireActivity().onBackPressed()
         }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun notifyDataSetChanged() {
+        recyclerAdapter.notifyDataSetChanged()
     }
 
     fun onBackPressed(): Boolean {

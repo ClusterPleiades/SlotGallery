@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import com.pleiades.pleione.slotgallery.Config.Companion.ACTIVITY_CODE_IMAGE
 import com.pleiades.pleione.slotgallery.Config.Companion.ACTIVITY_CODE_MAIN
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_PERMISSION
 import com.pleiades.pleione.slotgallery.Config.Companion.PERMISSION_STORAGE
@@ -45,11 +46,21 @@ class MainActivity : AppCompatActivity() {
                 addFragment()
 
             // initialize fragment
-            if (lastResumedActivityCode == ACTIVITY_CODE_MAIN)
-                when (val fragment = supportFragmentManager.findFragmentById(R.id.fragment_main)) {
-                    is DirectoryFragment -> fragment.refresh()
-                    is ContentFragment -> fragment.refresh()
+            val fragment = supportFragmentManager.findFragmentById(R.id.fragment_main)
+
+            when (lastResumedActivityCode) {
+                // refresh fragment
+                ACTIVITY_CODE_MAIN -> {
+                    when (fragment) {
+                        is DirectoryFragment -> fragment.refresh()
+                        is ContentFragment -> fragment.refresh()
+                    }
                 }
+                // notify item set changed (content change applied)
+                ACTIVITY_CODE_IMAGE -> {
+                    (fragment as ContentFragment).notifyDataSetChanged()
+                }
+            }
         } else {
             // request permission
             val defaultDialogFragment = DefaultDialogFragment(DIALOG_TYPE_PERMISSION)
