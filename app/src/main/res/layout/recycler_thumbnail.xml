@@ -42,8 +42,8 @@
         android:id="@+id/select_thumbnail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_very_small"
-        android:layout_marginEnd="@dimen/margin_very_small"
+        android:layout_marginTop="@dimen/margin_tiny"
+        android:layout_marginEnd="@dimen/margin_tiny"
         android:src="@drawable/icon_select"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -54,10 +54,10 @@
         android:layout_height="wrap_content"
         android:background="@color/color_transparent_white"
         android:orientation="vertical"
-        android:paddingLeft="@dimen/margin_very_small"
-        android:paddingTop="@dimen/margin_very_small"
-        android:paddingRight="@dimen/margin_very_small"
-        android:paddingBottom="@dimen/margin_very_small"
+        android:paddingLeft="@dimen/margin_tiny"
+        android:paddingTop="@dimen/margin_tiny"
+        android:paddingRight="@dimen/margin_tiny"
+        android:paddingBottom="@dimen/margin_tiny"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <TextView

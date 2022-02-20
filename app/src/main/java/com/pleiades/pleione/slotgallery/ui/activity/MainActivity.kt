@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.pleiades.pleione.slotgallery.Config.Companion.ACTIVITY_CODE_IMAGE
 import com.pleiades.pleione.slotgallery.Config.Companion.ACTIVITY_CODE_MAIN
+import com.pleiades.pleione.slotgallery.Config.Companion.ACTIVITY_CODE_SETTING
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_PERMISSION
 import com.pleiades.pleione.slotgallery.Config.Companion.PERMISSION_STORAGE
 import com.pleiades.pleione.slotgallery.R
@@ -50,7 +51,8 @@ class MainActivity : AppCompatActivity() {
 
             when (lastResumedActivityCode) {
                 // refresh fragment
-                ACTIVITY_CODE_MAIN -> {
+                ACTIVITY_CODE_MAIN,
+                ACTIVITY_CODE_SETTING -> {
                     when (fragment) {
                         is DirectoryFragment -> fragment.refresh()
                         is ContentFragment -> fragment.refresh()

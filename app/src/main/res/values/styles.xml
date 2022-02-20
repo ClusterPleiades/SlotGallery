@@ -37,6 +37,6 @@
     </style>
 
     <style name="AppTheme.ToolbarTitleTextAppearance">
-        <item name="android:textSize">@dimen/text_size_very_large</item>
+        <item name="android:textSize">@dimen/text_size_huge</item>
     </style>
 </resources>
