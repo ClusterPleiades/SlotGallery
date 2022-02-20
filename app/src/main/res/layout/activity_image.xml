@@ -13,6 +13,6 @@
     <include
         android:id="@+id/appbar_image"
         app:layout_constraintTop_toTopOf="parent"
-        layout="@layout/layout_appbar" />
+        layout="@layout/layout_appbar_light" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

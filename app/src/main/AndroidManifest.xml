@@ -18,7 +18,9 @@
 
         <activity
             android:name=".ui.activity.MainActivity"
-            android:exported="true">
+            android:screenOrientation="portrait"
+            android:exported="true"
+            tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -28,14 +30,17 @@
 
         <activity
             android:name=".ui.activity.SettingActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
             android:exported="true" />
 
         <activity
             android:name=".ui.activity.ImageActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
             android:exported="true" />
 
         <activity
             android:name=".ui.activity.VideoActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
             android:exported="true" />
     </application>
 

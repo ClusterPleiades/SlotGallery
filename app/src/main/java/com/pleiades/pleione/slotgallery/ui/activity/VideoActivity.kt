@@ -3,6 +3,7 @@ package com.pleiades.pleione.slotgallery.ui.activity
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -23,8 +24,9 @@ class VideoActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_video)
 
-        // set navigation color
-        window.navigationBarColor = Color.WHITE
+        // set status, navigation bar color
+        window.statusBarColor = Color.BLACK
+        window.navigationBarColor = Color.BLACK
 
         // initialize appbar
         val appbar = findViewById<View>(R.id.appbar_video)
@@ -75,6 +77,11 @@ class VideoActivity : AppCompatActivity() {
         exoPlayer.release()
 
         super.onDestroy()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_video, menu)
+        return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

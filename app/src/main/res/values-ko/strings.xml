@@ -23,4 +23,5 @@
     <string name="action_share">공유</string>
     <string name="action_delete">삭제</string>
     <string name="action_information">정보</string>
+    <string name="action_full">전체 화면</string>
 </resources>
