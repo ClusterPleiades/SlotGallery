@@ -19,14 +19,17 @@ class Config {
         const val DIALOG_WIDTH_PERCENTAGE_RECYCLER = 0.65
 
         // activity
-        const val INTENT_POSITION_DIRECTORY = "position_directory"
-        const val INTENT_POSITION_CONTENT = "position_content"
+        const val INTENT_EXTRA_POSITION_DIRECTORY = "position_directory"
+        const val INTENT_EXTRA_POSITION_CONTENT = "position_content"
+        const val INTENT_EXTRA_NAME = "name"
+        const val INTENT_EXTRA_URI = "uri"
 
         // fragment
         const val KEY_STACK = "stack"
         const val ACTIVITY_CODE_MAIN = 0
         const val ACTIVITY_CODE_SETTING = 1
         const val ACTIVITY_CODE_IMAGE = 2
+        const val ACTIVITY_CODE_VIDEO = 3
 
         // recycler view
         const val SPAN_COUNT_DIRECTORY = 2

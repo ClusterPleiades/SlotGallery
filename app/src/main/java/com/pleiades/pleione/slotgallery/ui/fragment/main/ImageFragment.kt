@@ -1,5 +1,6 @@
 package com.pleiades.pleione.slotgallery.ui.fragment.main
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,8 +12,11 @@ import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.github.chrisbanes.photoview.PhotoView
+import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_NAME
+import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_URI
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.controller.ContentController
+import com.pleiades.pleione.slotgallery.ui.activity.VideoActivity
 import java.util.concurrent.TimeUnit
 
 class ImageFragment(directoryPosition: Int, contentPosition: Int) : Fragment() {
@@ -55,6 +59,14 @@ class ImageFragment(directoryPosition: Int, contentPosition: Int) : Fragment() {
             timeTextView.text = time
 
             photoView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.color_transparent_black))
+            photoView.isZoomable = false
+
+            playImageView.setOnClickListener {
+                val intent = Intent(context, VideoActivity::class.java)
+                intent.putExtra(INTENT_EXTRA_NAME, content.name)
+                intent.putExtra(INTENT_EXTRA_URI, content.uri.toString())
+                startActivity(intent)
+            }
         }
 
         return rootView

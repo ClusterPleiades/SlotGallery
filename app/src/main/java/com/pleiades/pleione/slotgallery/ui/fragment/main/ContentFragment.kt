@@ -27,8 +27,8 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.michaelflisar.dragselectrecyclerview.DragSelectTouchListener
 import com.michaelflisar.dragselectrecyclerview.DragSelectTouchListener.OnDragSelectListener
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_SORT_CONTENT
-import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_POSITION_CONTENT
-import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_POSITION_DIRECTORY
+import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_POSITION_CONTENT
+import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_POSITION_DIRECTORY
 import com.pleiades.pleione.slotgallery.Config.Companion.KEY_CONTENT_SORT_ORDER
 import com.pleiades.pleione.slotgallery.Config.Companion.SHARE_TYPE_ALL
 import com.pleiades.pleione.slotgallery.Config.Companion.SHARE_TYPE_IMAGE
@@ -255,8 +255,8 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
                         }
                     } else {
                         val intent = Intent(context, ImageActivity::class.java)
-                        intent.putExtra(INTENT_POSITION_DIRECTORY, directoryPosition)
-                        intent.putExtra(INTENT_POSITION_CONTENT, position)
+                        intent.putExtra(INTENT_EXTRA_POSITION_DIRECTORY, directoryPosition)
+                        intent.putExtra(INTENT_EXTRA_POSITION_CONTENT, position)
                         startActivity(intent)
                     }
                 }

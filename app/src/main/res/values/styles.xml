@@ -22,9 +22,6 @@
 
         <!-- window -->
         <item name="android:windowBackground">@android:color/white</item>
-
-        <!-- navigation bar -->
-        <item name="android:windowLightNavigationBar" tools:targetApi="27">true</item>
     </style>
 
     <style name="ActionOverflowMenuStyle" parent="Widget.AppCompat.PopupMenu.Overflow">

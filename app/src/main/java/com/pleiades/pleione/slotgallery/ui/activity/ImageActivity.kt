@@ -5,9 +5,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.result.ActivityResult
@@ -17,16 +15,14 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
-import com.pleiades.pleione.slotgallery.Config
 import com.pleiades.pleione.slotgallery.Config.Companion.ACTIVITY_CODE_IMAGE
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_INFORMATION
-import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_POSITION_CONTENT
-import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_POSITION_DIRECTORY
+import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_POSITION_CONTENT
+import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_POSITION_DIRECTORY
 import com.pleiades.pleione.slotgallery.Config.Companion.SHARE_TYPE_IMAGE
 import com.pleiades.pleione.slotgallery.Config.Companion.SHARE_TYPE_VIDEO
 import com.pleiades.pleione.slotgallery.R
@@ -34,7 +30,6 @@ import com.pleiades.pleione.slotgallery.controller.ContentController
 import com.pleiades.pleione.slotgallery.info.Directory
 import com.pleiades.pleione.slotgallery.ui.fragment.dialog.RecyclerDialogFragment
 import com.pleiades.pleione.slotgallery.ui.fragment.main.ImageFragment
-import java.nio.file.Files.delete
 
 class ImageActivity : AppCompatActivity() {
     private var directoryPosition = 0
@@ -57,8 +52,8 @@ class ImageActivity : AppCompatActivity() {
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
         // get intent extra
-        directoryPosition = intent.getIntExtra(INTENT_POSITION_DIRECTORY, 0)
-        val contentPosition = intent.getIntExtra(INTENT_POSITION_CONTENT, 0)
+        directoryPosition = intent.getIntExtra(INTENT_EXTRA_POSITION_DIRECTORY, 0)
+        val contentPosition = intent.getIntExtra(INTENT_EXTRA_POSITION_CONTENT, 0)
 
         // initialize activity result launcher
         deleteResultLauncher = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result: ActivityResult ->
