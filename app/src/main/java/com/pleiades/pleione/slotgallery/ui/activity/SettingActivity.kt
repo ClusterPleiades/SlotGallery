@@ -1,12 +1,10 @@
 package com.pleiades.pleione.slotgallery.ui.activity
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import com.pleiades.pleione.slotgallery.Config
 import com.pleiades.pleione.slotgallery.Config.Companion.ACTIVITY_CODE_SETTING
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.ui.fragment.setting.SettingFragment

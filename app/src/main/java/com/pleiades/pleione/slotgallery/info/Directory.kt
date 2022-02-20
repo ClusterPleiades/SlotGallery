@@ -2,7 +2,6 @@ package com.pleiades.pleione.slotgallery.info
 
 import android.net.Uri
 import com.pleiades.pleione.slotgallery.Config.Companion.PATH_PRIMARY
-import java.util.*
 
 class Directory(val path: String) {
     val name = path.substringAfter(PATH_PRIMARY).substringAfterLast("/")

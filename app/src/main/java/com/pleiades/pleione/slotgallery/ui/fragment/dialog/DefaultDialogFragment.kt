@@ -16,8 +16,8 @@ import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_PERMISSION
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_WIDTH_PERCENTAGE_DEFAULT
 import com.pleiades.pleione.slotgallery.Config.Companion.PERMISSION_STORAGE
 import com.pleiades.pleione.slotgallery.Config.Companion.REQUEST_CODE_PERMISSION
-import com.pleiades.pleione.slotgallery.controller.DeviceController
 import com.pleiades.pleione.slotgallery.R
+import com.pleiades.pleione.slotgallery.controller.DeviceController
 
 class DefaultDialogFragment(private val type: Int) : androidx.fragment.app.DialogFragment() {
 

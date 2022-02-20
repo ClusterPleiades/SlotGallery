@@ -193,7 +193,7 @@ class DirectoryFragment : Fragment() {
             if (ContentController.directoryArrayList != backupDirectoryArrayList) {
                 // case launch application
                 if (backupDirectoryArrayList.size == 0)
-                    recyclerAdapter.notifyDataSetChanged()
+                    notifyDataSetChanged()
                 else {
                     recyclerAdapter.selectedHashSet.clear()
                     recyclerAdapter.isSelecting = false

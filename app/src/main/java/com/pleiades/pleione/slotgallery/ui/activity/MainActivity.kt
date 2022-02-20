@@ -1,7 +1,6 @@
 package com.pleiades.pleione.slotgallery.ui.activity
 
 import android.content.pm.PackageManager
-import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity

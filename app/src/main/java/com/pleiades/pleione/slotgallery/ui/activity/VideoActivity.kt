@@ -1,21 +1,19 @@
 package com.pleiades.pleione.slotgallery.ui.activity
 
-import android.content.pm.ActivityInfo
-import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.WindowInsetsControllerCompat
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ui.PlayerView
 import com.pleiades.pleione.slotgallery.Config.Companion.ACTIVITY_CODE_VIDEO
+import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_IS_PORTRAIT
 import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_NAME
 import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_URI
 import com.pleiades.pleione.slotgallery.R
@@ -31,20 +29,50 @@ class VideoActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_video)
 
+        // set decor fits system windows
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
         // initialize appbar
         val appbar = findViewById<View>(R.id.appbar_video)
         val toolbar: Toolbar = appbar.findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+
+        // set toolbar margin
+        val statusBarHeightResId = resources.getIdentifier("status_bar_height", "dimen", "android")
+        val toolbarLayoutParams = toolbar.layoutParams as ViewGroup.MarginLayoutParams
+        toolbarLayoutParams.topMargin = resources.getDimensionPixelSize(statusBarHeightResId)
+        toolbar.layoutParams = toolbarLayoutParams
+
+
+        // set title from intent extra
         title = intent.getStringExtra(INTENT_EXTRA_NAME)
 
         // initialize uri from intent extra
         val uri = Uri.parse(intent.getStringExtra(INTENT_EXTRA_URI))
 
         // initialize player
-        playerView = findViewById(R.id.player_video);
+        playerView = findViewById(R.id.player_video)
+        playerView.setOnClickListener { fullVideo() }
+        val navigationBarHeightResId = resources.getIdentifier("navigation_bar_height", "dimen", "android")
+        val playerViewLayoutParams = playerView.layoutParams as ViewGroup.MarginLayoutParams
+        playerViewLayoutParams.bottomMargin = resources.getDimensionPixelSize(navigationBarHeightResId)
+        playerView.layoutParams = playerViewLayoutParams
+
+        // initialize exoplayer
         exoPlayer = ExoPlayer.Builder(this).build()
+        exoPlayer.addListener(object : Player.Listener {
+            override fun onPlaybackStateChanged(@Player.State state: Int) {
+                if (state == Player.STATE_ENDED) {
+                    // un full force
+                    isFull = true
+                    fullVideo()
+                }
+            }
+        })
         exoPlayer.setMediaItem(MediaItem.fromUri(uri))
+
+        // set exoplayer as player
         playerView.player = exoPlayer
 
         // play
@@ -82,51 +110,41 @@ class VideoActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_video, menu)
-        return super.onCreateOptionsMenu(menu)
-    }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
                 onBackPressed()
                 return true
             }
-            R.id.full -> {
-                if (isFull) {
-//                    window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
-//                    supportActionBar!!.show()
-//                    requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-//                    val params = playerView.layoutParams as RelativeLayout.LayoutParams
-//                    params.width = ViewGroup.LayoutParams.MATCH_PARENT
-//                    params.height = (200 * applicationContext.resources.displayMetrics.density).toInt()
-//                    playerView.layoutParams = params
-//                    fullscreen = false
-                } else {
-                    // hide system UI
-                    WindowCompat.setDecorFitsSystemWindows(window, false)
-                    WindowInsetsControllerCompat(window, window.decorView.rootView).let { controller ->
-                        controller.hide(WindowInsetsCompat.Type.systemBars())
-                        controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-                    }
-
-                    // hide action bar
-                    supportActionBar!!.hide()
-
-                    // set orientation
-                    requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
-
-//                    val params = playerView.layoutParams as RelativeLayout.LayoutParams
-//                    params.width = ViewGroup.LayoutParams.MATCH_PARENT
-//                    params.height = ViewGroup.LayoutParams.MATCH_PARENT
-//                    playerView.layoutParams = params
-
-                    // set is full
-                    isFull = true
-                }
-            }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun fullVideo() {
+        if (isFull) {
+            // show system UI
+//                WindowInsetsControllerCompat(window, window.decorView.rootView).show(WindowInsetsCompat.Type.systemBars())
+
+            // show action bar
+            supportActionBar!!.show()
+
+            // set orientation
+//                requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        } else {
+            // hide system UI
+//                WindowInsetsControllerCompat(window, window.decorView.rootView).let { controller ->
+//                    controller.hide(WindowInsetsCompat.Type.systemBars())
+//                    controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+//                }
+
+            // hide action bar
+            supportActionBar!!.hide()
+
+            // set orientation
+//                requestedOrientation = if (isPortrait) ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT else ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+        }
+
+        // set is full
+        isFull = !isFull
     }
 }

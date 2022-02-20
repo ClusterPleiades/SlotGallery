@@ -1,6 +1,5 @@
 package com.pleiades.pleione.slotgallery.info
 
-import com.pleiades.pleione.slotgallery.Config
 import com.pleiades.pleione.slotgallery.Config.Companion.PATH_CAMERA
 import com.pleiades.pleione.slotgallery.Config.Companion.PATH_DOWNLOAD
 import com.pleiades.pleione.slotgallery.Config.Companion.PATH_SCREENSHOTS

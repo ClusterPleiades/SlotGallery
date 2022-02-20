@@ -8,7 +8,6 @@ import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.os.ParcelFileDescriptor
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -52,7 +51,7 @@ class RecyclerDialogFragment(private val type: Int) : androidx.fragment.app.Dial
         val builder = context?.let { AlertDialog.Builder(it) }
 
         // initialize prefs
-        prefs = requireContext().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+        prefs = requireContext().getSharedPreferences(PREFS, Context.MODE_PRIVATE)
         editor = prefs.edit()
 
         // initialize activity

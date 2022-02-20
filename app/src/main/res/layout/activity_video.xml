@@ -10,6 +10,7 @@
         android:layout_height="match_parent"
         android:background="@android:color/black"
         app:auto_show="true"
+        app:show_timeout="0"
         app:surface_type="surface_view" />
 
     <include
