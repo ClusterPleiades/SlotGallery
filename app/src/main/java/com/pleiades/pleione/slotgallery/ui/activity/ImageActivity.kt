@@ -2,23 +2,25 @@ package com.pleiades.pleione.slotgallery.ui.activity
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.WindowCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.appbar.AppBarLayout
 import com.pleiades.pleione.slotgallery.Config.Companion.ACTIVITY_CODE_IMAGE
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_INFORMATION
 import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_POSITION_CONTENT
@@ -32,24 +34,31 @@ import com.pleiades.pleione.slotgallery.ui.fragment.dialog.RecyclerDialogFragmen
 import com.pleiades.pleione.slotgallery.ui.fragment.main.ImageFragment
 
 class ImageActivity : AppCompatActivity() {
-    private var directoryPosition = 0
-
     private lateinit var deleteResultLauncher: ActivityResultLauncher<IntentSenderRequest>
     private lateinit var viewPager: ViewPager2
     private lateinit var contentsPagerAdapter: ImageFragmentStateAdapter
+
+    private var directoryPosition = 0
+    private var isFull = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_image)
 
-        // set navigation color
-        window.navigationBarColor = Color.WHITE
+        // set decor fits system windows
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         // initialize appbar
         val appbar = findViewById<View>(R.id.appbar_image)
         val toolbar: Toolbar = appbar.findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+
+        // set toolbar margin
+        val statusBarHeightResId = resources.getIdentifier("status_bar_height", "dimen", "android")
+        val toolbarLayoutParams = toolbar.layoutParams as ViewGroup.MarginLayoutParams
+        toolbarLayoutParams.topMargin = resources.getDimensionPixelSize(statusBarHeightResId)
+        toolbar.layoutParams = toolbarLayoutParams
 
         // get intent extra
         directoryPosition = intent.getIntExtra(INTENT_EXTRA_POSITION_DIRECTORY, 0)
@@ -124,6 +133,19 @@ class ImageActivity : AppCompatActivity() {
 
     fun getCurrentContent(): Directory.Content {
         return ContentController.directoryArrayList[directoryPosition].contentArrayList[viewPager.currentItem]
+    }
+
+    fun fullImage() {
+        if (isFull) {
+            // show action bar
+            supportActionBar!!.show()
+        } else {
+            // hide action bar
+            supportActionBar!!.hide()
+        }
+
+        // set is full
+        isFull = !isFull
     }
 
     inner class ImageFragmentStateAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle) : FragmentStateAdapter(fragmentManager, lifecycle) {

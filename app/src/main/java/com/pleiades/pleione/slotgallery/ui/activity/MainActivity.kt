@@ -30,9 +30,6 @@ class MainActivity : AppCompatActivity() {
         // set title
         title = ""
 
-        // set navigation color
-        window.navigationBarColor = Color.WHITE
-
         // initialize appbar
         val appbar = findViewById<View>(R.id.appbar_main)
         val toolbar: Toolbar = appbar.findViewById(R.id.toolbar)

@@ -5,15 +5,17 @@
         <item name="colorAccent">@color/color_blue</item>
 
         <!-- status bar -->
-        <item name="android:statusBarColor">@android:color/white</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar">true</item>
+
+        <!-- navigation bar -->
+        <item name="android:navigationBarColor">@android:color/transparent</item>
 
         <!-- action bar -->
         <item name="windowActionBar">false</item> <!-- no action bar -->
         <item name="windowNoTitle">true</item> <!-- no action bar -->
         <item name="actionOverflowMenuStyle">@style/ActionOverflowMenuStyle</item> <!-- action bar popup menu -->
         <item name="elevation">0dp</item>
-        <!--        <item name="android:actionButtonStyle">@style/ActionButtonStyle</item> &lt;!&ndash; action bar button &ndash;&gt;-->
 
         <!-- text -->
         <item name="android:textColorPrimary">@android:color/black</item>
@@ -31,6 +33,14 @@
 
     <style name="ActionButtonStyle" parent="@android:style/Widget.ActionButton">
         <item name="android:drawablePadding">8dp</item>
+    </style>
+
+    <style name="AppTheme.Dark">
+        <!-- status bar -->
+        <item name="android:windowLightStatusBar">false</item>
+
+        <!-- window -->
+        <item name="android:windowBackground">@android:color/black</item>
     </style>
 
     <style name="AppTheme.ToolbarTitleTextAppearance">
