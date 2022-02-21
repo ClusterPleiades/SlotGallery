@@ -80,6 +80,9 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
 
                 // refresh action bar menu
                 (context as FragmentActivity).invalidateOptionsMenu()
+
+                // refresh
+                refresh()
             }
         }
 

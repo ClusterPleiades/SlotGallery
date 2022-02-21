@@ -70,6 +70,9 @@ class DirectoryFragment : Fragment() {
 
                 // refresh action bar menu
                 (context as FragmentActivity).invalidateOptionsMenu()
+
+                // refresh
+                refresh()
             }
         }
 
