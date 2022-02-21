@@ -12,6 +12,7 @@
     <!-- message -->
     <string name="message_saved">It\'s saved.</string>
     <string name="message_error_no_slot">Create a slot first.</string>
+    <string name="message_error_format">Cannot change the format.</string>
 
     <!-- action -->
     <string name="action_add">Add</string>
@@ -22,6 +23,8 @@
     <string name="action_select_all">Select All</string>
     <string name="action_share">Share</string>
     <string name="action_delete">Delete</string>
+    <string name="action_save">Save</string>
+    <string name="action_cancel">Cancel</string>
     <string name="action_information">Information</string>
     <string name="action_rotate">Rotate</string>
 </resources>

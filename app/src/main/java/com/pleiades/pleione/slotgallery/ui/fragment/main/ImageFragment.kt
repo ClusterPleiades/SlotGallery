@@ -57,7 +57,7 @@ class ImageFragment(directoryPosition: Int, contentPosition: Int) : Fragment() {
 
             val minutes = TimeUnit.MILLISECONDS.toMinutes(content.duration)
             val seconds = TimeUnit.MILLISECONDS.toSeconds(content.duration) % 60
-            val time = "$minutes:$seconds"
+            val time = String.format("%02d:%02d", minutes, seconds)
             timeTextView.text = time
 
             photoView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.color_transparent_black))
@@ -76,7 +76,7 @@ class ImageFragment(directoryPosition: Int, contentPosition: Int) : Fragment() {
 
     override fun onResume() {
         // set action bar title
-        requireActivity().title = content.name
+        (requireActivity() as ImageActivity).titleEditText.setText(content.name)
 
         super.onResume()
     }

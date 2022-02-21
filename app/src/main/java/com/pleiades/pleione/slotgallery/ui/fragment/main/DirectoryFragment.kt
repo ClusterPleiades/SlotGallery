@@ -62,6 +62,16 @@ class DirectoryFragment : Fragment() {
         // initialize activity result launcher
         deleteResultLauncher = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result: ActivityResult ->
             if (result.resultCode == RESULT_OK) {
+                // initialize selected array
+                val selectedArray = recyclerAdapter.selectedHashSet.toIntArray()
+                selectedArray.sortDescending()
+
+                // remove directory
+                for (position in selectedArray) {
+                    ContentController.directoryArrayList.removeAt(position)
+                    recyclerAdapter.notifyItemRemoved(position)
+                }
+
                 // clear selected hash set
                 recyclerAdapter.selectedHashSet.clear()
 
@@ -70,9 +80,6 @@ class DirectoryFragment : Fragment() {
 
                 // refresh action bar menu
                 (context as FragmentActivity).invalidateOptionsMenu()
-
-                // refresh
-                refresh()
             }
         }
 
@@ -388,7 +395,6 @@ class DirectoryFragment : Fragment() {
         fun delete() {
             // initialize selected array
             val selectedArray = selectedHashSet.toIntArray()
-            selectedArray.reverse()
 
             // initialize content uri array list
             val contentUriLinkedList: ArrayList<Uri> = ArrayList()

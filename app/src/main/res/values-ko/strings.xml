@@ -12,6 +12,7 @@
     <!-- message -->
     <string name="message_saved">저장되었습니다.</string>
     <string name="message_error_no_slot">슬롯을 먼저 생성하세요.</string>
+    <string name="message_error_format">파일 형식은 변경할 수 없습니다.</string>
 
     <!-- action -->
     <string name="action_add">추가</string>
@@ -22,6 +23,8 @@
     <string name="action_select_all">모두 선택</string>
     <string name="action_share">공유</string>
     <string name="action_delete">삭제</string>
+    <string name="action_save">저장</string>
+    <string name="action_cancel">취소</string>
     <string name="action_information">정보</string>
     <string name="action_rotate">회전</string>
 </resources>

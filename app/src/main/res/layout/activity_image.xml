@@ -12,7 +12,7 @@
 
     <include
         android:id="@+id/appbar_image"
-        layout="@layout/layout_appbar_light"
+        layout="@layout/layout_appbar_edit"
         app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

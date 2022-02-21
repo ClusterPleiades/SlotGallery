@@ -191,4 +191,12 @@ class ContentController(private val context: Context) {
             SORT_POSITION_BY_OLDEST -> for (directory in directoryArrayList) directory.contentArrayList.sortBy { it.date }
         }
     }
+
+    fun sortContentArrayList(contentArrayList: ArrayList<Directory.Content>) {
+        when (prefs.getInt(KEY_CONTENT_SORT_ORDER, 0)) {
+            SORT_POSITION_BY_NAME -> contentArrayList.sortBy { it.name }
+            SORT_POSITION_BY_NEWEST -> contentArrayList.sortByDescending { it.date }
+            SORT_POSITION_BY_OLDEST -> contentArrayList.sortBy { it.date }
+        }
+    }
 }

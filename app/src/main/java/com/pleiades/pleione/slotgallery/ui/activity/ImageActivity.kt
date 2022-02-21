@@ -1,13 +1,19 @@
 package com.pleiades.pleione.slotgallery.ui.activity
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
+import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
@@ -32,13 +38,16 @@ import com.pleiades.pleione.slotgallery.info.Directory
 import com.pleiades.pleione.slotgallery.ui.fragment.dialog.RecyclerDialogFragment
 import com.pleiades.pleione.slotgallery.ui.fragment.main.ImageFragment
 
+
 class ImageActivity : AppCompatActivity() {
     private lateinit var deleteResultLauncher: ActivityResultLauncher<IntentSenderRequest>
     private lateinit var viewPager: ViewPager2
     private lateinit var contentsPagerAdapter: ImageFragmentStateAdapter
+    lateinit var titleEditText: EditText
 
     private var directoryPosition = 0
     private var isFull = false
+    private var isEditFocused = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +55,9 @@ class ImageActivity : AppCompatActivity() {
 
         // set decor fits system windows
         WindowCompat.setDecorFitsSystemWindows(window, false)
+
+        // set title
+        title = ""
 
         // initialize appbar
         val appbar = findViewById<View>(R.id.appbar_image)
@@ -83,8 +95,13 @@ class ImageActivity : AppCompatActivity() {
         viewPager.adapter = contentsPagerAdapter
         viewPager.setCurrentItem(contentPosition, false)
 
-        // set action bar title
-        title = ContentController.directoryArrayList[directoryPosition].contentArrayList[contentPosition].name
+        // initialize title edit text
+        titleEditText = findViewById(R.id.title_appbar)
+        titleEditText.setText(ContentController.directoryArrayList[directoryPosition].contentArrayList[contentPosition].name)
+        titleEditText.setOnFocusChangeListener { _, b ->
+            isEditFocused = b
+            invalidateOptionsMenu()
+        }
     }
 
     override fun onResume() {
@@ -95,7 +112,10 @@ class ImageActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_image, menu)
+        if (isEditFocused)
+            menuInflater.inflate(R.menu.menu_image_edit, menu)
+        else
+            menuInflater.inflate(R.menu.menu_image, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -104,6 +124,10 @@ class ImageActivity : AppCompatActivity() {
         val content = getCurrentContent()
 
         when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+                return true
+            }
             R.id.share -> {
                 val shareIntent: Intent = Intent().apply {
                     action = Intent.ACTION_SEND
@@ -126,6 +150,27 @@ class ImageActivity : AppCompatActivity() {
                 RecyclerDialogFragment(DIALOG_TYPE_INFORMATION).show(supportFragmentManager, DIALOG_TYPE_INFORMATION.toString())
                 return true
             }
+            R.id.save -> {
+                val originFormat = content.name.substringAfterLast(".")
+                val newName = titleEditText.text.toString()
+                val newFormat = newName.substringAfterLast(".")
+
+                // case valid format
+                if (originFormat == newFormat) {
+                    // TODO
+//                    val documentUri = MediaStore.getDocumentUri(this, content.uri)!!
+//                    DocumentsContract.renameDocument(contentResolver, documentUri, newName)
+                } else {
+                    // show toast
+                    Toast.makeText(this, R.string.message_error_format, Toast.LENGTH_SHORT).show()
+
+                    // cancel
+                    cancelRename(content.name)
+                }
+            }
+            R.id.cancel -> {
+                cancelRename(content.name)
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -139,12 +184,27 @@ class ImageActivity : AppCompatActivity() {
             // show action bar
             supportActionBar!!.show()
         } else {
+            // cancel rename
+            cancelRename(getCurrentContent().name)
+
             // hide action bar
             supportActionBar!!.hide()
         }
 
         // set is full
         isFull = !isFull
+    }
+
+    private fun cancelRename(originName: String) {
+        // rollback title text
+        titleEditText.setText(originName)
+
+        // hide keyboard
+        val manager: InputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        manager.hideSoftInputFromWindow(window.decorView.rootView.windowToken, 0)
+
+        // clear title focus
+        titleEditText.clearFocus()
     }
 
     inner class ImageFragmentStateAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle) : FragmentStateAdapter(fragmentManager, lifecycle) {

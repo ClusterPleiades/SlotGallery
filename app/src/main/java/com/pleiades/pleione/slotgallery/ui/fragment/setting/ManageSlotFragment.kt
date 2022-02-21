@@ -149,9 +149,6 @@ class ManageSlotFragment : Fragment() {
 
                     // put slot array list
                     slotController.putSlotInfoLinkedList(slotLinkedList)
-
-                    // show toast
-                    Toast.makeText(context, R.string.message_saved, Toast.LENGTH_SHORT).show()
                 }
                 // set remove button on click listener
                 removeButton.setOnClickListener {

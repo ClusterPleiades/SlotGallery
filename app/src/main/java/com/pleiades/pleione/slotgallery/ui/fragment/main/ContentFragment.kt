@@ -72,6 +72,16 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
         // initialize activity result launcher
         deleteResultLauncher = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result: ActivityResult ->
             if (result.resultCode == Activity.RESULT_OK) {
+                // initialize selected array
+                val selectedArray = recyclerAdapter.selectedHashSet.toIntArray()
+                selectedArray.sortDescending()
+
+                // remove content
+                for (position in selectedArray) {
+                    directory.contentArrayList.removeAt(position)
+                    recyclerAdapter.notifyItemRemoved(position)
+                }
+
                 // clear selected hash set
                 recyclerAdapter.selectedHashSet.clear()
 
@@ -80,9 +90,6 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
 
                 // refresh action bar menu
                 (context as FragmentActivity).invalidateOptionsMenu()
-
-                // refresh
-                refresh()
             }
         }
 
@@ -149,7 +156,7 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
-                onBackPressed()
+                requireActivity().onBackPressed()
                 return true
             }
             R.id.sort -> {
@@ -314,7 +321,7 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
 
                 val minutes = TimeUnit.MILLISECONDS.toMinutes(content.duration)
                 val seconds = TimeUnit.MILLISECONDS.toSeconds(content.duration) % 60
-                val time = "$minutes:$seconds"
+                val time = String.format("%02d:%02d", minutes, seconds)
                 holder.timeTextView.text = time
 
                 holder.thumbnailImageView.setColorFilter(ContextCompat.getColor(context!!, R.color.color_transparent_black))
@@ -398,7 +405,6 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
         fun delete() {
             // initialize selected array
             val selectedArray = selectedHashSet.toIntArray()
-            selectedArray.reverse()
 
             // initialize content uri array list
             val contentUriLinkedList: ArrayList<Uri> = ArrayList()
