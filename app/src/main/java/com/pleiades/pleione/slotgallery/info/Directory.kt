@@ -11,7 +11,7 @@ class Directory(val path: String) {
     class Content(
         val isVideo: Boolean,
         val id: String,
-        val name: String,
+        var name: String,
         val size: String,
         val width: Int,
         val height: Int,

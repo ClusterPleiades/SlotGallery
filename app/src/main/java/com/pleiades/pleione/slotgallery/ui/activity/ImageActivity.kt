@@ -1,11 +1,10 @@
 package com.pleiades.pleione.slotgallery.ui.activity
 
 import android.app.Activity
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.view.Menu
 import android.view.MenuItem
@@ -41,6 +40,7 @@ import com.pleiades.pleione.slotgallery.ui.fragment.main.ImageFragment
 
 class ImageActivity : AppCompatActivity() {
     private lateinit var deleteResultLauncher: ActivityResultLauncher<IntentSenderRequest>
+    private lateinit var renameResultLauncher: ActivityResultLauncher<IntentSenderRequest>
     private lateinit var viewPager: ViewPager2
     private lateinit var contentsPagerAdapter: ImageFragmentStateAdapter
     lateinit var titleEditText: EditText
@@ -84,7 +84,45 @@ class ImageActivity : AppCompatActivity() {
                 // remove content
                 ContentController.directoryArrayList[directoryPosition].contentArrayList.removeAt(position)
 
+                // notify item removed
                 contentsPagerAdapter.notifyItemRemoved(position)
+            }
+        }
+        renameResultLauncher = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result: ActivityResult ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                // initialize content
+                val currentContent = getCurrentContent()
+
+                // initialize new name
+                val newName = titleEditText.text.toString()
+
+                // initialize content values
+                val values = ContentValues()
+                if (currentContent.isVideo)
+                    values.put(MediaStore.Video.Media.DISPLAY_NAME, newName)
+                else
+                    values.put(MediaStore.Images.Media.DISPLAY_NAME, newName)
+
+                // rename
+                contentResolver.update(currentContent.uri, values, null, null)
+
+                // rename content
+                ContentController.directoryArrayList[directoryPosition].contentArrayList[viewPager.currentItem].name = newName
+
+                // sort content array list
+                ContentController(this).sortContentArrayList(directoryPosition)
+
+                // set current item
+                for (position in ContentController.directoryArrayList[directoryPosition].contentArrayList.indices) {
+                    val content = ContentController.directoryArrayList[directoryPosition].contentArrayList[position]
+                    if (content.name == newName) {
+                        viewPager.setCurrentItem(position, false)
+                        break
+                    }
+                }
+
+                // cancel rename
+                cancelRename(newName)
             }
         }
 
@@ -121,7 +159,7 @@ class ImageActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // initialize content
-        val content = getCurrentContent()
+        val currentContent = getCurrentContent()
 
         when (item.itemId) {
             android.R.id.home -> {
@@ -131,15 +169,15 @@ class ImageActivity : AppCompatActivity() {
             R.id.share -> {
                 val shareIntent: Intent = Intent().apply {
                     action = Intent.ACTION_SEND
-                    putExtra(Intent.EXTRA_STREAM, content.uri)
-                    type = if (content.isVideo) SHARE_TYPE_VIDEO else SHARE_TYPE_IMAGE
+                    putExtra(Intent.EXTRA_STREAM, currentContent.uri)
+                    type = if (currentContent.isVideo) SHARE_TYPE_VIDEO else SHARE_TYPE_IMAGE
                 }
                 startActivity(Intent.createChooser(shareIntent, getString(R.string.action_share)))
                 return true
             }
             R.id.delete -> {
                 // initialize create delete request pending intent
-                val pendingIntent = MediaStore.createDeleteRequest(contentResolver, setOf(content.uri))
+                val pendingIntent = MediaStore.createDeleteRequest(contentResolver, setOf(currentContent.uri))
                 val intentSenderRequest = IntentSenderRequest.Builder(pendingIntent.intentSender).build()
 
                 // launch intent sender request
@@ -151,25 +189,47 @@ class ImageActivity : AppCompatActivity() {
                 return true
             }
             R.id.save -> {
-                val originFormat = content.name.substringAfterLast(".")
+                val originFormat = currentContent.name.substringAfterLast(".")
                 val newName = titleEditText.text.toString()
                 val newFormat = newName.substringAfterLast(".")
 
-                // case valid format
-                if (originFormat == newFormat) {
-                    // TODO
-//                    val documentUri = MediaStore.getDocumentUri(this, content.uri)!!
-//                    DocumentsContract.renameDocument(contentResolver, documentUri, newName)
-                } else {
+                // case format error
+                if (originFormat != newFormat) {
                     // show toast
                     Toast.makeText(this, R.string.message_error_format, Toast.LENGTH_SHORT).show()
 
                     // cancel
-                    cancelRename(content.name)
+                    cancelRename(currentContent.name)
+                } else {
+                    var isDuplicate = false
+                    for (content in ContentController.directoryArrayList[directoryPosition].contentArrayList) {
+                        if (content.name == newName) {
+                            isDuplicate = true
+                            break
+                        }
+                    }
+
+                    // case duplicate error
+                    if (isDuplicate) {
+                        // show toast
+                        Toast.makeText(this, R.string.message_error_exist, Toast.LENGTH_SHORT).show()
+
+                        // cancel
+                        cancelRename(currentContent.name)
+                    }
+                    // case valid
+                    else {
+                        // initialize create rename request pending intent
+                        val pendingIntent = MediaStore.createWriteRequest(contentResolver, setOf(currentContent.uri))
+                        val intentSenderRequest = IntentSenderRequest.Builder(pendingIntent.intentSender).build()
+
+                        // launch intent sender request
+                        renameResultLauncher.launch(intentSenderRequest)
+                    }
                 }
             }
             R.id.cancel -> {
-                cancelRename(content.name)
+                cancelRename(currentContent.name)
             }
         }
         return super.onOptionsItemSelected(item)
