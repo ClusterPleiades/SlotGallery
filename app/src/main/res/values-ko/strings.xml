@@ -23,9 +23,14 @@
     <string name="action_settings">설정</string>
     <string name="action_select_all">모두 선택</string>
     <string name="action_share">공유</string>
+    <string name="action_copy">복사</string>
+    <string name="action_move">이동</string>
     <string name="action_delete">삭제</string>
     <string name="action_save">저장</string>
     <string name="action_cancel">취소</string>
     <string name="action_information">정보</string>
     <string name="action_rotate">회전</string>
+
+    <!-- others -->
+    <string name="choose">선택</string>
 </resources>

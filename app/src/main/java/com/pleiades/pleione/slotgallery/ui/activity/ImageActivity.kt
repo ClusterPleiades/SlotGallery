@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -36,9 +37,12 @@ import com.pleiades.pleione.slotgallery.controller.ContentController
 import com.pleiades.pleione.slotgallery.info.Directory
 import com.pleiades.pleione.slotgallery.ui.fragment.dialog.RecyclerDialogFragment
 import com.pleiades.pleione.slotgallery.ui.fragment.main.ImageFragment
+import java.io.File
 
 
 class ImageActivity : AppCompatActivity() {
+    private lateinit var copyResultLauncher: ActivityResultLauncher<Intent>
+    private lateinit var moveResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var deleteResultLauncher: ActivityResultLauncher<IntentSenderRequest>
     private lateinit var renameResultLauncher: ActivityResultLauncher<IntentSenderRequest>
     private lateinit var viewPager: ViewPager2
@@ -76,6 +80,18 @@ class ImageActivity : AppCompatActivity() {
         val contentPosition = intent.getIntExtra(INTENT_EXTRA_POSITION_CONTENT, 0)
 
         // initialize activity result launcher
+        copyResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val directoryPosition = result.data!!.getIntExtra(INTENT_EXTRA_POSITION_DIRECTORY, -1)
+
+                // TODO
+            }
+        }
+        moveResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                // TODO
+            }
+        }
         deleteResultLauncher = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result: ActivityResult ->
             if (result.resultCode == Activity.RESULT_OK) {
                 // initialize position
@@ -175,6 +191,14 @@ class ImageActivity : AppCompatActivity() {
                 startActivity(Intent.createChooser(shareIntent, getString(R.string.action_share)))
                 return true
             }
+            R.id.copy -> {
+                val intent = Intent(this, ChoiceActivity::class.java)
+                copyResultLauncher.launch(intent)
+            }
+            R.id.move -> {
+                val intent = Intent(this, ChoiceActivity::class.java)
+                moveResultLauncher.launch(intent)
+            }
             R.id.delete -> {
                 // initialize create delete request pending intent
                 val pendingIntent = MediaStore.createDeleteRequest(contentResolver, setOf(currentContent.uri))
@@ -188,7 +212,7 @@ class ImageActivity : AppCompatActivity() {
                 RecyclerDialogFragment(DIALOG_TYPE_INFORMATION).show(supportFragmentManager, DIALOG_TYPE_INFORMATION.toString())
                 return true
             }
-            R.id.save -> {
+            R.id.rename -> {
                 val originFormat = currentContent.name.substringAfterLast(".")
                 val newName = titleEditText.text.toString()
                 val newFormat = newName.substringAfterLast(".")
