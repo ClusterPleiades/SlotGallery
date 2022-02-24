@@ -81,14 +81,23 @@ class ImageActivity : AppCompatActivity() {
         copyResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
             if (result.resultCode == Activity.RESULT_OK) {
                 // initialize directory position from extra
-                val targetDirectoryPosition = result.data!!.getIntExtra(INTENT_EXTRA_POSITION_DIRECTORY, -1)
+                val toDirectoryPosition = result.data!!.getIntExtra(INTENT_EXTRA_POSITION_DIRECTORY, -1)
 
-                if (targetDirectoryPosition == directoryPosition) {
-                    // show toast
-                    Toast.makeText(this, R.string.message_error_same_directory, Toast.LENGTH_SHORT).show()
-                } else {
-                    // insert content
-//                    ContentController(this).copyContent(getCurrentContent(), targetDirectoryPosition)
+                when {
+                    // case same directory
+                    toDirectoryPosition == directoryPosition -> {
+                        // show toast
+                        Toast.makeText(this, R.string.message_error_same_directory, Toast.LENGTH_SHORT).show()
+                    }
+                    // case default directory
+                    ContentController.directoryArrayList[toDirectoryPosition].directoryPath.rootUriString == null -> {
+                        // show toast
+                        Toast.makeText(this, R.string.message_error_default_directory, Toast.LENGTH_SHORT).show()
+                    }
+                    else -> {
+                        // copy content
+                        ContentController(this).copyContents(directoryPosition, toDirectoryPosition, setOf(viewPager.currentItem))
+                    }
                 }
             }
         }
@@ -119,10 +128,14 @@ class ImageActivity : AppCompatActivity() {
 
                 // initialize content values
                 val values = ContentValues()
-                if (currentContent.isVideo)
+                val time = System.currentTimeMillis()
+                if (currentContent.isVideo) {
                     values.put(MediaStore.Video.Media.DISPLAY_NAME, newName)
-                else
+                    values.put(MediaStore.Video.Media.DATE_MODIFIED, time)
+                } else {
                     values.put(MediaStore.Images.Media.DISPLAY_NAME, newName)
+                    values.put(MediaStore.Images.Media.DATE_MODIFIED, time)
+                }
 
                 // rename
                 contentResolver.update(currentContent.uri, values, null, null)
@@ -130,7 +143,12 @@ class ImageActivity : AppCompatActivity() {
                 // rename content
                 ContentController.directoryArrayList[directoryPosition].contentArrayList[viewPager.currentItem].name = newName
 
-                // sort content array list
+                // update directory date
+                ContentController.directoryArrayList[directoryPosition].date = time
+
+                // sort
+                val contentController = ContentController(this)
+                contentController.sortDirectoryArrayList()
                 ContentController(this).sortContentArrayList(directoryPosition)
 
                 // set current item

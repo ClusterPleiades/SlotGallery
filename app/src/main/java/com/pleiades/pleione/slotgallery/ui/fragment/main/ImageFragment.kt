@@ -2,6 +2,7 @@ package com.pleiades.pleione.slotgallery.ui.fragment.main
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -77,6 +78,7 @@ class ImageFragment(directoryPosition: Int, contentPosition: Int) : Fragment() {
     override fun onResume() {
         // set action bar title
         (requireActivity() as ImageActivity).titleEditText.setText(content.name)
+        Log.d("test", content.name)
 
         super.onResume()
     }

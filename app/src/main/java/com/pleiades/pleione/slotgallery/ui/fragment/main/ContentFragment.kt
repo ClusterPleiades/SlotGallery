@@ -74,24 +74,45 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
         // initialize activity result launcher
         deleteResultLauncher = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result: ActivityResult ->
             if (result.resultCode == Activity.RESULT_OK) {
-                // initialize selected array
-                val selectedArray = recyclerAdapter.selectedHashSet.toIntArray()
-                selectedArray.sortDescending()
+                // case delete all
+                if (recyclerAdapter.selectedHashSet.size == directory.contentArrayList.size) {
+                    // remove directory
+                    ContentController.directoryArrayList.removeAt(directoryPosition)
 
-                // remove content
-                for (position in selectedArray) {
-                    directory.contentArrayList.removeAt(position)
-                    recyclerAdapter.notifyItemRemoved(position)
+                    // set is selecting false
+                    recyclerAdapter.isSelecting = false
+
+                    // on back pressed
+                    requireActivity().onBackPressed()
+                } else {
+                    // initialize selected array
+                    val selectedArray = recyclerAdapter.selectedHashSet.toIntArray()
+                    selectedArray.sortDescending()
+
+                    // remove content
+                    for (position in selectedArray) {
+                        directory.contentArrayList.removeAt(position)
+                        recyclerAdapter.notifyItemRemoved(position)
+                    }
+
+                    // refresh directory date
+                    directory.refreshDate()
+
+                    // sort directory array list
+                    contentController.sortDirectoryArrayList()
+
+                    // initialize directory position again
+                    directoryPosition = ContentController.directoryArrayList.indexOf(directory)
+
+                    // clear selected hash set
+                    recyclerAdapter.selectedHashSet.clear()
+
+                    // set is selecting false
+                    recyclerAdapter.isSelecting = false
+
+                    // refresh action bar menu
+                    (context as FragmentActivity).invalidateOptionsMenu()
                 }
-
-                // clear selected hash set
-                recyclerAdapter.selectedHashSet.clear()
-
-                // set is selecting false
-                recyclerAdapter.isSelecting = false
-
-                // refresh action bar menu
-                (context as FragmentActivity).invalidateOptionsMenu()
             }
         }
 

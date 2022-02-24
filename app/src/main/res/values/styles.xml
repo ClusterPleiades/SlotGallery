@@ -24,6 +24,27 @@
 
         <!-- window -->
         <item name="android:windowBackground">@android:color/white</item>
+
+        <!-- snackbar -->
+        <item name="snackbarStyle">@style/SnackbarTheme</item>
+        <item name="snackbarButtonStyle">@style/SnackbarTextButtonTheme</item>
+        <item name="snackbarTextViewStyle">@style/SnackbarTextViewTheme</item>
+    </style>
+
+    <style name="SnackbarTheme" parent="@style/Widget.MaterialComponents.Snackbar">
+        <item name="android:background">@color/color_gray</item>
+        <item name="cornerRadius">2dp</item>
+        <item name="elevation">0dp</item>
+        <item name="android:layout_margin">@dimen/margin_small</item>
+        <item name="actionTextColorAlpha">1.0</item>
+    </style>
+
+    <style name="SnackbarTextButtonTheme" parent="@style/Widget.MaterialComponents.Button.TextButton.Snackbar">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="SnackbarTextViewTheme" parent="@style/Widget.MaterialComponents.Snackbar.TextView">
+        <item name="android:textColor">@android:color/white</item>
     </style>
 
     <style name="ActionOverflowMenuStyle" parent="Widget.AppCompat.PopupMenu.Overflow">

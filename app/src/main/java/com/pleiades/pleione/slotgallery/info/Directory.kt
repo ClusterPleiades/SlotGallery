@@ -8,6 +8,28 @@ class Directory(val directoryPath: Slot.DirectoryPath) {
     val contentArrayList: ArrayList<Content> = ArrayList()
     var date = 0L
 
+    override fun equals(other: Any?): Boolean {
+        if (other == null) return false
+        if (javaClass != other.javaClass) return false
+
+        val otherDirectory = other as Directory
+        return directoryPath == otherDirectory.directoryPath
+                && date == otherDirectory.date
+                && contentArrayList == otherDirectory.contentArrayList
+    }
+
+    override fun hashCode(): Int {
+        var result = directoryPath.hashCode()
+        result = 31 * result + name.hashCode()
+        result = 31 * result + contentArrayList.hashCode()
+        result = 31 * result + date.hashCode()
+        return result
+    }
+
+    fun refreshDate() {
+        date = contentArrayList.maxOf { it.date }
+    }
+
     class Content(
         val isVideo: Boolean,
         val id: String,
@@ -39,23 +61,5 @@ class Directory(val directoryPath: Slot.DirectoryPath) {
             result = 31 * result + uri.hashCode()
             return result
         }
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (other == null) return false
-        if (javaClass != other.javaClass) return false
-
-        val otherDirectory = other as Directory
-        return directoryPath == otherDirectory.directoryPath
-                && date == otherDirectory.date
-                && contentArrayList == otherDirectory.contentArrayList
-    }
-
-    override fun hashCode(): Int {
-        var result = directoryPath.hashCode()
-        result = 31 * result + name.hashCode()
-        result = 31 * result + contentArrayList.hashCode()
-        result = 31 * result + date.hashCode()
-        return result
     }
 }
