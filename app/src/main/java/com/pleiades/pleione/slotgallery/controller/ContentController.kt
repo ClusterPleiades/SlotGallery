@@ -12,6 +12,7 @@ import com.pleiades.pleione.slotgallery.Config.Companion.SORT_POSITION_BY_NAME
 import com.pleiades.pleione.slotgallery.Config.Companion.SORT_POSITION_BY_NEWEST
 import com.pleiades.pleione.slotgallery.Config.Companion.SORT_POSITION_BY_OLDEST
 import com.pleiades.pleione.slotgallery.info.Directory
+import com.pleiades.pleione.slotgallery.info.Slot
 import java.text.CharacterIterator
 import java.text.StringCharacterIterator
 
@@ -49,10 +50,10 @@ class ContentController(private val context: Context) {
         sortContentArrayList()
     }
 
-    private fun addDirectory(allowSubDirectory: Boolean, directoryPath: String) {
+    private fun addDirectory(allowSubDirectory: Boolean, directoryPath: Slot.DirectoryPath) {
         val directory = Directory(directoryPath)
-        val directoryRelativePath = directoryPath.substringAfter(":") + "/"
-        val subDirectoryPathHashSet: HashSet<String> = HashSet()
+        val directoryRelativePath = directoryPath.lastPath.substringAfter(":") + "/"
+        val subDirectoryLastPathHashSet: HashSet<String> = HashSet()
 
         // case image
         // initialize image parameters
@@ -90,7 +91,7 @@ class ContentController(private val context: Context) {
                     directory.contentArrayList.add(Directory.Content(false, id, name, size, width, height, date, relativePath, uri, 0L))
                 } else {
                     // case sub directory
-                    subDirectoryPathHashSet.add(directoryPath.substringBefore(":") + ":" + relativePath.substringBeforeLast("/"))
+                    subDirectoryLastPathHashSet.add(directoryPath.lastPath.substringBefore(":") + ":" + relativePath.substringBeforeLast("/"))
                 }
             } else {
                 // add image
@@ -140,7 +141,7 @@ class ContentController(private val context: Context) {
                     directory.contentArrayList.add(Directory.Content(true, id, name, size, width, height, date, relativePath, uri, duration))
                 } else {
                     // case sub directory
-                    subDirectoryPathHashSet.add(directoryPath.substringBefore(":") + ":" + relativePath.substringBeforeLast("/"))
+                    subDirectoryLastPathHashSet.add(directoryPath.lastPath.substringBefore(":") + ":" + relativePath.substringBeforeLast("/"))
                 }
             } else {
                 // add image
@@ -158,8 +159,8 @@ class ContentController(private val context: Context) {
         }
 
         // add sub directory
-        for (subDirectoryPath in subDirectoryPathHashSet) {
-            addDirectory(false, subDirectoryPath)
+        for (subDirectoryLastPath in subDirectoryLastPathHashSet) {
+            addDirectory(false, Slot.DirectoryPath(directoryPath.rootUriString, subDirectoryLastPath))
         }
     }
 
@@ -199,4 +200,44 @@ class ContentController(private val context: Context) {
             SORT_POSITION_BY_OLDEST -> directoryArrayList[directoryPosition].contentArrayList.sortBy { it.date }
         }
     }
+
+    // TODO FIX
+//    fun insertContent(content: Directory.Content, targetDirectoryPosition: Int) {
+//        val relativePath = directoryArrayList[targetDirectoryPosition].contentArrayList[0].relativePath
+//
+//        // case video
+//        if (content.isVideo) {
+//            // TODO
+//        }
+//        // case image
+//        else {
+//            val externalContentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+//
+//            val projection = arrayOf(MediaStore.Images.Media.DATA)
+//            val selection = "${MediaStore.Images.Media._ID} = ?"
+//            val selectionArgs = arrayOf(content.id)
+//
+//            val cursor = context.contentResolver.query(externalContentUri, projection, selection, selectionArgs, null)!!
+//            cursor.moveToNext()
+//            val contentData = cursor.getString(0)
+//            cursor.close()
+//
+//            val contentValues = ContentValues().apply {
+//                put(MediaStore.Images.Media.DISPLAY_NAME, content.name)
+////                put(MediaStore.Images.Media.RELATIVE_PATH, relativePath)
+//                put(MediaStore.Images.Media.MIME_TYPE, "image/" + content.name.substringAfterLast("."))
+//                put(MediaStore.Images.Media.DATA, contentData)
+//                put(MediaStore.Images.Media.IS_PENDING, 1)
+//            }
+//            try {
+//                val targetContentUri = context.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)!!
+//
+//                contentValues.clear()
+//                contentValues.put(MediaStore.Images.Media.IS_PENDING, 0)
+//                context.contentResolver.update(targetContentUri, contentValues, null, null)
+//            } catch (e: Exception) {
+//                e.printStackTrace()
+//            }
+//        }
+//    }
 }

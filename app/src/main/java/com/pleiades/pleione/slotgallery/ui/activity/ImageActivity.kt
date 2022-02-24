@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -37,7 +36,6 @@ import com.pleiades.pleione.slotgallery.controller.ContentController
 import com.pleiades.pleione.slotgallery.info.Directory
 import com.pleiades.pleione.slotgallery.ui.fragment.dialog.RecyclerDialogFragment
 import com.pleiades.pleione.slotgallery.ui.fragment.main.ImageFragment
-import java.io.File
 
 
 class ImageActivity : AppCompatActivity() {
@@ -82,9 +80,16 @@ class ImageActivity : AppCompatActivity() {
         // initialize activity result launcher
         copyResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
             if (result.resultCode == Activity.RESULT_OK) {
-                val directoryPosition = result.data!!.getIntExtra(INTENT_EXTRA_POSITION_DIRECTORY, -1)
+                // initialize directory position from extra
+                val targetDirectoryPosition = result.data!!.getIntExtra(INTENT_EXTRA_POSITION_DIRECTORY, -1)
 
-                // TODO
+                if (targetDirectoryPosition == directoryPosition) {
+                    // show toast
+                    Toast.makeText(this, R.string.message_error_same_directory, Toast.LENGTH_SHORT).show()
+                } else {
+                    // insert content
+//                    ContentController(this).copyContent(getCurrentContent(), targetDirectoryPosition)
+                }
             }
         }
         moveResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->

@@ -54,10 +54,13 @@ class ManageDirectoryFragment : Fragment() {
                     val takeFlags: Int = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
                     contentResolver.takePersistableUriPermission(uri!!, takeFlags)
 
+                    // initialize directory path
+                    val directoryPath = Slot.DirectoryPath(uri.toString(), uri.lastPathSegment!!)
+
                     // case not duplicated
-                    if (!selectedSlot.directoryPathLinkedList.contains(uri.lastPathSegment!!)) {
+                    if (!selectedSlot.directoryPathLinkedList.contains(directoryPath)) {
                         // add directory
-                        selectedSlot.directoryPathLinkedList.add(uri.lastPathSegment!!)
+                        selectedSlot.directoryPathLinkedList.add(directoryPath)
 
                         // notify item inserted
                         recyclerAdapter.notifyItemInserted(selectedSlot.directoryPathLinkedList.size - 1)
@@ -146,7 +149,7 @@ class ManageDirectoryFragment : Fragment() {
 
         override fun onBindViewHolder(holder: ManageDirectoryViewHolder, position: Int) {
             // case title
-            holder.titleEditText.setText(selectedSlot.directoryPathLinkedList[position])
+            holder.titleEditText.setText(selectedSlot.directoryPathLinkedList[position].lastPath)
 
             // case remove button
             if (position < COUNT_DEFAULT_DIRECTORY) {

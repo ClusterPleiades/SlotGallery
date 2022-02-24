@@ -5,6 +5,8 @@ import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.provider.MediaStore
 import android.view.*
 import android.view.View.GONE
@@ -181,34 +183,36 @@ class DirectoryFragment : Fragment() {
     }
 
     fun refresh() {
-        // check is content changed
-        val selectedSlot = slotController.getSelectedSlot()
-        val messageTextView = rootView.findViewById<TextView>(R.id.message_main)
+        Handler(Looper.myLooper()!!).post {
+            // check is content changed
+            val selectedSlot = slotController.getSelectedSlot()
+            val messageTextView = rootView.findViewById<TextView>(R.id.message_main)
 
-        // case no slot
-        if (selectedSlot == null) {
-            messageTextView.setText(R.string.message_error_no_slot)
-            messageTextView.visibility = VISIBLE
-        } else {
-            messageTextView.visibility = GONE
+            // case no slot
+            if (selectedSlot == null) {
+                messageTextView.setText(R.string.message_error_no_slot)
+                messageTextView.visibility = VISIBLE
+            } else {
+                messageTextView.visibility = GONE
 
-            // backup directory array list
-            val backupDirectoryArrayList: ArrayList<Directory> = ArrayList()
-            for (directory in ContentController.directoryArrayList) backupDirectoryArrayList.add(directory)
+                // backup directory array list
+                val backupDirectoryArrayList: ArrayList<Directory> = ArrayList()
+                for (directory in ContentController.directoryArrayList) backupDirectoryArrayList.add(directory)
 
-            // initialize contents
-            contentController.initializeContents()
+                // initialize contents
+                contentController.initializeContents()
 
-            // case content changed
-            if (ContentController.directoryArrayList != backupDirectoryArrayList) {
-                // case launch application
-                if (backupDirectoryArrayList.size == 0)
-                    notifyDataSetChanged()
-                else {
-                    recyclerAdapter.selectedHashSet.clear()
-                    recyclerAdapter.isSelecting = false
-                    (context as FragmentActivity).invalidateOptionsMenu()
-                    notifyDataSetChanged()
+                // case content changed
+                if (ContentController.directoryArrayList != backupDirectoryArrayList) {
+                    // case launch application
+                    if (backupDirectoryArrayList.size == 0)
+                        notifyDataSetChanged()
+                    else {
+                        recyclerAdapter.selectedHashSet.clear()
+                        recyclerAdapter.isSelecting = false
+                        (context as FragmentActivity).invalidateOptionsMenu()
+                        notifyDataSetChanged()
+                    }
                 }
             }
         }
@@ -325,7 +329,7 @@ class DirectoryFragment : Fragment() {
         }
 
         override fun getItemId(position: Int): Long {
-            return ContentController.directoryArrayList[position].path.hashCode().toLong()
+            return ContentController.directoryArrayList[position].directoryPath.hashCode().toLong()
         }
 
         fun setSelected(position: Int, isSelected: Boolean) {

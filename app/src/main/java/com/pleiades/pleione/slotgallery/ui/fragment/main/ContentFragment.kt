@@ -5,6 +5,8 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.provider.MediaStore
 import android.view.*
 import android.view.View.GONE
@@ -181,35 +183,37 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
     }
 
     fun refresh() {
-        // backup directory
-        val backupDirectory = directory
+        Handler(Looper.myLooper()!!).post {
+            // backup directory
+            val backupDirectory = directory
 
-        // initialize contents
-        contentController.initializeContents()
+            // initialize contents
+            contentController.initializeContents()
 
-        // find directory
-        var isFound = false
-        for (i in ContentController.directoryArrayList.indices) {
-            if (ContentController.directoryArrayList[i].path == backupDirectory.path) {
-                directoryPosition = i
-                directory = ContentController.directoryArrayList[i]
-                isFound = true
-                break
+            // find directory
+            var isFound = false
+            for (i in ContentController.directoryArrayList.indices) {
+                if (ContentController.directoryArrayList[i].directoryPath == backupDirectory.directoryPath) {
+                    directoryPosition = i
+                    directory = ContentController.directoryArrayList[i]
+                    isFound = true
+                    break
+                }
             }
-        }
 
-        // case same directory found
-        if (isFound) {
-            // case content changed
-            if (directory.contentArrayList != backupDirectory.contentArrayList) {
-                recyclerAdapter.selectedHashSet.clear()
+            // case same directory found
+            if (isFound) {
+                // case content changed
+                if (directory.contentArrayList != backupDirectory.contentArrayList) {
+                    recyclerAdapter.selectedHashSet.clear()
+                    recyclerAdapter.isSelecting = false
+                    (context as FragmentActivity).invalidateOptionsMenu()
+                    notifyDataSetChanged()
+                }
+            } else {
                 recyclerAdapter.isSelecting = false
-                (context as FragmentActivity).invalidateOptionsMenu()
-                notifyDataSetChanged()
+                requireActivity().onBackPressed()
             }
-        } else {
-            recyclerAdapter.isSelecting = false
-            requireActivity().onBackPressed()
         }
     }
 
