@@ -116,6 +116,15 @@ class ImageActivity : AppCompatActivity() {
 
                 // notify item removed
                 contentsPagerAdapter.notifyItemRemoved(position)
+
+                // case delete all
+                if (ContentController.directoryArrayList[directoryPosition].contentArrayList.size == 0) {
+                    // remove directory
+                    ContentController.directoryArrayList.removeAt(directoryPosition)
+
+                    // on back pressed
+                    onBackPressed()
+                }
             }
         }
         renameResultLauncher = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result: ActivityResult ->
