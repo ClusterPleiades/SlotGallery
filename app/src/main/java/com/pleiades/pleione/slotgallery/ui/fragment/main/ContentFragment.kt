@@ -240,6 +240,7 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
 
     @SuppressLint("NotifyDataSetChanged")
     fun notifyDataSetChanged() {
+        // notify data set changed
         recyclerAdapter.notifyDataSetChanged()
     }
 

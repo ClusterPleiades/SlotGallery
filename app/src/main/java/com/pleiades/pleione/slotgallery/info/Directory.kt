@@ -38,7 +38,7 @@ class Directory(val directoryPath: Slot.DirectoryPath) {
         val size: String,
         val width: Int,
         val height: Int,
-        val date: Long,
+        var date: Long,
         val relativePath: String,
 
         val uri: Uri,

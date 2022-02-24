@@ -137,37 +137,27 @@ class ImageActivity : AppCompatActivity() {
 
                 // initialize content values
                 val values = ContentValues()
-                val time = System.currentTimeMillis()
+                val currentTime = System.currentTimeMillis()
                 if (currentContent.isVideo) {
                     values.put(MediaStore.Video.Media.DISPLAY_NAME, newName)
-                    values.put(MediaStore.Video.Media.DATE_MODIFIED, time)
                 } else {
                     values.put(MediaStore.Images.Media.DISPLAY_NAME, newName)
-                    values.put(MediaStore.Images.Media.DATE_MODIFIED, time)
                 }
 
-                // rename
+                // update physical content
                 contentResolver.update(currentContent.uri, values, null, null)
 
-                // rename content
+                // update content
                 ContentController.directoryArrayList[directoryPosition].contentArrayList[viewPager.currentItem].name = newName
 
-                // update directory date
-                ContentController.directoryArrayList[directoryPosition].date = time
+                // backup
+                val backupContent = ContentController.directoryArrayList[directoryPosition].contentArrayList[viewPager.currentItem]
 
                 // sort
-                val contentController = ContentController(this)
-                contentController.sortDirectoryArrayList()
                 ContentController(this).sortContentArrayList(directoryPosition)
 
-                // set current item
-                for (position in ContentController.directoryArrayList[directoryPosition].contentArrayList.indices) {
-                    val content = ContentController.directoryArrayList[directoryPosition].contentArrayList[position]
-                    if (content.name == newName) {
-                        viewPager.setCurrentItem(position, false)
-                        break
-                    }
-                }
+                // restore
+                viewPager.setCurrentItem(ContentController.directoryArrayList[directoryPosition].contentArrayList.indexOf(backupContent), false)
 
                 // cancel rename
                 cancelRename(newName)
