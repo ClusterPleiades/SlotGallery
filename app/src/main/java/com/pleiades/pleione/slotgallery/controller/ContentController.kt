@@ -211,6 +211,7 @@ class ContentController(private val context: Context) {
         }
     }
 
+    // TODO test and fix
     fun copyContents(fromDirectoryPosition: Int, toDirectoryPosition: Int, contentPositionSet: Collection<Int>) {
         // initialize to directory document file
         var toDirectory = directoryArrayList[toDirectoryPosition]

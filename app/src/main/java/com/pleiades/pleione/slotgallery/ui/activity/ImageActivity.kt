@@ -40,7 +40,6 @@ import com.pleiades.pleione.slotgallery.ui.fragment.main.ImageFragment
 
 class ImageActivity : AppCompatActivity() {
     private lateinit var copyResultLauncher: ActivityResultLauncher<Intent>
-    private lateinit var moveResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var deleteResultLauncher: ActivityResultLauncher<IntentSenderRequest>
     private lateinit var renameResultLauncher: ActivityResultLauncher<IntentSenderRequest>
     private lateinit var viewPager: ViewPager2
@@ -50,6 +49,8 @@ class ImageActivity : AppCompatActivity() {
     private var directoryPosition = 0
     private var isFull = false
     private var isEditFocused = false
+
+    private lateinit var directory: Directory
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,6 +78,9 @@ class ImageActivity : AppCompatActivity() {
         directoryPosition = intent.getIntExtra(INTENT_EXTRA_POSITION_DIRECTORY, 0)
         val contentPosition = intent.getIntExtra(INTENT_EXTRA_POSITION_CONTENT, 0)
 
+        // initialize directory
+        directory = ContentController.directoryArrayList[directoryPosition]
+
         // initialize activity result launcher
         copyResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
             if (result.resultCode == Activity.RESULT_OK) {
@@ -101,29 +105,33 @@ class ImageActivity : AppCompatActivity() {
                 }
             }
         }
-        moveResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                // TODO
-            }
-        }
         deleteResultLauncher = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result: ActivityResult ->
             if (result.resultCode == Activity.RESULT_OK) {
                 // initialize position
                 val position = viewPager.currentItem
 
                 // remove content
-                ContentController.directoryArrayList[directoryPosition].contentArrayList.removeAt(position)
+                directory.contentArrayList.removeAt(position)
 
                 // notify item removed
                 contentsPagerAdapter.notifyItemRemoved(position)
 
                 // case delete all
-                if (ContentController.directoryArrayList[directoryPosition].contentArrayList.size == 0) {
+                if (directory.contentArrayList.size == 0) {
                     // remove directory
                     ContentController.directoryArrayList.removeAt(directoryPosition)
 
                     // on back pressed
                     onBackPressed()
+                } else {
+                    // refresh directory date
+                    directory.refreshDate()
+
+                    // sort directory array list
+                    ContentController(this).sortDirectoryArrayList()
+
+                    // initialize directory position again
+                    directoryPosition = ContentController.directoryArrayList.indexOf(directory)
                 }
             }
         }
@@ -137,7 +145,6 @@ class ImageActivity : AppCompatActivity() {
 
                 // initialize content values
                 val values = ContentValues()
-                val currentTime = System.currentTimeMillis()
                 if (currentContent.isVideo) {
                     values.put(MediaStore.Video.Media.DISPLAY_NAME, newName)
                 } else {
@@ -148,16 +155,16 @@ class ImageActivity : AppCompatActivity() {
                 contentResolver.update(currentContent.uri, values, null, null)
 
                 // update content
-                ContentController.directoryArrayList[directoryPosition].contentArrayList[viewPager.currentItem].name = newName
+                directory.contentArrayList[viewPager.currentItem].name = newName
 
                 // backup
-                val backupContent = ContentController.directoryArrayList[directoryPosition].contentArrayList[viewPager.currentItem]
+                val backupContent = directory.contentArrayList[viewPager.currentItem]
 
                 // sort
                 ContentController(this).sortContentArrayList(directoryPosition)
 
                 // restore
-                viewPager.setCurrentItem(ContentController.directoryArrayList[directoryPosition].contentArrayList.indexOf(backupContent), false)
+                viewPager.setCurrentItem(directory.contentArrayList.indexOf(backupContent), false)
 
                 // cancel rename
                 cancelRename(newName)
@@ -173,7 +180,7 @@ class ImageActivity : AppCompatActivity() {
 
         // initialize title edit text
         titleEditText = findViewById(R.id.title_appbar)
-        titleEditText.setText(ContentController.directoryArrayList[directoryPosition].contentArrayList[contentPosition].name)
+        titleEditText.setText(directory.contentArrayList[contentPosition].name)
         titleEditText.setOnFocusChangeListener { _, b ->
             isEditFocused = b
             invalidateOptionsMenu()
@@ -217,10 +224,6 @@ class ImageActivity : AppCompatActivity() {
                 val intent = Intent(this, ChoiceActivity::class.java)
                 copyResultLauncher.launch(intent)
             }
-            R.id.move -> {
-                val intent = Intent(this, ChoiceActivity::class.java)
-                moveResultLauncher.launch(intent)
-            }
             R.id.delete -> {
                 // initialize create delete request pending intent
                 val pendingIntent = MediaStore.createDeleteRequest(contentResolver, setOf(currentContent.uri))
@@ -248,7 +251,7 @@ class ImageActivity : AppCompatActivity() {
                     cancelRename(currentContent.name)
                 } else {
                     var isDuplicate = false
-                    for (content in ContentController.directoryArrayList[directoryPosition].contentArrayList) {
+                    for (content in directory.contentArrayList) {
                         if (content.name == newName) {
                             isDuplicate = true
                             break
@@ -281,8 +284,16 @@ class ImageActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    override fun onBackPressed() {
+        // set result
+        intent.putExtra(INTENT_EXTRA_POSITION_DIRECTORY, directoryPosition)
+        setResult(RESULT_OK, intent)
+
+        super.onBackPressed()
+    }
+
     fun getCurrentContent(): Directory.Content {
-        return ContentController.directoryArrayList[directoryPosition].contentArrayList[viewPager.currentItem]
+        return directory.contentArrayList[viewPager.currentItem]
     }
 
     fun fullImage() {
@@ -319,11 +330,11 @@ class ImageActivity : AppCompatActivity() {
         }
 
         override fun getItemCount(): Int {
-            return ContentController.directoryArrayList[directoryPosition].contentArrayList.size
+            return directory.contentArrayList.size
         }
 
         override fun getItemId(position: Int): Long {
-            return ContentController.directoryArrayList[directoryPosition].contentArrayList[position].uri.hashCode().toLong()
+            return directory.contentArrayList[position].uri.hashCode().toLong()
         }
     }
 }

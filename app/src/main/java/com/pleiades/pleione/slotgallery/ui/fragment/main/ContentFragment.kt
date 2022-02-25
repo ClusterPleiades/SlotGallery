@@ -55,6 +55,7 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
     }
 
     private lateinit var rootView: View
+    private lateinit var imageResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var deleteResultLauncher: ActivityResultLauncher<IntentSenderRequest>
     private var directory: Directory = ContentController.directoryArrayList[directoryPosition]
 
@@ -72,6 +73,11 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
         setHasOptionsMenu(true)
 
         // initialize activity result launcher
+        imageResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                directoryPosition = result.data!!.getIntExtra(INTENT_EXTRA_POSITION_DIRECTORY, -1)
+            }
+        }
         deleteResultLauncher = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result: ActivityResult ->
             if (result.resultCode == Activity.RESULT_OK) {
                 // case delete all
@@ -293,7 +299,7 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
                         val intent = Intent(context, ImageActivity::class.java)
                         intent.putExtra(INTENT_EXTRA_POSITION_DIRECTORY, directoryPosition)
                         intent.putExtra(INTENT_EXTRA_POSITION_CONTENT, position)
-                        startActivity(intent)
+                        imageResultLauncher.launch(intent)
                     }
                 }
                 itemView.setOnLongClickListener { view: View ->
