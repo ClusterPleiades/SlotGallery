@@ -12,6 +12,8 @@ import com.pleiades.pleione.slotgallery.Config
 import com.pleiades.pleione.slotgallery.Config.Companion.COUNT_DEFAULT_DIRECTORY
 import com.pleiades.pleione.slotgallery.Config.Companion.KEY_CONTENT_SORT_ORDER
 import com.pleiades.pleione.slotgallery.Config.Companion.KEY_DIRECTORY_SORT_ORDER
+import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_IMAGE
+import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_VIDEO
 import com.pleiades.pleione.slotgallery.Config.Companion.SORT_POSITION_BY_NAME
 import com.pleiades.pleione.slotgallery.Config.Companion.SORT_POSITION_BY_NEWEST
 import com.pleiades.pleione.slotgallery.Config.Companion.SORT_POSITION_BY_OLDEST
@@ -212,7 +214,10 @@ class ContentController(private val context: Context) {
     }
 
     // TODO test and fix
-    fun copyContents(fromDirectoryPosition: Int, toDirectoryPosition: Int, contentPositionSet: Collection<Int>) {
+    fun copyContents(fromDirectoryPosition: Int, toDirectoryPosition: Int, contentPositionSet: Collection<Int>): Int {
+        if (fromDirectoryPosition == toDirectoryPosition)
+            return -1
+
         // initialize to directory document file
         var toDirectory = directoryArrayList[toDirectoryPosition]
         val toDirectoryPath = toDirectory.directoryPath
@@ -242,10 +247,8 @@ class ContentController(private val context: Context) {
             }
 
             // initialize content document file
-            if (content.isVideo)
-                toDirectoryDocumentFile.createFile("video/*", content.name)
-            else
-                toDirectoryDocumentFile.createFile("image/*", content.name)
+            val mimeType = if (content.isVideo) MIME_TYPE_VIDEO else MIME_TYPE_IMAGE
+            toDirectoryDocumentFile.createFile(mimeType, content.name)
             val contentDocumentFile = toDirectoryDocumentFile.findFile(content.name)!!
 
             try {
@@ -268,7 +271,7 @@ class ContentController(private val context: Context) {
                 outputStream.close()
 
                 // scan media
-                MediaScannerConnection.scanFile(context, arrayOf(contentDocumentFile.uri.toString()), null, null)
+                MediaScannerConnection.scanFile(context, arrayOf(contentDocumentFile.uri.toString()), arrayOf(mimeType), null)
             } catch (e: Exception) {
             }
         }
@@ -281,9 +284,6 @@ class ContentController(private val context: Context) {
         val imageProjection = arrayOf(
             MediaStore.Images.Media._ID,
             MediaStore.Images.Media.DISPLAY_NAME,
-            MediaStore.Images.Media.SIZE,
-            MediaStore.Images.Media.WIDTH,
-            MediaStore.Images.Media.HEIGHT,
             MediaStore.Images.Media.DATE_MODIFIED,
             MediaStore.Images.Media.RELATIVE_PATH
         )
@@ -293,15 +293,12 @@ class ContentController(private val context: Context) {
         while (imageCursor.moveToNext()) {
             val id = imageCursor.getString(0)
             val name = imageCursor.getString(1)
-            val size = getByteCountSI(imageCursor.getString(2))
-            val width = imageCursor.getString(3).toInt()
-            val height = imageCursor.getString(4).toInt()
-            val date = imageCursor.getString(5).toLong()
-            val relativePath = imageCursor.getString(6)
+            val date = imageCursor.getString(2).toLong()
+            val relativePath = imageCursor.getString(3)
             val uri = Uri.withAppendedPath(imageUri, id.toString())
 
             toDirectory.date = date.coerceAtLeast(toDirectory.date)
-            toDirectory.contentArrayList.add(Directory.Content(false, id, name, size, width, height, date, relativePath, uri, 0L))
+            toDirectory.contentArrayList.add(Directory.Content(false, id, name, "-", 0, 0, date, relativePath, uri, 0L))
         }
         imageCursor.close()
 
@@ -309,12 +306,8 @@ class ContentController(private val context: Context) {
         val videoProjection = arrayOf(
             MediaStore.Video.Media._ID,
             MediaStore.Video.Media.DISPLAY_NAME,
-            MediaStore.Video.Media.SIZE,
-            MediaStore.Video.Media.WIDTH,
-            MediaStore.Video.Media.HEIGHT,
             MediaStore.Video.Media.DATE_MODIFIED,
-            MediaStore.Video.Media.RELATIVE_PATH,
-            MediaStore.Video.Media.DURATION
+            MediaStore.Video.Media.RELATIVE_PATH
         )
         val videoSelection = "${MediaStore.Video.Media.RELATIVE_PATH} = ?"
         val videoSelectionArgs = arrayOf(toDirectoryRelativePath)
@@ -322,20 +315,22 @@ class ContentController(private val context: Context) {
         while (videoCursor.moveToNext()) {
             val id = videoCursor.getString(0)
             val name = videoCursor.getString(1)
-            val size = getByteCountSI(videoCursor.getString(2))
-            val width = videoCursor.getString(3).toInt()
-            val height = videoCursor.getString(4).toInt()
-            val date = videoCursor.getString(5).toLong()
-            val relativePath = videoCursor.getString(6)
+            val date = videoCursor.getString(2).toLong()
+            val relativePath = videoCursor.getString(3)
             val uri = Uri.withAppendedPath(videoUri, id.toString())
-            val duration = videoCursor.getString(7).toLong()
 
             toDirectory.date = date.coerceAtLeast(toDirectory.date)
-            toDirectory.contentArrayList.add(Directory.Content(true, id, name, size, width, height, date, relativePath, uri, duration))
+            toDirectory.contentArrayList.add(Directory.Content(true, id, name, "-", 0, 0, date, relativePath, uri, 0L))
         }
         videoCursor.close()
 
+        // sort content array list
         directoryArrayList[toDirectoryPosition] = toDirectory
         sortContentArrayList(toDirectoryPosition)
+
+        // sort directory array list
+        sortDirectoryArrayList()
+
+        return directoryArrayList.indexOf(fromDirectory)
     }
 }

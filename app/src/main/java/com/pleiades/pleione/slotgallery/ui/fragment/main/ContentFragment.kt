@@ -32,9 +32,9 @@ import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_SORT_CONTEN
 import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_POSITION_CONTENT
 import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_POSITION_DIRECTORY
 import com.pleiades.pleione.slotgallery.Config.Companion.KEY_CONTENT_SORT_ORDER
-import com.pleiades.pleione.slotgallery.Config.Companion.SHARE_TYPE_ALL
-import com.pleiades.pleione.slotgallery.Config.Companion.SHARE_TYPE_IMAGE
-import com.pleiades.pleione.slotgallery.Config.Companion.SHARE_TYPE_VIDEO
+import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_ALL
+import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_IMAGE
+import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_VIDEO
 import com.pleiades.pleione.slotgallery.Config.Companion.SPAN_COUNT_CONTENT
 import com.pleiades.pleione.slotgallery.Config.Companion.SPAN_COUNT_DIRECTORY
 import com.pleiades.pleione.slotgallery.R
@@ -429,7 +429,7 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
             val shareIntent = Intent().apply {
                 action = Intent.ACTION_SEND_MULTIPLE
                 putParcelableArrayListExtra(Intent.EXTRA_STREAM, contentUriLinkedList)
-                type = if (isContainVideo && isContainImage) SHARE_TYPE_ALL else if (isContainVideo) SHARE_TYPE_VIDEO else SHARE_TYPE_IMAGE
+                type = if (isContainVideo && isContainImage) MIME_TYPE_ALL else if (isContainVideo) MIME_TYPE_VIDEO else MIME_TYPE_IMAGE
             }
             startActivity(Intent.createChooser(shareIntent, getString(R.string.action_share)))
         }

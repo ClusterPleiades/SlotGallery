@@ -62,9 +62,9 @@ class Config {
         const val SORT_POSITION_BY_OLDEST = 2
 
         // others
-        const val SHARE_TYPE_IMAGE = "image/*"
-        const val SHARE_TYPE_VIDEO = "video/*"
-        const val SHARE_TYPE_ALL = "*/*"
+        const val MIME_TYPE_IMAGE = "image/*"
+        const val MIME_TYPE_VIDEO = "video/*"
+        const val MIME_TYPE_ALL = "*/*"
         const val FORMAT_DATE = "yyyy-MM-dd"
         const val FORMAT_TIME = "HH:mm"
     }

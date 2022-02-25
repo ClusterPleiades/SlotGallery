@@ -391,7 +391,7 @@ class DirectoryFragment : Fragment() {
             val shareIntent = Intent().apply {
                 action = Intent.ACTION_SEND_MULTIPLE
                 putParcelableArrayListExtra(Intent.EXTRA_STREAM, contentUriLinkedList)
-                type = if (isContainVideo && isContainImage) Config.SHARE_TYPE_ALL else if (isContainVideo) Config.SHARE_TYPE_VIDEO else Config.SHARE_TYPE_IMAGE
+                type = if (isContainVideo && isContainImage) Config.MIME_TYPE_ALL else if (isContainVideo) Config.MIME_TYPE_VIDEO else Config.MIME_TYPE_IMAGE
             }
             startActivity(Intent.createChooser(shareIntent, getString(R.string.action_share)))
         }

@@ -29,8 +29,8 @@ import com.pleiades.pleione.slotgallery.Config.Companion.ACTIVITY_CODE_IMAGE
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_INFORMATION
 import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_POSITION_CONTENT
 import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_POSITION_DIRECTORY
-import com.pleiades.pleione.slotgallery.Config.Companion.SHARE_TYPE_IMAGE
-import com.pleiades.pleione.slotgallery.Config.Companion.SHARE_TYPE_VIDEO
+import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_IMAGE
+import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_VIDEO
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.controller.ContentController
 import com.pleiades.pleione.slotgallery.info.Directory
@@ -100,7 +100,7 @@ class ImageActivity : AppCompatActivity() {
                     }
                     else -> {
                         // copy content
-                        ContentController(this).copyContents(directoryPosition, toDirectoryPosition, setOf(viewPager.currentItem))
+                        directoryPosition = ContentController(this).copyContents(directoryPosition, toDirectoryPosition, setOf(viewPager.currentItem))
                     }
                 }
             }
@@ -215,7 +215,7 @@ class ImageActivity : AppCompatActivity() {
                 val shareIntent: Intent = Intent().apply {
                     action = Intent.ACTION_SEND
                     putExtra(Intent.EXTRA_STREAM, currentContent.uri)
-                    type = if (currentContent.isVideo) SHARE_TYPE_VIDEO else SHARE_TYPE_IMAGE
+                    type = if (currentContent.isVideo) MIME_TYPE_VIDEO else MIME_TYPE_IMAGE
                 }
                 startActivity(Intent.createChooser(shareIntent, getString(R.string.action_share)))
                 return true
