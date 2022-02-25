@@ -1,6 +1,7 @@
 package com.pleiades.pleione.slotgallery.ui.fragment.setting
 
 import android.content.Intent
+import android.media.MediaScannerConnection
 import android.os.Bundle
 import android.view.*
 import android.view.View.GONE
@@ -10,15 +11,22 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.documentfile.provider.DocumentFile
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.pleiades.pleione.slotgallery.Config
 import com.pleiades.pleione.slotgallery.Config.Companion.COUNT_DEFAULT_DIRECTORY
+import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_IMAGE
+import com.pleiades.pleione.slotgallery.Config.Companion.NAME_DUMMY
 import com.pleiades.pleione.slotgallery.Config.Companion.SETTING_POSITION_DIRECTORY
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.controller.SlotController
 import com.pleiades.pleione.slotgallery.info.Slot
+import java.io.BufferedInputStream
+import java.io.BufferedOutputStream
+import java.io.InputStream
 
 
 class ManageDirectoryFragment : Fragment() {
@@ -29,7 +37,7 @@ class ManageDirectoryFragment : Fragment() {
     }
 
     private lateinit var rootView: View
-    private lateinit var resultLauncher: ActivityResultLauncher<Intent>
+    private lateinit var addResultLauncher: ActivityResultLauncher<Intent>
 
     private lateinit var slotController: SlotController
     private lateinit var selectedSlot: Slot
@@ -46,7 +54,7 @@ class ManageDirectoryFragment : Fragment() {
         setHasOptionsMenu(true)
 
         // initialize result launcher
-        resultLauncher = registerForActivityResult(StartActivityForResult()) { result: ActivityResult ->
+        addResultLauncher = registerForActivityResult(StartActivityForResult()) { result: ActivityResult ->
             if (result.data != null) {
                 result.data!!.data.also { uri ->
                     // persist permission
@@ -59,6 +67,37 @@ class ManageDirectoryFragment : Fragment() {
 
                     // case not duplicated
                     if (!selectedSlot.directoryPathLinkedList.contains(directoryPath)) {
+                        // initialize directory document file
+                        val directoryDocumentFile = DocumentFile.fromTreeUri(requireContext(), uri)!!
+                        if (directoryDocumentFile.listFiles().isEmpty()) {
+                            directoryDocumentFile.createFile(MIME_TYPE_IMAGE, NAME_DUMMY)
+                            val dummyDocumentFile = directoryDocumentFile.findFile(NAME_DUMMY)!!
+
+                            try {
+                                // save content
+                                val inputStream: InputStream = requireContext().resources.openRawResource(R.raw.ic_launcher_foreground)
+                                val bufferedInputStream = BufferedInputStream(inputStream)
+                                val outputStream = requireContext().contentResolver.openOutputStream(dummyDocumentFile.uri)!!
+                                val bufferedOutputStream = BufferedOutputStream(outputStream)
+
+                                var read: Int
+                                while (bufferedInputStream.read().also { read = it } != -1) {
+                                    bufferedOutputStream.write(read)
+                                }
+
+                                bufferedInputStream.close()
+                                bufferedOutputStream.flush()
+                                bufferedOutputStream.close()
+                                inputStream.close()
+                                outputStream.flush()
+                                outputStream.close()
+
+                                // scan media
+                                MediaScannerConnection.scanFile(context, arrayOf(dummyDocumentFile.uri.toString()), arrayOf(MIME_TYPE_IMAGE), null)
+                            } catch (e: Exception) {
+                            }
+                        }
+
                         // add directory
                         selectedSlot.directoryPathLinkedList.add(directoryPath)
 
@@ -99,7 +138,7 @@ class ManageDirectoryFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.add -> {
-                resultLauncher.launch(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE))
+                addResultLauncher.launch(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE))
                 true
             }
             else -> super.onOptionsItemSelected(item)

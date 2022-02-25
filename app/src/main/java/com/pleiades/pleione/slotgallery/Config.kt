@@ -67,5 +67,6 @@ class Config {
         const val MIME_TYPE_ALL = "*/*"
         const val FORMAT_DATE = "yyyy-MM-dd"
         const val FORMAT_TIME = "HH:mm"
+        const val NAME_DUMMY = "empty.png"
     }
 }
