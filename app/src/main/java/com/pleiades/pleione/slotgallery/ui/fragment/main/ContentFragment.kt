@@ -8,11 +8,13 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
+import android.util.Log
 import android.view.*
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
@@ -42,6 +44,7 @@ import com.pleiades.pleione.slotgallery.controller.ContentController
 import com.pleiades.pleione.slotgallery.controller.DeviceController
 import com.pleiades.pleione.slotgallery.controller.SlotController
 import com.pleiades.pleione.slotgallery.info.Directory
+import com.pleiades.pleione.slotgallery.ui.activity.ChoiceActivity
 import com.pleiades.pleione.slotgallery.ui.activity.ImageActivity
 import com.pleiades.pleione.slotgallery.ui.fragment.dialog.RecyclerDialogFragment
 import java.util.concurrent.TimeUnit
@@ -56,6 +59,7 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
 
     private lateinit var rootView: View
     private lateinit var imageResultLauncher: ActivityResultLauncher<Intent>
+    private lateinit var copyResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var deleteResultLauncher: ActivityResultLauncher<IntentSenderRequest>
     private var directory: Directory = ContentController.directoryArrayList[directoryPosition]
 
@@ -76,6 +80,29 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
         imageResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
             if (result.resultCode == Activity.RESULT_OK) {
                 directoryPosition = result.data!!.getIntExtra(INTENT_EXTRA_POSITION_DIRECTORY, -1)
+            }
+        }
+        copyResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                // initialize directory position from extra
+                val toDirectoryPosition = result.data!!.getIntExtra(INTENT_EXTRA_POSITION_DIRECTORY, -1)
+
+                when {
+                    // case same directory
+                    toDirectoryPosition == directoryPosition -> {
+                        // show toast
+                        Toast.makeText(requireContext(), R.string.message_error_same_directory, Toast.LENGTH_SHORT).show()
+                    }
+                    // case default directory
+                    ContentController.directoryArrayList[toDirectoryPosition].directoryPath.rootUriString == null -> {
+                        // show toast
+                        Toast.makeText(requireContext(), R.string.message_error_default_directory, Toast.LENGTH_SHORT).show()
+                    }
+                    else -> {
+                        // copy content
+                        directoryPosition = contentController.copyContents(directoryPosition, toDirectoryPosition, recyclerAdapter.selectedHashSet)
+                    }
+                }
             }
         }
         deleteResultLauncher = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result: ActivityResult ->
@@ -198,6 +225,11 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
             }
             R.id.share -> {
                 recyclerAdapter.share()
+                return true
+            }
+            R.id.copy -> {
+                val intent = Intent(requireContext(), ChoiceActivity::class.java)
+                copyResultLauncher.launch(intent)
                 return true
             }
             R.id.delete -> {

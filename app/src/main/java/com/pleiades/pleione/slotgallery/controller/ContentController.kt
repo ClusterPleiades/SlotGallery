@@ -213,7 +213,6 @@ class ContentController(private val context: Context) {
         }
     }
 
-    // TODO test and fix
     fun copyContents(fromDirectoryPosition: Int, toDirectoryPosition: Int, contentPositionSet: Collection<Int>): Int {
         if (fromDirectoryPosition == toDirectoryPosition)
             return -1
@@ -224,11 +223,13 @@ class ContentController(private val context: Context) {
         val toDirectoryRootUri = Uri.parse(toDirectoryPath.rootUriString)
         val toDirectoryRootLastPath = toDirectoryRootUri.lastPathSegment!!
         var toDirectoryDocumentFile = DocumentFile.fromTreeUri(context, toDirectoryRootUri)!!
-        val toDirectoryRelativePathList = toDirectoryPath.lastPath.substringAfter("$toDirectoryRootLastPath/").split("/")
-        for (toDirectoryRelativePath in toDirectoryRelativePathList) {
-            if (toDirectoryDocumentFile.findFile(toDirectoryRelativePath) == null)
-                toDirectoryDocumentFile.createDirectory(toDirectoryRelativePath)
-            toDirectoryDocumentFile = toDirectoryDocumentFile.findFile(toDirectoryRelativePath)!!
+        if (toDirectoryPath.lastPath != toDirectoryRootLastPath) {
+            val toDirectoryRelativePathList = toDirectoryPath.lastPath.substringAfter("$toDirectoryRootLastPath/").split("/")
+            for (toDirectoryRelativePath in toDirectoryRelativePathList) {
+                if (toDirectoryDocumentFile.findFile(toDirectoryRelativePath) == null)
+                    toDirectoryDocumentFile.createDirectory(toDirectoryRelativePath)
+                toDirectoryDocumentFile = toDirectoryDocumentFile.findFile(toDirectoryRelativePath)!!
+            }
         }
 
         // copy contents

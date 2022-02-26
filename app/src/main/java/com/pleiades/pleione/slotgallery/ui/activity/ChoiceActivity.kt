@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.pleiades.pleione.slotgallery.Config
+import com.pleiades.pleione.slotgallery.Config.Companion.ACTIVITY_CODE_CHOICE
 import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_POSITION_DIRECTORY
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.controller.ContentController
@@ -47,6 +48,13 @@ class ChoiceActivity : AppCompatActivity() {
 
         // set title
         title = getString(R.string.choose)
+    }
+
+    override fun onResume() {
+        // set last resumed activity code
+        MainActivity.lastResumedActivityCode = ACTIVITY_CODE_CHOICE
+
+        super.onResume()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

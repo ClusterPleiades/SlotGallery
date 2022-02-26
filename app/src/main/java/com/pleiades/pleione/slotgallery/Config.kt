@@ -30,6 +30,7 @@ class Config {
         const val ACTIVITY_CODE_SETTING = 1
         const val ACTIVITY_CODE_IMAGE = 2
         const val ACTIVITY_CODE_VIDEO = 3
+        const val ACTIVITY_CODE_CHOICE = 4
 
         // recycler view
         const val SPAN_COUNT_DIRECTORY = 2
