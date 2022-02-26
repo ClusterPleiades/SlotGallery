@@ -12,7 +12,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
@@ -92,12 +91,12 @@ class ImageActivity : AppCompatActivity() {
                     // case same directory
                     toDirectoryPosition == directoryPosition -> {
                         // show snack bar
-                        Snackbar.make(window.decorView.rootView,  R.string.message_error_same_directory, Snackbar.LENGTH_SHORT).show()
+                        Snackbar.make(window.decorView.rootView, R.string.message_error_same_directory, Snackbar.LENGTH_SHORT).show()
                     }
                     // case default directory
                     ContentController.directoryArrayList[toDirectoryPosition].directoryPath.rootUriString == null -> {
                         // show snack bar
-                        Snackbar.make(window.decorView.rootView,  R.string.message_error_default_directory, Snackbar.LENGTH_SHORT).show()
+                        Snackbar.make(window.decorView.rootView, R.string.message_error_default_directory, Snackbar.LENGTH_SHORT).show()
                     }
                     else -> {
                         // copy content
@@ -141,22 +140,43 @@ class ImageActivity : AppCompatActivity() {
                 // initialize content
                 val currentContent = getCurrentContent()
 
-                // initialize new name
-                val newName = titleEditText.text.toString()
+                // initialize to name
+                val wishName = titleEditText.text.toString()
+                val preWishName = wishName.substringBeforeLast(".")
+                val postWishName = wishName.substringAfterLast(".")
+                val isValidFormat = preWishName != postWishName
+                var isDuplicate: Boolean
+                var toName = wishName
+                var index = 1
+                do {
+                    isDuplicate = false
+                    for (content in directory.contentArrayList) {
+                        if (toName == content.name) {
+                            isDuplicate = true
+                            toName =
+                                if (isValidFormat)
+                                    "$preWishName ($index).$postWishName"
+                                else
+                                    "$wishName ($index)"
+                            index++
+                            break
+                        }
+                    }
+                } while (isDuplicate)
 
                 // initialize content values
                 val values = ContentValues()
                 if (currentContent.isVideo) {
-                    values.put(MediaStore.Video.Media.DISPLAY_NAME, newName)
+                    values.put(MediaStore.Video.Media.DISPLAY_NAME, toName)
                 } else {
-                    values.put(MediaStore.Images.Media.DISPLAY_NAME, newName)
+                    values.put(MediaStore.Images.Media.DISPLAY_NAME, toName)
                 }
 
                 // update physical content
                 contentResolver.update(currentContent.uri, values, null, null)
 
                 // update content
-                directory.contentArrayList[viewPager.currentItem].name = newName
+                directory.contentArrayList[viewPager.currentItem].name = toName
 
                 // backup
                 val backupContent = directory.contentArrayList[viewPager.currentItem]
@@ -168,7 +188,7 @@ class ImageActivity : AppCompatActivity() {
                 viewPager.setCurrentItem(directory.contentArrayList.indexOf(backupContent), false)
 
                 // cancel rename
-                cancelRename(newName)
+                cancelRename(toName)
             }
         }
 
@@ -239,41 +259,12 @@ class ImageActivity : AppCompatActivity() {
                 return true
             }
             R.id.rename -> {
-                val originFormat = currentContent.name.substringAfterLast(".")
-                val newName = titleEditText.text.toString()
-                val newFormat = newName.substringAfterLast(".")
+                // initialize create rename request pending intent
+                val pendingIntent = MediaStore.createWriteRequest(contentResolver, setOf(currentContent.uri))
+                val intentSenderRequest = IntentSenderRequest.Builder(pendingIntent.intentSender).build()
 
-                // case format error
-                if (originFormat != newFormat) {
-                    // cancel
-                    cancelRename(currentContent.name)
-                } else {
-                    var isDuplicate = false
-                    for (content in directory.contentArrayList) {
-                        if (content.name == newName) {
-                            isDuplicate = true
-                            break
-                        }
-                    }
-
-                    // case duplicate error
-                    if (isDuplicate) {
-                        // show toast
-                        Toast.makeText(this, R.string.message_error_exist, Toast.LENGTH_SHORT).show()
-
-                        // cancel
-                        cancelRename(currentContent.name)
-                    }
-                    // case valid
-                    else {
-                        // initialize create rename request pending intent
-                        val pendingIntent = MediaStore.createWriteRequest(contentResolver, setOf(currentContent.uri))
-                        val intentSenderRequest = IntentSenderRequest.Builder(pendingIntent.intentSender).build()
-
-                        // launch intent sender request
-                        renameResultLauncher.launch(intentSenderRequest)
-                    }
-                }
+                // launch intent sender request
+                renameResultLauncher.launch(intentSenderRequest)
             }
             R.id.cancel -> {
                 cancelRename(currentContent.name)
