@@ -1,7 +1,6 @@
 package com.pleiades.pleione.slotgallery.controller
 
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.media.MediaScannerConnection
 import android.net.Uri
@@ -22,7 +21,6 @@ import com.pleiades.pleione.slotgallery.info.Directory
 import com.pleiades.pleione.slotgallery.info.Slot
 import java.io.BufferedInputStream
 import java.io.BufferedOutputStream
-import java.io.File
 import java.io.InputStream
 import java.text.CharacterIterator
 import java.text.StringCharacterIterator
@@ -238,19 +236,25 @@ class ContentController(private val context: Context) {
             // initialize content
             val content = fromDirectory.contentArrayList[contentPosition]
 
-            // case already exists
-            if (toDirectoryDocumentFile.findFile(content.name) != null) {
-                // show toast
-                Toast.makeText(context, R.string.message_error_exist, Toast.LENGTH_SHORT).show()
-
-                // skip this content
-                continue
+            // initialize to name
+            val preName = content.name.substringBeforeLast(".")
+            val postName = content.name.substringAfterLast(".")
+            val isValidFormat = preName != postName
+            var toName = content.name
+            var index = 1
+            while (toDirectoryDocumentFile.findFile(toName) != null) {
+                toName =
+                    if (isValidFormat)
+                        "$preName ($index).$postName"
+                    else
+                        "${content.name} ($index)"
+                index++
             }
 
             // initialize content document file
             val mimeType = if (content.isVideo) MIME_TYPE_VIDEO else MIME_TYPE_IMAGE
-            toDirectoryDocumentFile.createFile(mimeType, content.name)
-            val contentDocumentFile = toDirectoryDocumentFile.findFile(content.name)!!
+            toDirectoryDocumentFile.createFile(mimeType, toName)
+            val contentDocumentFile = toDirectoryDocumentFile.findFile(toName)!!
 
             try {
                 // save content

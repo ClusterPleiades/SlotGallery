@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
@@ -90,13 +91,13 @@ class ImageActivity : AppCompatActivity() {
                 when {
                     // case same directory
                     toDirectoryPosition == directoryPosition -> {
-                        // show snack bar
-                        Snackbar.make(window.decorView.rootView, R.string.message_error_same_directory, Snackbar.LENGTH_SHORT).show()
+                        // show toast
+                        Toast.makeText(this, R.string.message_error_same_directory, Toast.LENGTH_SHORT).show()
                     }
                     // case default directory
                     ContentController.directoryArrayList[toDirectoryPosition].directoryPath.rootUriString == null -> {
-                        // show snack bar
-                        Snackbar.make(window.decorView.rootView, R.string.message_error_default_directory, Snackbar.LENGTH_SHORT).show()
+                        // show toast
+                        Toast.makeText(this, R.string.message_error_default_directory, Toast.LENGTH_SHORT).show()
                     }
                     else -> {
                         // copy content

@@ -65,8 +65,8 @@ class SettingFragment : Fragment() {
                         }
                         SETTING_POSITION_DIRECTORY -> {
                             if (SlotController(requireContext()).getSelectedSlot() == null) {
-                                // show snack bar
-                                Snackbar.make(rootView, R.string.message_error_no_slot, Snackbar.LENGTH_SHORT).show()
+                                // show toast
+                                Toast.makeText(context, R.string.message_error_no_slot, Toast.LENGTH_SHORT).show()
                             } else {
                                 // replace fragment
                                 activity!!.supportFragmentManager
