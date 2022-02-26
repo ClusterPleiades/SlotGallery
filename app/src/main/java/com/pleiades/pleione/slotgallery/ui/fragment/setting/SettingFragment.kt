@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.pleiades.pleione.slotgallery.Config.Companion.KEY_STACK
 import com.pleiades.pleione.slotgallery.Config.Companion.SETTING_POSITION_DIRECTORY
 import com.pleiades.pleione.slotgallery.Config.Companion.SETTING_POSITION_SLOT
@@ -64,8 +65,8 @@ class SettingFragment : Fragment() {
                         }
                         SETTING_POSITION_DIRECTORY -> {
                             if (SlotController(requireContext()).getSelectedSlot() == null) {
-                                // show toast
-                                Toast.makeText(context, R.string.message_error_no_slot, Toast.LENGTH_SHORT).show()
+                                // show snack bar
+                                Snackbar.make(rootView, R.string.message_error_no_slot, Snackbar.LENGTH_SHORT).show()
                             } else {
                                 // replace fragment
                                 activity!!.supportFragmentManager

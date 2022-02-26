@@ -25,6 +25,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.snackbar.Snackbar
 import com.pleiades.pleione.slotgallery.Config.Companion.ACTIVITY_CODE_IMAGE
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_INFORMATION
 import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_POSITION_CONTENT
@@ -90,13 +91,13 @@ class ImageActivity : AppCompatActivity() {
                 when {
                     // case same directory
                     toDirectoryPosition == directoryPosition -> {
-                        // show toast
-                        Toast.makeText(this, R.string.message_error_same_directory, Toast.LENGTH_SHORT).show()
+                        // show snack bar
+                        Snackbar.make(window.decorView.rootView,  R.string.message_error_same_directory, Snackbar.LENGTH_SHORT).show()
                     }
                     // case default directory
                     ContentController.directoryArrayList[toDirectoryPosition].directoryPath.rootUriString == null -> {
-                        // show toast
-                        Toast.makeText(this, R.string.message_error_default_directory, Toast.LENGTH_SHORT).show()
+                        // show snack bar
+                        Snackbar.make(window.decorView.rootView,  R.string.message_error_default_directory, Snackbar.LENGTH_SHORT).show()
                     }
                     else -> {
                         // copy content
@@ -244,9 +245,6 @@ class ImageActivity : AppCompatActivity() {
 
                 // case format error
                 if (originFormat != newFormat) {
-                    // show toast
-                    Toast.makeText(this, R.string.message_error_format, Toast.LENGTH_SHORT).show()
-
                     // cancel
                     cancelRename(currentContent.name)
                 } else {

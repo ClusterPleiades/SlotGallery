@@ -28,6 +28,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.google.android.material.snackbar.Snackbar
 import com.michaelflisar.dragselectrecyclerview.DragSelectTouchListener
 import com.michaelflisar.dragselectrecyclerview.DragSelectTouchListener.OnDragSelectListener
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_SORT_CONTENT
@@ -90,13 +91,13 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
                 when {
                     // case same directory
                     toDirectoryPosition == directoryPosition -> {
-                        // show toast
-                        Toast.makeText(requireContext(), R.string.message_error_same_directory, Toast.LENGTH_SHORT).show()
+                        // show snack bar
+                        Snackbar.make(rootView,  R.string.message_error_same_directory, Snackbar.LENGTH_SHORT).show()
                     }
                     // case default directory
                     ContentController.directoryArrayList[toDirectoryPosition].directoryPath.rootUriString == null -> {
-                        // show toast
-                        Toast.makeText(requireContext(), R.string.message_error_default_directory, Toast.LENGTH_SHORT).show()
+                        // show snack bar
+                        Snackbar.make(rootView,  R.string.message_error_default_directory, Snackbar.LENGTH_SHORT).show()
                     }
                     else -> {
                         // copy content
