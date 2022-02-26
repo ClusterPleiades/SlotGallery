@@ -1,6 +1,7 @@
 package com.pleiades.pleione.slotgallery.ui.fragment.main
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.net.Uri
@@ -13,6 +14,7 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
@@ -35,6 +37,7 @@ import com.pleiades.pleione.slotgallery.controller.ContentController
 import com.pleiades.pleione.slotgallery.controller.DeviceController
 import com.pleiades.pleione.slotgallery.controller.SlotController
 import com.pleiades.pleione.slotgallery.info.Directory
+import com.pleiades.pleione.slotgallery.ui.activity.ChoiceActivity
 import com.pleiades.pleione.slotgallery.ui.activity.SettingActivity
 import com.pleiades.pleione.slotgallery.ui.fragment.dialog.RecyclerDialogFragment
 
@@ -46,6 +49,7 @@ class DirectoryFragment : Fragment() {
     }
 
     private lateinit var rootView: View
+    private lateinit var copyResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var deleteResultLauncher: ActivityResultLauncher<IntentSenderRequest>
 
     private lateinit var slotController: SlotController
@@ -62,6 +66,41 @@ class DirectoryFragment : Fragment() {
         setHasOptionsMenu(true)
 
         // initialize activity result launcher
+        copyResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            if (result.resultCode == RESULT_OK) {
+                // initialize directory position from extra
+                val toDirectoryPosition = result.data!!.getIntExtra(Config.INTENT_EXTRA_POSITION_DIRECTORY, -1)
+
+                when {
+                    // case same directory
+                    recyclerAdapter.selectedHashSet.contains(toDirectoryPosition) -> {
+                        // show toast
+                        Toast.makeText(context, R.string.message_error_same_directory, Toast.LENGTH_SHORT).show()
+                    }
+                    // case default directory
+                    ContentController.directoryArrayList[toDirectoryPosition].directoryPath.rootUriString == null -> {
+                        // show toast
+                        Toast.makeText(context, R.string.message_error_default_directory, Toast.LENGTH_SHORT).show()
+                    }
+                    else -> {
+                        // copy directories (~ sort content array list)
+                        contentController.copyDirectories(toDirectoryPosition, recyclerAdapter.selectedHashSet)
+
+                        // sort directory array list
+                        val selectedDirectoryHashSet = HashSet<Directory>()
+                        for (selectedDirectoryPosition in recyclerAdapter.selectedHashSet)
+                            selectedDirectoryHashSet.add(ContentController.directoryArrayList[selectedDirectoryPosition])
+                        contentController.sortDirectoryArrayList()
+                        recyclerAdapter.selectedHashSet.clear()
+                        for(selectedDirectory in selectedDirectoryHashSet)
+                            recyclerAdapter.selectedHashSet.add(ContentController.directoryArrayList.indexOf(selectedDirectory))
+
+                        // notify item range changed
+                        recyclerAdapter.notifyItemRangeChanged(0, selectedDirectoryHashSet.size, false)
+                    }
+                }
+            }
+        }
         deleteResultLauncher = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result: ActivityResult ->
             if (result.resultCode == RESULT_OK) {
                 // initialize selected array
@@ -171,6 +210,11 @@ class DirectoryFragment : Fragment() {
             }
             R.id.share -> {
                 recyclerAdapter.share()
+                return true
+            }
+            R.id.copy -> {
+                val intent = Intent(requireContext(), ChoiceActivity::class.java)
+                copyResultLauncher.launch(intent)
                 return true
             }
             R.id.delete -> {

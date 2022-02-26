@@ -100,7 +100,7 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
                         Toast.makeText(context, R.string.message_error_default_directory, Toast.LENGTH_SHORT).show()
                     }
                     else -> {
-                        // copy content
+                        // copy contents
                         directoryPosition = contentController.copyContents(directoryPosition, toDirectoryPosition, recyclerAdapter.selectedHashSet)
                     }
                 }

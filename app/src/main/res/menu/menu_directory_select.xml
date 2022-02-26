@@ -14,8 +14,14 @@
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/delete"
+        android:id="@+id/copy"
         android:orderInCategory="2"
+        android:title="@string/action_copy"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/delete"
+        android:orderInCategory="3"
         android:title="@string/action_delete"
         app:showAsAction="never" />
 </menu>
