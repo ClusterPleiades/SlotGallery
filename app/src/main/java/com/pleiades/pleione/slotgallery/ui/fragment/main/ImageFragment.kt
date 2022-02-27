@@ -78,7 +78,6 @@ class ImageFragment(directoryPosition: Int, contentPosition: Int) : Fragment() {
     override fun onResume() {
         // set action bar title
         (requireActivity() as ImageActivity).titleEditText.setText(content.name)
-        Log.d("test", content.name)
 
         super.onResume()
     }

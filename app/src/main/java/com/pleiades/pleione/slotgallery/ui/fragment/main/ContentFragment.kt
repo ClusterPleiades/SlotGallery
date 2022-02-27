@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
-import android.util.Log
 import android.view.*
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -28,13 +27,13 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.google.android.material.snackbar.Snackbar
 import com.michaelflisar.dragselectrecyclerview.DragSelectTouchListener
 import com.michaelflisar.dragselectrecyclerview.DragSelectTouchListener.OnDragSelectListener
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_SORT_CONTENT
 import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_POSITION_CONTENT
 import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_POSITION_DIRECTORY
 import com.pleiades.pleione.slotgallery.Config.Companion.KEY_CONTENT_SORT_ORDER
+import com.pleiades.pleione.slotgallery.Config.Companion.KEY_DIRECTORY_POSITION
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_ALL
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_IMAGE
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_VIDEO
@@ -47,6 +46,7 @@ import com.pleiades.pleione.slotgallery.controller.SlotController
 import com.pleiades.pleione.slotgallery.info.Directory
 import com.pleiades.pleione.slotgallery.ui.activity.ChoiceActivity
 import com.pleiades.pleione.slotgallery.ui.activity.ImageActivity
+import com.pleiades.pleione.slotgallery.ui.fragment.dialog.ProgressDialogFragment
 import com.pleiades.pleione.slotgallery.ui.fragment.dialog.RecyclerDialogFragment
 import java.util.concurrent.TimeUnit
 
@@ -100,8 +100,12 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
                         Toast.makeText(context, R.string.message_error_default_directory, Toast.LENGTH_SHORT).show()
                     }
                     else -> {
+                        // show progress dialog fragment
+                        val progressDialogFragment = ProgressDialogFragment(requireActivity())
+                        progressDialogFragment.show((context as FragmentActivity).supportFragmentManager, null)
+
                         // copy contents
-                        directoryPosition = contentController.copyContents(directoryPosition, toDirectoryPosition, recyclerAdapter.selectedHashSet)
+                        contentController.copyContents(directoryPosition, toDirectoryPosition, recyclerAdapter.selectedHashSet, progressDialogFragment)
                     }
                 }
             }
@@ -150,6 +154,19 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
             }
         }
 
+        // initialize fragment result listener
+        (context as FragmentActivity).supportFragmentManager.setFragmentResultListener(KEY_CONTENT_SORT_ORDER, viewLifecycleOwner) { key: String, _: Bundle ->
+            if (key == KEY_CONTENT_SORT_ORDER) {
+                contentController.sortContentArrayList()
+                recyclerAdapter.notifyItemRangeChanged(0, directory.contentArrayList.size, false)
+            }
+        }
+        (context as FragmentActivity).supportFragmentManager.setFragmentResultListener(KEY_DIRECTORY_POSITION, viewLifecycleOwner) { key: String, bundle: Bundle ->
+            if (key == KEY_DIRECTORY_POSITION) {
+                directoryPosition = bundle.getInt(KEY_DIRECTORY_POSITION)
+            }
+        }
+
         // initialize slot controller
         slotController = SlotController(requireContext())
 
@@ -181,14 +198,6 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
 
         // add on item touch listener to recycler view
         recyclerView.addOnItemTouchListener(dragSelectTouchListener)
-
-        // initialize fragment result listener
-        (context as FragmentActivity).supportFragmentManager.setFragmentResultListener(KEY_CONTENT_SORT_ORDER, viewLifecycleOwner) { key: String, _: Bundle ->
-            if (key == KEY_CONTENT_SORT_ORDER) {
-                contentController.sortContentArrayList()
-                recyclerAdapter.notifyItemRangeChanged(0, directory.contentArrayList.size, false)
-            }
-        }
 
         return rootView
     }

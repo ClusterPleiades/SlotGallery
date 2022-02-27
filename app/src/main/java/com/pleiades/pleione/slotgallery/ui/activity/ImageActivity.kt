@@ -21,19 +21,23 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.WindowCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import com.pleiades.pleione.slotgallery.Config
 import com.pleiades.pleione.slotgallery.Config.Companion.ACTIVITY_CODE_IMAGE
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_INFORMATION
 import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_POSITION_CONTENT
 import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_POSITION_DIRECTORY
+import com.pleiades.pleione.slotgallery.Config.Companion.KEY_DIRECTORY_POSITION
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_IMAGE
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_VIDEO
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.controller.ContentController
 import com.pleiades.pleione.slotgallery.info.Directory
+import com.pleiades.pleione.slotgallery.ui.fragment.dialog.ProgressDialogFragment
 import com.pleiades.pleione.slotgallery.ui.fragment.dialog.RecyclerDialogFragment
 import com.pleiades.pleione.slotgallery.ui.fragment.main.ImageFragment
 
@@ -99,8 +103,12 @@ class ImageActivity : AppCompatActivity() {
                         Toast.makeText(this, R.string.message_error_default_directory, Toast.LENGTH_SHORT).show()
                     }
                     else -> {
+                        // show progress dialog fragment
+                        val progressDialogFragment = ProgressDialogFragment(this)
+                        progressDialogFragment.show(supportFragmentManager, null)
+
                         // copy content
-                        directoryPosition = ContentController(this).copyContents(directoryPosition, toDirectoryPosition, setOf(viewPager.currentItem))
+                        ContentController(this).copyContents(directoryPosition, toDirectoryPosition, setOf(viewPager.currentItem), progressDialogFragment)
                     }
                 }
             }
@@ -189,6 +197,13 @@ class ImageActivity : AppCompatActivity() {
 
                 // cancel rename
                 cancelRename(toName)
+            }
+        }
+
+        // initialize fragment result listener
+        supportFragmentManager.setFragmentResultListener(KEY_DIRECTORY_POSITION, this) { key: String, bundle: Bundle ->
+            if (key == KEY_DIRECTORY_POSITION) {
+                directoryPosition = bundle.getInt(KEY_DIRECTORY_POSITION)
             }
         }
 

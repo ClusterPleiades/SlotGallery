@@ -53,7 +53,7 @@ class ManageDirectoryFragment : Fragment() {
         // set options menu
         setHasOptionsMenu(true)
 
-        // initialize result launcher
+        // initialize activity result launcher
         addResultLauncher = registerForActivityResult(StartActivityForResult()) { result: ActivityResult ->
             if (result.data != null) {
                 result.data!!.data.also { uri ->
