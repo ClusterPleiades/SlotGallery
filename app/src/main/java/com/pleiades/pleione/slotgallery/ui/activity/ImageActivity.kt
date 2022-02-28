@@ -21,12 +21,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.WindowCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
-import com.pleiades.pleione.slotgallery.Config
 import com.pleiades.pleione.slotgallery.Config.Companion.ACTIVITY_CODE_IMAGE
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_INFORMATION
 import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_POSITION_CONTENT

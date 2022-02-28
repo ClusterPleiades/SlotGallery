@@ -1,7 +1,6 @@
 package com.pleiades.pleione.slotgallery.ui.fragment.main
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.net.Uri
@@ -10,8 +9,7 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
 import android.view.*
-import android.view.View.GONE
-import android.view.View.VISIBLE
+import android.view.View.*
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -243,8 +241,10 @@ class DirectoryFragment : Fragment() {
             if (selectedSlot == null) {
                 messageTextView.setText(R.string.message_error_no_slot)
                 messageTextView.visibility = VISIBLE
+                recyclerView.visibility = INVISIBLE
             } else {
                 messageTextView.visibility = GONE
+                recyclerView.visibility = VISIBLE
 
                 // backup directory array list
                 val backupDirectoryArrayList: ArrayList<Directory> = ArrayList()

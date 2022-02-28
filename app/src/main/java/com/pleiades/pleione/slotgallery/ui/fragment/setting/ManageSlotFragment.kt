@@ -3,10 +3,10 @@ package com.pleiades.pleione.slotgallery.ui.fragment.setting
 import android.graphics.Color
 import android.os.Bundle
 import android.view.*
-import android.view.View.*
+import android.view.View.INVISIBLE
+import android.view.View.VISIBLE
 import android.widget.EditText
 import android.widget.ImageButton
-import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -15,8 +15,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pleiades.pleione.slotgallery.Config.Companion.SETTING_POSITION_SLOT
 import com.pleiades.pleione.slotgallery.R
-import com.pleiades.pleione.slotgallery.info.Slot
 import com.pleiades.pleione.slotgallery.controller.SlotController
+import com.pleiades.pleione.slotgallery.info.Slot
 import java.util.*
 
 class ManageSlotFragment : Fragment() {

@@ -16,6 +16,7 @@ import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ui.PlayerView
+import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.pleiades.pleione.slotgallery.Config.Companion.ACTIVITY_CODE_VIDEO
 import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_NAME
 import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_URI
@@ -28,7 +29,7 @@ class VideoActivity : AppCompatActivity() {
     private var statusBarHeight = 0
 
     private lateinit var exoPlayer: ExoPlayer
-    private lateinit var playerView: PlayerView
+    private lateinit var playerView: StyledPlayerView
     private lateinit var playerViewLayoutParams: ViewGroup.MarginLayoutParams
     private var navigationBarHeight = 0
 

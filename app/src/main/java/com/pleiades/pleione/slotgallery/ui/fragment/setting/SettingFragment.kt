@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
 import com.pleiades.pleione.slotgallery.Config.Companion.KEY_STACK
 import com.pleiades.pleione.slotgallery.Config.Companion.SETTING_POSITION_DIRECTORY
 import com.pleiades.pleione.slotgallery.Config.Companion.SETTING_POSITION_SLOT

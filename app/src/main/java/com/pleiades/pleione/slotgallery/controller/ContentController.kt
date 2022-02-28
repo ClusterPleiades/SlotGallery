@@ -29,9 +29,6 @@ import java.io.BufferedOutputStream
 import java.io.InputStream
 import java.text.CharacterIterator
 import java.text.StringCharacterIterator
-import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.collections.HashSet
 
 class ContentController(private val context: Context) {
     companion object {
