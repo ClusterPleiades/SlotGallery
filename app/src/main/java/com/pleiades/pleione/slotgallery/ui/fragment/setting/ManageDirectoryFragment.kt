@@ -70,8 +70,7 @@ class ManageDirectoryFragment : Fragment() {
                         // initialize directory document file
                         val directoryDocumentFile = DocumentFile.fromTreeUri(requireContext(), uri)!!
                         if (directoryDocumentFile.listFiles().isEmpty()) {
-                            directoryDocumentFile.createFile(MIME_TYPE_IMAGE, NAME_DUMMY)
-                            val dummyDocumentFile = directoryDocumentFile.findFile(NAME_DUMMY)!!
+                            val dummyDocumentFile = directoryDocumentFile.createFile(MIME_TYPE_IMAGE, NAME_DUMMY)!!
 
                             try {
                                 // save content

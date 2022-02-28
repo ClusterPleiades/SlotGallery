@@ -5,7 +5,6 @@ import android.content.SharedPreferences
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.provider.MediaStore
-import android.util.Log
 import androidx.documentfile.provider.DocumentFile
 import com.pleiades.pleione.slotgallery.Config
 import com.pleiades.pleione.slotgallery.Config.Companion.COUNT_DEFAULT_DIRECTORY
@@ -30,6 +29,9 @@ import java.io.BufferedOutputStream
 import java.io.InputStream
 import java.text.CharacterIterator
 import java.text.StringCharacterIterator
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashSet
 
 class ContentController(private val context: Context) {
     companion object {
@@ -90,9 +92,9 @@ class ContentController(private val context: Context) {
         while (imageCursor.moveToNext()) {
             val id = imageCursor.getString(0)
             val name = imageCursor.getString(1)
-            val size = getByteCountSI(imageCursor.getString(2))
-            val width = imageCursor.getString(3).toInt()
-            val height = imageCursor.getString(4).toInt()
+            val size = if (imageCursor.getString(2) == null) "-" else getByteCountSI(imageCursor.getString(2))
+            val width = if (imageCursor.getString(3) == null) 0 else imageCursor.getString(3).toInt()
+            val height = if (imageCursor.getString(4) == null) 0 else imageCursor.getString(4).toInt()
             val date = imageCursor.getString(5).toLong()
             val relativePath = imageCursor.getString(6)
             val uri = Uri.withAppendedPath(imageUri, id.toString())
@@ -138,13 +140,13 @@ class ContentController(private val context: Context) {
         while (videoCursor.moveToNext()) {
             val id = videoCursor.getString(0)
             val name = videoCursor.getString(1)
-            val size = getByteCountSI(videoCursor.getString(2))
-            val width = videoCursor.getString(3).toInt()
-            val height = videoCursor.getString(4).toInt()
+            val size = if (videoCursor.getString(2) == null) "-" else getByteCountSI(videoCursor.getString(2))
+            val width = if (videoCursor.getString(3) == null) 0 else videoCursor.getString(3).toInt()
+            val height = if (videoCursor.getString(4) == null) 0 else videoCursor.getString(4).toInt()
             val date = videoCursor.getString(5).toLong()
             val relativePath = videoCursor.getString(6)
             val uri = Uri.withAppendedPath(videoUri, id.toString())
-            val duration = videoCursor.getString(7).toLong()
+            val duration = if (videoCursor.getString(7) == null) 0L else videoCursor.getString(7).toLong()
 
             // update directory date
             directory.date = date.coerceAtLeast(directory.date)
@@ -338,13 +340,8 @@ class ContentController(private val context: Context) {
 
     fun copyContents(fromDirectoryPosition: Int, toDirectoryPosition: Int, contentPositionSet: Collection<Int>, progressDialogFragment: ProgressDialogFragment) {
         Observable.create { emitter: ObservableEmitter<String> ->
-            Log.d("test", "1")
-
             // set progressbar attributes
             progressDialogFragment.progressBar.max = contentPositionSet.size
-
-
-            Log.d("test", "1.5")
 
             // initialize to directory document file
             var toDirectory = directoryArrayList[toDirectoryPosition]
@@ -354,13 +351,15 @@ class ContentController(private val context: Context) {
             var toDirectoryDocumentFile = DocumentFile.fromTreeUri(context, toDirectoryRootUri)!!
             if (toDirectoryPath.lastPath != toDirectoryRootLastPath) {
                 val toDirectoryRelativePathList = toDirectoryPath.lastPath.substringAfter("$toDirectoryRootLastPath/").split("/")
-                for (toDirectoryRelativePath in toDirectoryRelativePathList) {
-                    if (toDirectoryDocumentFile.findFile(toDirectoryRelativePath) == null)
-                        toDirectoryDocumentFile.createDirectory(toDirectoryRelativePath)
-                    toDirectoryDocumentFile = toDirectoryDocumentFile.findFile(toDirectoryRelativePath)!!
-                }
+                for (toDirectoryRelativePath in toDirectoryRelativePathList)
+                    toDirectoryDocumentFile = toDirectoryDocumentFile.findFile(toDirectoryRelativePath) ?: toDirectoryDocumentFile.createDirectory(toDirectoryRelativePath)!!
             }
-            Log.d("test", "2")
+
+            // initialize to directory file name hash set
+            val toDirectoryFileNameHashSet: HashSet<String> = HashSet()
+            for (documentFile in toDirectoryDocumentFile.listFiles())
+                if (documentFile.name != null)
+                    toDirectoryFileNameHashSet.add(documentFile.name!!)
 
             // copy contents
             val fromDirectory = directoryArrayList[fromDirectoryPosition]
@@ -378,7 +377,7 @@ class ContentController(private val context: Context) {
                 val isValidFormat = preName != postName
                 var toName = content.name
                 var index = 1
-                while (toDirectoryDocumentFile.findFile(toName) != null) {
+                while (toDirectoryFileNameHashSet.contains(toName)) {
                     toName =
                         if (isValidFormat)
                             "$preName ($index).$postName"
@@ -386,11 +385,11 @@ class ContentController(private val context: Context) {
                             "${content.name} ($index)"
                     index++
                 }
+                toDirectoryFileNameHashSet.add(toName)
 
                 // initialize content document file
                 val mimeType = if (content.isVideo) MIME_TYPE_VIDEO else MIME_TYPE_IMAGE
-                toDirectoryDocumentFile.createFile(mimeType, toName)
-                val contentDocumentFile = toDirectoryDocumentFile.findFile(toName)!!
+                val contentDocumentFile = toDirectoryDocumentFile.createFile(mimeType, toName)!!
 
                 try {
                     // save content
@@ -418,7 +417,6 @@ class ContentController(private val context: Context) {
                     progressDialogFragment.progressBar.progress++
                 }
             }
-            Log.d("test", "3")
 
             // refresh to directory
             toDirectory = Directory(toDirectoryPath)
@@ -468,8 +466,6 @@ class ContentController(private val context: Context) {
             }
             videoCursor.close()
 
-            Log.d("test", "4")
-
             // sort content array list
             directoryArrayList[toDirectoryPosition] = toDirectory
             sortContentArrayList(toDirectoryPosition)
@@ -479,8 +475,6 @@ class ContentController(private val context: Context) {
 
             // set progress dialog fragment result
             progressDialogFragment.setFragmentResult(directoryArrayList.indexOf(fromDirectory))
-
-            Log.d("test", "5")
 
             // on complete
             emitter.onComplete()
@@ -495,7 +489,6 @@ class ContentController(private val context: Context) {
 
                 override fun onComplete() {
                     progressDialogFragment.dismiss()
-                    Log.d("test", "6")
                 }
             })
     }

@@ -35,4 +35,6 @@
 
     <!-- others -->
     <string name="choose">Choose</string>
+    <string name="preparing">Preparing</string>
+    <string name="sorting">Sorting</string>
 </resources>

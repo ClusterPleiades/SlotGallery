@@ -107,8 +107,8 @@ class RecyclerDialogFragment(private val type: Int) : androidx.fragment.app.Dial
         private val textArray: Array<String> = context!!.resources.getStringArray(R.array.information)
 
         inner class InformationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-            val titleTextView: TextView = itemView.findViewById(R.id.title_dialog)
-            val contentTextView: TextView = itemView.findViewById(R.id.content_dialog)
+            val titleTextView: TextView = itemView.findViewById(R.id.title_information)
+            val contentTextView: TextView = itemView.findViewById(R.id.content_information)
         }
 
         override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): InformationRecyclerAdapter.InformationViewHolder {

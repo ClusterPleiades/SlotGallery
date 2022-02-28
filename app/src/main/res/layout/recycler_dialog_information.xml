@@ -9,14 +9,14 @@
     android:paddingBottom="@dimen/margin_small">
 
     <TextView
-        android:id="@+id/title_dialog"
+        android:id="@+id/title_information"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingStart="0dp"
         android:paddingEnd="@dimen/margin_default" />
 
     <TextView
-        android:id="@+id/content_dialog"
+        android:id="@+id/content_information"
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="wrap_content"

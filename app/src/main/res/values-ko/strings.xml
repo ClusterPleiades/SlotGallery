@@ -35,4 +35,6 @@
 
     <!-- others -->
     <string name="choose">선택</string>
+    <string name="preparing">준비 중</string>
+    <string name="sorting">정렬 중</string>
 </resources>
