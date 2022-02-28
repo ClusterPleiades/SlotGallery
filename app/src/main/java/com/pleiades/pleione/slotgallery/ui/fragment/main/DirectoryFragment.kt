@@ -31,6 +31,7 @@ import com.michaelflisar.dragselectrecyclerview.DragSelectTouchListener.OnDragSe
 import com.pleiades.pleione.slotgallery.Config
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_SORT_DIRECTORY
 import com.pleiades.pleione.slotgallery.Config.Companion.KEY_DIRECTORY_SORT_ORDER
+import com.pleiades.pleione.slotgallery.Config.Companion.REQUEST_KEY_COPY
 import com.pleiades.pleione.slotgallery.Config.Companion.SPAN_COUNT_DIRECTORY
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.controller.ContentController
@@ -39,6 +40,7 @@ import com.pleiades.pleione.slotgallery.controller.SlotController
 import com.pleiades.pleione.slotgallery.info.Directory
 import com.pleiades.pleione.slotgallery.ui.activity.ChoiceActivity
 import com.pleiades.pleione.slotgallery.ui.activity.SettingActivity
+import com.pleiades.pleione.slotgallery.ui.fragment.dialog.ProgressDialogFragment
 import com.pleiades.pleione.slotgallery.ui.fragment.dialog.RecyclerDialogFragment
 
 class DirectoryFragment : Fragment() {
@@ -83,20 +85,12 @@ class DirectoryFragment : Fragment() {
                         Toast.makeText(context, R.string.message_error_default_directory, Toast.LENGTH_SHORT).show()
                     }
                     else -> {
+                        // show progress dialog fragment
+                        val progressDialogFragment = ProgressDialogFragment(requireActivity())
+                        progressDialogFragment.show((context as FragmentActivity).supportFragmentManager, null)
+
                         // copy directories (~ sort content array list)
-                        contentController.copyDirectories(toDirectoryPosition, recyclerAdapter.selectedHashSet)
-
-                        // sort directory array list
-                        val selectedDirectoryHashSet = HashSet<Directory>()
-                        for (selectedDirectoryPosition in recyclerAdapter.selectedHashSet)
-                            selectedDirectoryHashSet.add(ContentController.directoryArrayList[selectedDirectoryPosition])
-                        contentController.sortDirectoryArrayList()
-                        recyclerAdapter.selectedHashSet.clear()
-                        for(selectedDirectory in selectedDirectoryHashSet)
-                            recyclerAdapter.selectedHashSet.add(ContentController.directoryArrayList.indexOf(selectedDirectory))
-
-                        // notify item range changed
-                        recyclerAdapter.notifyItemRangeChanged(0, selectedDirectoryHashSet.size, false)
+                        contentController.copyDirectories(toDirectoryPosition, recyclerAdapter.selectedHashSet, progressDialogFragment)
                     }
                 }
             }
@@ -122,6 +116,27 @@ class DirectoryFragment : Fragment() {
                 // refresh action bar menu
                 (context as FragmentActivity).invalidateOptionsMenu()
             }
+        }
+
+        // initialize fragment result listener
+        (context as FragmentActivity).supportFragmentManager.setFragmentResultListener(KEY_DIRECTORY_SORT_ORDER, viewLifecycleOwner) { key: String, _: Bundle ->
+            if (key == KEY_DIRECTORY_SORT_ORDER) {
+                contentController.sortDirectoryArrayList()
+                recyclerAdapter.notifyItemRangeChanged(0, ContentController.directoryArrayList.size, false)
+            }
+        }
+        (context as FragmentActivity).supportFragmentManager.setFragmentResultListener(REQUEST_KEY_COPY, viewLifecycleOwner) { _: String, _: Bundle ->
+            // sort directory array list
+            val selectedDirectoryHashSet = HashSet<Directory>()
+            for (selectedDirectoryPosition in recyclerAdapter.selectedHashSet)
+                selectedDirectoryHashSet.add(ContentController.directoryArrayList[selectedDirectoryPosition])
+            contentController.sortDirectoryArrayList()
+            recyclerAdapter.selectedHashSet.clear()
+            for (selectedDirectory in selectedDirectoryHashSet)
+                recyclerAdapter.selectedHashSet.add(ContentController.directoryArrayList.indexOf(selectedDirectory))
+
+            // notify item range changed
+            recyclerAdapter.notifyItemRangeChanged(0, ContentController.directoryArrayList.size, false)
         }
 
         // initialize slot controller
@@ -155,14 +170,6 @@ class DirectoryFragment : Fragment() {
 
         // add on item touch listener to recycler view
         recyclerView.addOnItemTouchListener(dragSelectTouchListener)
-
-        // initialize fragment result listener
-        (context as FragmentActivity).supportFragmentManager.setFragmentResultListener(KEY_DIRECTORY_SORT_ORDER, viewLifecycleOwner) { key: String, _: Bundle ->
-            if (key == KEY_DIRECTORY_SORT_ORDER) {
-                contentController.sortDirectoryArrayList()
-                recyclerAdapter.notifyItemRangeChanged(0, ContentController.directoryArrayList.size, false)
-            }
-        }
 
         // case launch application
         if (ContentController.directoryArrayList.size == 0) {

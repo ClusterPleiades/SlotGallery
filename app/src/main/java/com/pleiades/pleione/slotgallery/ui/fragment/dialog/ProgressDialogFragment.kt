@@ -13,6 +13,7 @@ import android.widget.ProgressBar
 import androidx.appcompat.app.AlertDialog
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_WIDTH_PERCENTAGE_DEFAULT
 import com.pleiades.pleione.slotgallery.Config.Companion.KEY_DIRECTORY_POSITION
+import com.pleiades.pleione.slotgallery.Config.Companion.REQUEST_KEY_COPY
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.controller.DeviceController
 
@@ -74,5 +75,10 @@ class ProgressDialogFragment(parentActivity: Activity) : androidx.fragment.app.D
         val resultBundle = Bundle()
         resultBundle.putInt(KEY_DIRECTORY_POSITION, directoryPosition)
         parentFragmentManager.setFragmentResult(KEY_DIRECTORY_POSITION, resultBundle)
+    }
+
+    fun setFragmentResult(){
+        // set fragment result
+        parentFragmentManager.setFragmentResult(REQUEST_KEY_COPY, Bundle())
     }
 }
