@@ -23,7 +23,7 @@ import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_URI
 import com.pleiades.pleione.slotgallery.R
 
 
-class VideoActivity : AppCompatActivity() {
+class SharedVideoActivity : AppCompatActivity() {
     private lateinit var toolbar: Toolbar
     private lateinit var toolbarLayoutParams: ViewGroup.MarginLayoutParams
     private var statusBarHeight = 0
@@ -59,45 +59,49 @@ class VideoActivity : AppCompatActivity() {
         // set toolbar margin
         setToolbarMargin(true)
 
-        // set title from intent extra
-        title = intent.getStringExtra(INTENT_EXTRA_NAME)
+        // check intent
+        if (intent.action == Intent.ACTION_VIEW) {
+            // set title from intent
+            title = intent.data.toString()
 
-        // initialize uri from intent extra
-        val uri = Uri.parse(intent.getStringExtra(INTENT_EXTRA_URI))
+            // initialize uri from intent
+            val uri = Uri.parse(intent.data.toString())
 
-        // initialize player
-        playerView = findViewById(R.id.player_video)
-        playerView.setOnClickListener { fullVideo() }
+            // initialize player
+            playerView = findViewById(R.id.player_video)
+            playerView.setOnClickListener { fullVideo() }
 
-        // initialize exoplayer
-        exoPlayer = ExoPlayer.Builder(this).build()
-        exoPlayer.addListener(object : Player.Listener {
-            override fun onPlaybackStateChanged(@Player.State state: Int) {
-                if (state == Player.STATE_ENDED) {
-                    // un full force
-                    isFull = true
-                    fullVideo()
+            // initialize exoplayer
+            exoPlayer = ExoPlayer.Builder(this).build()
+            exoPlayer.addListener(object : Player.Listener {
+                override fun onPlaybackStateChanged(@Player.State state: Int) {
+                    if (state == Player.STATE_ENDED) {
+                        // un full force
+                        isFull = true
+                        fullVideo()
+                    }
                 }
-            }
-        })
-        exoPlayer.setMediaItem(MediaItem.fromUri(uri))
+            })
+            exoPlayer.setMediaItem(MediaItem.fromUri(uri))
 
-        // set exoplayer as player
-        playerView.player = exoPlayer
+            // set exoplayer as player
+            playerView.player = exoPlayer
 
-        // initialize player view layout params
-        playerViewLayoutParams = playerView.layoutParams as ViewGroup.MarginLayoutParams
+            // initialize player view layout params
+            playerViewLayoutParams = playerView.layoutParams as ViewGroup.MarginLayoutParams
 
-        // initialize navigation bar height
-        val navigationBarHeightResId = resources.getIdentifier("navigation_bar_height", "dimen", "android")
-        navigationBarHeight = resources.getDimensionPixelSize(navigationBarHeightResId)
+            // initialize navigation bar height
+            val navigationBarHeightResId = resources.getIdentifier("navigation_bar_height", "dimen", "android")
+            navigationBarHeight = resources.getDimensionPixelSize(navigationBarHeightResId)
 
-        // set player view margin
-        setPlayerViewMargin(true)
+            // set player view margin
+            setPlayerViewMargin(true)
 
-        // play
-        exoPlayer.prepare()
-        exoPlayer.play()
+            // play
+            exoPlayer.prepare()
+            exoPlayer.play()
+        } else
+            finish()
     }
 
     override fun onResume() {

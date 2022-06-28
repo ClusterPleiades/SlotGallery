@@ -6,10 +6,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.provider.MediaStore
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.util.AttributeSet
+import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
@@ -23,6 +21,7 @@ import androidx.core.view.WindowCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
+import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.pleiades.pleione.slotgallery.Config.Companion.ACTIVITY_CODE_IMAGE
@@ -211,6 +210,7 @@ class ImageActivity : AppCompatActivity() {
         viewPager.offscreenPageLimit = 5
         viewPager.adapter = contentsPagerAdapter
         viewPager.setCurrentItem(contentPosition, false)
+        viewPager.requestDisallowInterceptTouchEvent(true)
 
         // initialize title edit text
         titleEditText = findViewById(R.id.title_appbar)
@@ -339,4 +339,17 @@ class ImageActivity : AppCompatActivity() {
             return directory.contentArrayList[position].uri.hashCode().toLong()
         }
     }
+
+//    inner class SingleSwipeViewPager : ViewPager2 {
+//        constructor(context: Context?) : super(context!!) {}
+//        constructor(context: Context?, attrs: AttributeSet?) : super(context!!, attrs) {}
+//
+//        override fun onTouchEvent(ev: MotionEvent): Boolean {
+//            return if (ev.pointerCount == 1) {
+//                super.onTouchEvent(ev)
+//            } else {
+//                true
+//            }
+//        }
+//    }
 }
