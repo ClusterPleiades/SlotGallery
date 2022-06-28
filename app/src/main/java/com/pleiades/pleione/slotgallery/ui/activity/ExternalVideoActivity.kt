@@ -23,7 +23,7 @@ import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_URI
 import com.pleiades.pleione.slotgallery.R
 
 
-class SharedVideoActivity : AppCompatActivity() {
+class ExternalVideoActivity : AppCompatActivity() {
     private lateinit var toolbar: Toolbar
     private lateinit var toolbarLayoutParams: ViewGroup.MarginLayoutParams
     private var statusBarHeight = 0
