@@ -5,7 +5,7 @@ Android Application for Custom Gallery
 ## Release
 <img src="https://user-images.githubusercontent.com/81938036/156864983-3da7004a-7b2e-4306-b834-ab99fe68de83.png" width="64">
 <a href="https://play.google.com/store/apps/details?id=com.pleiades.pleione.slotgallery">
-  <img src="https://img.shields.io/badge/Play Store-1.0.2-5383EC">
+  <img src="https://img.shields.io/badge/Play Store-1.2.0-5383EC">
 </a>
 <br><br>
 
