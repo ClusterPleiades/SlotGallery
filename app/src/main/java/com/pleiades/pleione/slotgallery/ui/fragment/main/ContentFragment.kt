@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
+import android.util.Log
 import android.view.*
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -262,7 +263,7 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
             // find directory
             var isFound = false
             for (i in ContentController.directoryArrayList.indices) {
-                if (ContentController.directoryArrayList[i].directoryPath == backupDirectory.directoryPath) {
+                if (ContentController.directoryArrayList[i].name == backupDirectory.name) {
                     directoryPosition = i
                     directory = ContentController.directoryArrayList[i]
                     isFound = true
