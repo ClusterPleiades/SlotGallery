@@ -50,9 +50,10 @@ class Config {
         const val SETTING_POSITION_DIRECTORY = 1
         const val PATH_PRIMARY = "primary:"
         const val PATH_DOWNLOAD = "Download"
+        const val PATH_SNAPSEED = "Snapseed"
         const val PATH_CAMERA = "DCIM/Camera"
         const val PATH_SCREENSHOTS = "Pictures/Screenshots"
-        const val COUNT_DEFAULT_DIRECTORY = 3
+        const val COUNT_DEFAULT_DIRECTORY = 4
 
         // prefs
         const val PREFS = "prefs"
@@ -60,6 +61,7 @@ class Config {
         const val KEY_SELECTED_SLOT_POSITION = "selected_slot"
         const val KEY_DIRECTORY_SORT_ORDER = "directory_sort_order"
         const val KEY_CONTENT_SORT_ORDER = "content_sort_order"
+        const val KEY_USER_LAST_VERSION_CODE = "last_version_code"
         const val SORT_POSITION_BY_NAME = 0
         const val SORT_POSITION_BY_NEWEST = 1
         const val SORT_POSITION_BY_OLDEST = 2
@@ -71,5 +73,8 @@ class Config {
         const val FORMAT_DATE = "yyyy-MM-dd"
         const val FORMAT_TIME = "HH:mm"
         const val NAME_DUMMY = "empty.png"
+
+        const val PACKAGE_NAME_EDIT = "com.niksoftware.snapseed"
+        const val STORE_URL_EDIT = "https://play.google.com/store/apps/details?id=com.niksoftware.snapseed"
     }
 }

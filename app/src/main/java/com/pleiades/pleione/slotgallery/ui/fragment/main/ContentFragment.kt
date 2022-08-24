@@ -263,7 +263,7 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
             // find directory
             var isFound = false
             for (i in ContentController.directoryArrayList.indices) {
-                if (ContentController.directoryArrayList[i].name == backupDirectory.name) {
+                if (ContentController.directoryArrayList[i].name == backupDirectory.name && ContentController.directoryArrayList[i].directoryPath == backupDirectory.directoryPath) {
                     directoryPosition = i
                     directory = ContentController.directoryArrayList[i]
                     isFound = true

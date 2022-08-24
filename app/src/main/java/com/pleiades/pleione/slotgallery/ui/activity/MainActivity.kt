@@ -2,6 +2,7 @@ package com.pleiades.pleione.slotgallery.ui.activity
 
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Environment
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -9,7 +10,8 @@ import com.pleiades.pleione.slotgallery.Config.Companion.ACTIVITY_CODE_IMAGE
 import com.pleiades.pleione.slotgallery.Config.Companion.ACTIVITY_CODE_MAIN
 import com.pleiades.pleione.slotgallery.Config.Companion.ACTIVITY_CODE_SETTING
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_PERMISSION
-import com.pleiades.pleione.slotgallery.Config.Companion.PERMISSION_STORAGE
+import com.pleiades.pleione.slotgallery.Config.Companion.KEY_USER_LAST_VERSION_CODE
+import com.pleiades.pleione.slotgallery.Config.Companion.PREFS
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.ui.fragment.dialog.DefaultDialogFragment
 import com.pleiades.pleione.slotgallery.ui.fragment.main.ContentFragment
@@ -33,11 +35,14 @@ class MainActivity : AppCompatActivity() {
         val appbar = findViewById<View>(R.id.appbar_main)
         val toolbar: Toolbar = appbar.findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
+
+        // update app version
+        updateAppVersion()
     }
 
     override fun onStart() {
         // check permission
-        if (checkSelfPermission(PERMISSION_STORAGE[0]) == PackageManager.PERMISSION_GRANTED) {
+        if (Environment.isExternalStorageManager()) {
             // add fragment
             if (!isFragmentAdded)
                 addFragment()
@@ -104,5 +109,32 @@ class MainActivity : AppCompatActivity() {
 
         // set is initialized true
         isFragmentAdded = true
+    }
+
+    // TODO check
+    private fun updateAppVersion() {
+        try {
+            val prefs = getSharedPreferences(PREFS, MODE_PRIVATE)
+            val editor = prefs.edit()
+
+            // initialize version code
+            val existVersionCode = prefs.getInt(KEY_USER_LAST_VERSION_CODE, 1)
+            val latestVersionCode = packageManager.getPackageInfo(packageName, 0).versionCode
+
+            // case version code is not latest
+            if (existVersionCode != latestVersionCode) {
+                // case prev 1.2.0 (add snapseed)
+                if (existVersionCode < 5) {
+                    editor.clear()
+                    editor.apply()
+                }
+
+                // apply app version
+                editor.putInt(KEY_USER_LAST_VERSION_CODE, latestVersionCode)
+                editor.apply()
+            }
+        } catch (e: Exception) {
+            // ignore exception block
+        }
     }
 }

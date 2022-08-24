@@ -4,9 +4,11 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.content.DialogInterface
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.provider.Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -42,7 +44,8 @@ class DefaultDialogFragment(private val type: Int) : androidx.fragment.app.Dialo
             dialogView.findViewById<View>(R.id.positive_dialog_default).setOnClickListener {
                 when (type) {
                     DIALOG_TYPE_PERMISSION -> {
-                        (context as Activity).requestPermissions(PERMISSION_STORAGE, REQUEST_CODE_PERMISSION)
+//                        (context as Activity).requestPermissions(PERMISSION_STORAGE, REQUEST_CODE_PERMISSION)
+                        startActivity(Intent(ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION))
                     }
                 }
                 dismiss()

@@ -4,9 +4,9 @@ import android.app.Activity
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.AttributeSet
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -21,7 +21,6 @@ import androidx.core.view.WindowCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
-import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.pleiades.pleione.slotgallery.Config.Companion.ACTIVITY_CODE_IMAGE
@@ -31,6 +30,8 @@ import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_POSITION_D
 import com.pleiades.pleione.slotgallery.Config.Companion.KEY_DIRECTORY_POSITION
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_IMAGE
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_VIDEO
+import com.pleiades.pleione.slotgallery.Config.Companion.PACKAGE_NAME_EDIT
+import com.pleiades.pleione.slotgallery.Config.Companion.STORE_URL_EDIT
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.controller.ContentController
 import com.pleiades.pleione.slotgallery.info.Directory
@@ -41,6 +42,7 @@ import com.pleiades.pleione.slotgallery.ui.fragment.main.ImageFragment
 
 class ImageActivity : AppCompatActivity() {
     private lateinit var copyResultLauncher: ActivityResultLauncher<Intent>
+    private lateinit var editResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var deleteResultLauncher: ActivityResultLauncher<IntentSenderRequest>
     private lateinit var renameResultLauncher: ActivityResultLauncher<IntentSenderRequest>
     private lateinit var viewPager: ViewPager2
@@ -108,6 +110,15 @@ class ImageActivity : AppCompatActivity() {
                         ContentController(this).copyContents(directoryPosition, toDirectoryPosition, setOf(viewPager.currentItem), progressDialogFragment)
                     }
                 }
+            }
+        }
+        editResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                // refresh snapseed
+                ContentController(this).refreshSnapseed()
+
+                // show toast
+                Toast.makeText(this, R.string.message_snapseed, Toast.LENGTH_SHORT).show()
             }
         }
         deleteResultLauncher = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result: ActivityResult ->
@@ -257,6 +268,32 @@ class ImageActivity : AppCompatActivity() {
             R.id.copy -> {
                 val intent = Intent(this, ChoiceActivity::class.java)
                 copyResultLauncher.launch(intent)
+            }
+            R.id.edit -> {
+                if (currentContent.isVideo) {
+                    // show toast
+                    Toast.makeText(this, R.string.message_error_edit_video, Toast.LENGTH_SHORT).show()
+                } else {
+                    // case snapseed not installed
+                    if (packageManager.getLaunchIntentForPackage(PACKAGE_NAME_EDIT) == null) {
+                        // open play store
+                        val intent = Intent(Intent.ACTION_VIEW).apply {
+                            data = Uri.parse(STORE_URL_EDIT)
+                        }
+                        startActivity(intent)
+                    }
+                    // case snapseed installed
+                    else{
+                        val editIntent = Intent().apply {
+                            action = Intent.ACTION_SEND
+                            putExtra(Intent.EXTRA_STREAM, currentContent.uri)
+                            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                            setPackage(PACKAGE_NAME_EDIT)
+                            type = MIME_TYPE_IMAGE
+                        }
+                        editResultLauncher.launch(Intent.createChooser(editIntent, getString(R.string.action_edit)))
+                    }
+                }
             }
             R.id.delete -> {
                 // initialize create delete request pending intent

@@ -11,11 +11,13 @@
 
     <!-- message -->
     <string name="message_saved">It\'s saved.</string>
+    <string name="message_snapseed">It\'s saved to Snapseed.</string>
     <string name="message_error_no_slot">Create a slot first.</string>
     <string name="message_error_format">Cannot change the format.</string>
     <string name="message_error_exist">The name already exists.</string>
     <string name="message_error_same_directory">Cannot choose the same directory.</string>
     <string name="message_error_default_directory">Cannot choose the default directory.</string>
+    <string name="message_error_edit_video">Cannot edit video.</string>
 
     <!-- action -->
     <string name="action_add">Add</string>
@@ -26,6 +28,7 @@
     <string name="action_select_all">Select All</string>
     <string name="action_share">Share</string>
     <string name="action_copy">Copy</string>
+    <string name="action_edit">Edit</string>
     <string name="action_move">Move</string>
     <string name="action_delete">Delete</string>
     <string name="action_save">Save</string>

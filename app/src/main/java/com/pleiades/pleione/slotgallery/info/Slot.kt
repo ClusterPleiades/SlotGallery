@@ -3,14 +3,16 @@ package com.pleiades.pleione.slotgallery.info
 import com.pleiades.pleione.slotgallery.Config.Companion.PATH_CAMERA
 import com.pleiades.pleione.slotgallery.Config.Companion.PATH_DOWNLOAD
 import com.pleiades.pleione.slotgallery.Config.Companion.PATH_SCREENSHOTS
+import com.pleiades.pleione.slotgallery.Config.Companion.PATH_SNAPSEED
 import java.util.*
 
 class Slot(var name: String) {
     val directoryPathLinkedList: LinkedList<DirectoryPath> = LinkedList()
-    val isVisible = arrayOf(true, true, true) // download, camera, screenshot
+    val isVisible = arrayOf(true, true, true, true) // download, snapseed, camera, screenshot
 
     init {
         directoryPathLinkedList.add(DirectoryPath(null, PATH_DOWNLOAD))
+        directoryPathLinkedList.add(DirectoryPath(null, PATH_SNAPSEED))
         directoryPathLinkedList.add(DirectoryPath(null, PATH_CAMERA))
         directoryPathLinkedList.add(DirectoryPath(null, PATH_SCREENSHOTS))
     }

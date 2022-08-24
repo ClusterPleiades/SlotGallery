@@ -12,6 +12,7 @@ import com.pleiades.pleione.slotgallery.Config.Companion.KEY_CONTENT_SORT_ORDER
 import com.pleiades.pleione.slotgallery.Config.Companion.KEY_DIRECTORY_SORT_ORDER
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_IMAGE
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_VIDEO
+import com.pleiades.pleione.slotgallery.Config.Companion.PATH_SNAPSEED
 import com.pleiades.pleione.slotgallery.Config.Companion.SORT_POSITION_BY_NAME
 import com.pleiades.pleione.slotgallery.Config.Companion.SORT_POSITION_BY_NEWEST
 import com.pleiades.pleione.slotgallery.Config.Companion.SORT_POSITION_BY_OLDEST
@@ -527,5 +528,45 @@ class ContentController(private val context: Context) {
                     progressDialogFragment.dismiss()
                 }
             })
+    }
+
+    fun refreshSnapseed(){
+        val directoryPath = Slot.DirectoryPath(null, PATH_SNAPSEED)
+        val directory = Directory(directoryPath)
+        val directoryRelativePath = directoryPath.lastPath.substringAfter(":") + "/"
+
+        val imageUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        val imageProjection = arrayOf(
+            MediaStore.Images.Media._ID,
+            MediaStore.Images.Media.DISPLAY_NAME,
+            MediaStore.Images.Media.DATE_MODIFIED,
+            MediaStore.Images.Media.RELATIVE_PATH
+        )
+        val imageSelection = "${MediaStore.Images.Media.RELATIVE_PATH} = ?"
+        val imageSelectionArgs = arrayOf(directoryRelativePath)
+        val imageCursor = context.contentResolver.query(imageUri, imageProjection, imageSelection, imageSelectionArgs, null)!!
+        while (imageCursor.moveToNext()) {
+            val id = imageCursor.getString(0)
+            val name = imageCursor.getString(1)
+            val date = imageCursor.getString(2).toLong()
+            val relativePath = imageCursor.getString(3)
+            val uri = Uri.withAppendedPath(imageUri, id.toString())
+
+            directory.date = date.coerceAtLeast(directory.date)
+            directory.contentArrayList.add(Directory.Content(false, id, name, "-", 0, 0, date, relativePath, uri, 0L))
+        }
+        imageCursor.close()
+
+        // sort content array list
+        for(i in directoryArrayList.indices){
+            if (directoryArrayList[i].name == directory.name && directoryArrayList[i].directoryPath == directory.directoryPath) {
+                directoryArrayList[i] = directory
+                sortContentArrayList(i)
+                break
+            }
+        }
+
+        // sort directory array list
+        sortDirectoryArrayList()
     }
 }
