@@ -39,8 +39,8 @@ class SettingFragment : Fragment() {
         // initialize setting recycler view
         val recyclerView = rootView.findViewById<RecyclerView>(R.id.recycler_setting)
         recyclerView.setHasFixedSize(true)
-        recyclerView.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
-        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = SettingRecyclerAdapter()
 
         return rootView

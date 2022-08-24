@@ -228,7 +228,7 @@ class ImageActivity : AppCompatActivity() {
         super.onResume()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         if (isEditFocused)
             menuInflater.inflate(R.menu.menu_image_edit, menu)
         else

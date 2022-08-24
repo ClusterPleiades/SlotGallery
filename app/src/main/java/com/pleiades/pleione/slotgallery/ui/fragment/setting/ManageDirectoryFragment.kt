@@ -121,8 +121,8 @@ class ManageDirectoryFragment : Fragment() {
         // initialize slot recycler view
         val recyclerView = rootView.findViewById<RecyclerView>(R.id.recycler_manage)
         recyclerView.setHasFixedSize(true)
-        recyclerView.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
-        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = recyclerAdapter
 
         return rootView

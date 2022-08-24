@@ -452,7 +452,7 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
             val selectedArray = selectedHashSet.toIntArray()
 
             // initialize content uri array list
-            val contentUriLinkedList: ArrayList<Uri> = ArrayList()
+            val contentUriArrayList: ArrayList<Uri> = ArrayList()
             var isContainVideo = false
             var isContainImage = false
             for (position in selectedArray) {
@@ -464,13 +464,13 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
                 else isContainImage = true
 
                 // add content uri
-                contentUriLinkedList.add(content.uri)
+                contentUriArrayList.add(content.uri)
             }
 
             // initialize share intent
             val shareIntent = Intent().apply {
                 action = Intent.ACTION_SEND_MULTIPLE
-                putParcelableArrayListExtra(Intent.EXTRA_STREAM, contentUriLinkedList)
+                putParcelableArrayListExtra(Intent.EXTRA_STREAM, contentUriArrayList)
                 type = if (isContainVideo && isContainImage) MIME_TYPE_ALL else if (isContainVideo) MIME_TYPE_VIDEO else MIME_TYPE_IMAGE
             }
             startActivity(Intent.createChooser(shareIntent, getString(R.string.action_share)))
@@ -481,14 +481,14 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
             val selectedArray = selectedHashSet.toIntArray()
 
             // initialize content uri array list
-            val contentUriLinkedList: ArrayList<Uri> = ArrayList()
+            val contentUriArrayList: ArrayList<Uri> = ArrayList()
             for (position in selectedArray) {
                 // add content uri
-                contentUriLinkedList.add(directory.contentArrayList[position].uri)
+                contentUriArrayList.add(directory.contentArrayList[position].uri)
             }
 
             // initialize create delete request pending intent
-            val pendingIntent = MediaStore.createDeleteRequest(requireContext().contentResolver, contentUriLinkedList)
+            val pendingIntent = MediaStore.createDeleteRequest(requireContext().contentResolver, contentUriArrayList)
             val intentSenderRequest = IntentSenderRequest.Builder(pendingIntent.intentSender).build()
 
             // launch intent sender request

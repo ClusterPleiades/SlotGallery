@@ -130,7 +130,7 @@ class VideoActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_video, menu)
         return super.onCreateOptionsMenu(menu)
     }
