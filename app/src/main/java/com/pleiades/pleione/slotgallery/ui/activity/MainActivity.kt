@@ -1,8 +1,8 @@
 package com.pleiades.pleione.slotgallery.ui.activity
 
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -11,6 +11,8 @@ import com.pleiades.pleione.slotgallery.Config.Companion.ACTIVITY_CODE_MAIN
 import com.pleiades.pleione.slotgallery.Config.Companion.ACTIVITY_CODE_SETTING
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_PERMISSION
 import com.pleiades.pleione.slotgallery.Config.Companion.KEY_USER_LAST_VERSION_CODE
+import com.pleiades.pleione.slotgallery.Config.Companion.PERMISSION_IMAGES_VIDEOS
+import com.pleiades.pleione.slotgallery.Config.Companion.PERMISSION_STORAGE
 import com.pleiades.pleione.slotgallery.Config.Companion.PREFS
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.ui.fragment.dialog.DefaultDialogFragment
@@ -42,7 +44,14 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         // check permission
-        if (Environment.isExternalStorageManager()) {
+        val isGranted =
+            if (Build.VERSION.SDK_INT >= 33)
+                checkSelfPermission(PERMISSION_IMAGES_VIDEOS[0]) == PackageManager.PERMISSION_GRANTED && checkSelfPermission(PERMISSION_IMAGES_VIDEOS[1]) == PackageManager.PERMISSION_GRANTED
+            else
+                checkSelfPermission(PERMISSION_STORAGE[0]) == PackageManager.PERMISSION_GRANTED
+
+        // case permission granted
+        if (isGranted) {
             // add fragment
             if (!isFragmentAdded)
                 addFragment()

@@ -6,9 +6,11 @@ class Config {
     companion object {
         // permission
         val PERMISSION_STORAGE = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+        val PERMISSION_IMAGES_VIDEOS = arrayOf(Manifest.permission.READ_MEDIA_IMAGES, Manifest.permission.READ_MEDIA_VIDEO)
 
         // request code
-        const val REQUEST_CODE_PERMISSION = 1000
+        const val REQUEST_CODE_PERMISSION_STORAGE = 1000
+        const val REQUEST_CODE_PERMISSION_IMAGES_VIDEOS = 1001
 
         // dialog
         const val DIALOG_TYPE_PERMISSION = 0
