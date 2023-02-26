@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.pleiades.pleione.slotgallery.Config.Companion.SETTING_POSITION_SLOT
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.controller.SlotController
+import com.pleiades.pleione.slotgallery.databinding.FragmentManageBinding
 import com.pleiades.pleione.slotgallery.info.Slot
 import java.util.*
 
@@ -26,15 +27,25 @@ class ManageSlotFragment : Fragment() {
         }
     }
 
-    private lateinit var rootView: View
+    private var _binding: FragmentManageBinding? = null
+    private val binding get() = _binding!!
 
     private lateinit var slotController: SlotController
     private lateinit var slotLinkedList: LinkedList<Slot>
     private lateinit var recyclerAdapter: ManageSlotRecyclerAdapter
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        // initialize root view
-        rootView = inflater.inflate(R.layout.fragment_manage, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        _binding = FragmentManageBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         // set title
         activity?.title = resources.getStringArray(R.array.setting)[SETTING_POSITION_SLOT]
@@ -52,13 +63,10 @@ class ManageSlotFragment : Fragment() {
         recyclerAdapter = ManageSlotRecyclerAdapter()
 
         // initialize slot recycler view
-        val recyclerView = rootView.findViewById<RecyclerView>(R.id.recycler_manage)
-        recyclerView.setHasFixedSize(true)
-        recyclerView.addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        recyclerView.adapter = recyclerAdapter
-
-        return rootView
+        binding.recyclerManage.setHasFixedSize(true)
+        binding.recyclerManage.addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
+        binding.recyclerManage.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerManage.adapter = recyclerAdapter
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

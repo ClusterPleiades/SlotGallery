@@ -45,6 +45,7 @@ import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.controller.ContentController
 import com.pleiades.pleione.slotgallery.controller.DeviceController
 import com.pleiades.pleione.slotgallery.controller.SlotController
+import com.pleiades.pleione.slotgallery.databinding.FragmentMainBinding
 import com.pleiades.pleione.slotgallery.info.Directory
 import com.pleiades.pleione.slotgallery.ui.activity.ChoiceActivity
 import com.pleiades.pleione.slotgallery.ui.activity.ImageActivity
@@ -61,7 +62,9 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
         }
     }
 
-    private lateinit var rootView: View
+    private var _binding: FragmentMainBinding? = null
+    private val binding get() = _binding!!
+
     private lateinit var imageResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var copyResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var deleteResultLauncher: ActivityResultLauncher<IntentSenderRequest>
@@ -69,13 +72,21 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
 
     private lateinit var slotController: SlotController
     private lateinit var contentController: ContentController
-    private lateinit var recyclerView: RecyclerView
     private lateinit var recyclerAdapter: DirectoryRecyclerAdapter
     private lateinit var dragSelectTouchListener: DragSelectTouchListener
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        // initialize root view
-        rootView = inflater.inflate(R.layout.fragment_main, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        _binding = FragmentMainBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         // set options menu
         setHasOptionsMenu(true)
@@ -190,15 +201,14 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
         contentController = ContentController(requireContext())
 
         // initialize directory recycler view
-        recyclerView = rootView.findViewById(R.id.recycler_thumbnail)
-        recyclerView.setHasFixedSize(true)
-        recyclerView.layoutManager = GridLayoutManager(context, SPAN_COUNT_CONTENT)
+        binding.recyclerThumbnail.setHasFixedSize(true)
+        binding.recyclerThumbnail.layoutManager = GridLayoutManager(context, SPAN_COUNT_CONTENT)
 
         // initialize recycler adapter
         recyclerAdapter = DirectoryRecyclerAdapter()
         recyclerAdapter.setHasStableIds(true)
         recyclerAdapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
-        recyclerView.adapter = recyclerAdapter
+        binding.recyclerThumbnail.adapter = recyclerAdapter
 
         // initialize drag selection listener
         val onDragSelectionListener = OnDragSelectListener { start: Int, end: Int, isSelected: Boolean ->
@@ -213,9 +223,7 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
             .withMaxScrollDistance(24)
 
         // add on item touch listener to recycler view
-        recyclerView.addOnItemTouchListener(dragSelectTouchListener)
-
-        return rootView
+        binding.recyclerThumbnail.addOnItemTouchListener(dragSelectTouchListener)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

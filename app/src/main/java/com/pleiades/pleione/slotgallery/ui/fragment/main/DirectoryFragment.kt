@@ -36,6 +36,7 @@ import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.controller.ContentController
 import com.pleiades.pleione.slotgallery.controller.DeviceController
 import com.pleiades.pleione.slotgallery.controller.SlotController
+import com.pleiades.pleione.slotgallery.databinding.FragmentMainBinding
 import com.pleiades.pleione.slotgallery.info.Directory
 import com.pleiades.pleione.slotgallery.ui.activity.ChoiceActivity
 import com.pleiades.pleione.slotgallery.ui.activity.SettingActivity
@@ -50,19 +51,29 @@ class DirectoryFragment : Fragment() {
         }
     }
 
-    private lateinit var rootView: View
+    private var _binding: FragmentMainBinding? = null
+    private val binding get() = _binding!!
+
     private lateinit var copyResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var deleteResultLauncher: ActivityResultLauncher<IntentSenderRequest>
 
     private lateinit var slotController: SlotController
     private lateinit var contentController: ContentController
-    private lateinit var recyclerView: RecyclerView
     private lateinit var recyclerAdapter: DirectoryRecyclerAdapter
     private lateinit var dragSelectTouchListener: DragSelectTouchListener
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        // initialize root view
-        rootView = inflater.inflate(R.layout.fragment_main, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        _binding = FragmentMainBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         // set options menu
         setHasOptionsMenu(true)
@@ -155,15 +166,14 @@ class DirectoryFragment : Fragment() {
         contentController = ContentController(requireContext())
 
         // initialize directory recycler view
-        recyclerView = rootView.findViewById(R.id.recycler_thumbnail)
-        recyclerView.setHasFixedSize(true)
-        recyclerView.layoutManager = GridLayoutManager(context, SPAN_COUNT_DIRECTORY)
+        binding.recyclerThumbnail.setHasFixedSize(true)
+        binding.recyclerThumbnail.layoutManager = GridLayoutManager(context, SPAN_COUNT_DIRECTORY)
 
         // initialize recycler adapter
         recyclerAdapter = DirectoryRecyclerAdapter()
         recyclerAdapter.setHasStableIds(true)
         recyclerAdapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
-        recyclerView.adapter = recyclerAdapter
+        binding.recyclerThumbnail.adapter = recyclerAdapter
 
         // initialize drag selection listener
         val onDragSelectionListener = OnDragSelectListener { start: Int, end: Int, isSelected: Boolean ->
@@ -178,15 +188,13 @@ class DirectoryFragment : Fragment() {
             .withMaxScrollDistance(24)
 
         // add on item touch listener to recycler view
-        recyclerView.addOnItemTouchListener(dragSelectTouchListener)
+        binding.recyclerThumbnail.addOnItemTouchListener(dragSelectTouchListener)
 
         // case launch application
         if (ContentController.directoryArrayList.size == 0) {
             // refresh
             refresh()
         }
-
-        return rootView
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -249,16 +257,15 @@ class DirectoryFragment : Fragment() {
         Handler(Looper.myLooper()!!).post {
             // check is content changed
             val selectedSlot = slotController.getSelectedSlot()
-            val messageTextView = rootView.findViewById<TextView>(R.id.message_main)
 
             // case no slot
             if (selectedSlot == null) {
-                messageTextView.setText(R.string.message_error_no_slot)
-                messageTextView.visibility = VISIBLE
-                recyclerView.visibility = INVISIBLE
+                binding.messageMain.setText(R.string.message_error_no_slot)
+                binding.messageMain.visibility = VISIBLE
+                binding.recyclerThumbnail.visibility = INVISIBLE
             } else {
-                messageTextView.visibility = GONE
-                recyclerView.visibility = VISIBLE
+                binding.messageMain.visibility = GONE
+                binding.recyclerThumbnail.visibility = VISIBLE
 
                 // backup directory array list
                 val backupDirectoryArrayList: ArrayList<Directory> = ArrayList()

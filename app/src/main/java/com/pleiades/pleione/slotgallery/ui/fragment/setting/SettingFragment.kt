@@ -15,6 +15,8 @@ import com.pleiades.pleione.slotgallery.Config.Companion.SETTING_POSITION_DIRECT
 import com.pleiades.pleione.slotgallery.Config.Companion.SETTING_POSITION_SLOT
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.controller.SlotController
+import com.pleiades.pleione.slotgallery.databinding.FragmentManageBinding
+import com.pleiades.pleione.slotgallery.databinding.FragmentSettingBinding
 
 class SettingFragment : Fragment() {
     companion object {
@@ -23,12 +25,23 @@ class SettingFragment : Fragment() {
         }
     }
 
-    private lateinit var rootView: View
+    private var _binding: FragmentSettingBinding? = null
+    private val binding get() = _binding!!
+
     private lateinit var settingArray: Array<String>
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        // initialize root view
-        rootView = inflater.inflate(R.layout.fragment_setting, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        _binding = FragmentSettingBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         // set title
         activity?.title = getString(R.string.label_setting)
@@ -37,13 +50,10 @@ class SettingFragment : Fragment() {
         settingArray = resources.getStringArray(R.array.setting)
 
         // initialize setting recycler view
-        val recyclerView = rootView.findViewById<RecyclerView>(R.id.recycler_setting)
-        recyclerView.setHasFixedSize(true)
-        recyclerView.addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        recyclerView.adapter = SettingRecyclerAdapter()
-
-        return rootView
+        binding.recyclerSetting.setHasFixedSize(true)
+        binding.recyclerSetting.addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
+        binding.recyclerSetting.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerSetting.adapter = SettingRecyclerAdapter()
     }
 
     inner class SettingRecyclerAdapter : RecyclerView.Adapter<SettingRecyclerAdapter.SettingViewHolder>() {
