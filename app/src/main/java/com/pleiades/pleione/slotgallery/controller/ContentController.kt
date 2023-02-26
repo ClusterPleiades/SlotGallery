@@ -16,17 +16,17 @@ import com.pleiades.pleione.slotgallery.Config.Companion.PATH_SNAPSEED
 import com.pleiades.pleione.slotgallery.Config.Companion.SORT_POSITION_BY_NAME
 import com.pleiades.pleione.slotgallery.Config.Companion.SORT_POSITION_BY_NEWEST
 import com.pleiades.pleione.slotgallery.Config.Companion.SORT_POSITION_BY_OLDEST
+import com.pleiades.pleione.slotgallery.controller.ContentController.Companion.directoryArrayList
 import com.pleiades.pleione.slotgallery.info.Directory
 import com.pleiades.pleione.slotgallery.info.Slot
 import com.pleiades.pleione.slotgallery.ui.fragment.dialog.ProgressDialogFragment
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.core.ObservableEmitter
-import io.reactivex.rxjava3.core.Observer
-import io.reactivex.rxjava3.disposables.Disposable
-import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.BufferedInputStream
 import java.io.BufferedOutputStream
+import java.io.IOException
 import java.io.InputStream
 import java.text.CharacterIterator
 import java.text.StringCharacterIterator
@@ -82,7 +82,8 @@ class ContentController(private val context: Context) {
             MediaStore.Images.Media.DATE_MODIFIED,
             MediaStore.Images.Media.RELATIVE_PATH
         )
-        val imageSelection = if (allowSubDirectory) "${MediaStore.Images.Media.RELATIVE_PATH} LIKE ?" else "${MediaStore.Images.Media.RELATIVE_PATH} = ?"
+        val imageSelection =
+            if (allowSubDirectory) "${MediaStore.Images.Media.RELATIVE_PATH} LIKE ?" else "${MediaStore.Images.Media.RELATIVE_PATH} = ?"
         val imageSelectionArgs = if (allowSubDirectory) arrayOf("$directoryRelativePath%") else arrayOf(directoryRelativePath)
 
         // initialize image cursor
@@ -130,7 +131,8 @@ class ContentController(private val context: Context) {
             MediaStore.Video.Media.RELATIVE_PATH,
             MediaStore.Video.Media.DURATION
         )
-        val videoSelection = if (allowSubDirectory) "${MediaStore.Video.Media.RELATIVE_PATH} LIKE ?" else "${MediaStore.Video.Media.RELATIVE_PATH} = ?"
+        val videoSelection =
+            if (allowSubDirectory) "${MediaStore.Video.Media.RELATIVE_PATH} LIKE ?" else "${MediaStore.Video.Media.RELATIVE_PATH} = ?"
         val videoSelectionArgs = if (allowSubDirectory) arrayOf("$directoryRelativePath%") else arrayOf(directoryRelativePath)
 
         // initialize video cursor
@@ -216,197 +218,49 @@ class ContentController(private val context: Context) {
         }
     }
 
-    fun copyDirectories(toDirectoryPosition: Int, fromDirectoryPositionHashSet: HashSet<Int>, progressDialogFragment: ProgressDialogFragment) {
-        Observable.create { emitter: ObservableEmitter<String> ->
-            // set progressbar attributes
-            var max = 0
-            for (fromDirectoryPosition in fromDirectoryPositionHashSet)
-                max += directoryArrayList[fromDirectoryPosition].contentArrayList.size
-            progressDialogFragment.progressBar.max = max
+    suspend fun copyDirectories(
+        toDirectoryPosition: Int,
+        fromDirectoryPositionHashSet: HashSet<Int>,
+        progressDialogFragment: ProgressDialogFragment
+    ) {
+        // set progressbar attributes
+        var max = 0
+        for (fromDirectoryPosition in fromDirectoryPositionHashSet)
+            max += directoryArrayList[fromDirectoryPosition].contentArrayList.size
+        progressDialogFragment.progressBar.max = max
 
-            // initialize to directory document file
-            var toDirectory = directoryArrayList[toDirectoryPosition]
-            val toDirectoryPath = toDirectory.directoryPath
-            val toDirectoryRootUri = Uri.parse(toDirectoryPath.rootUriString)
-            val toDirectoryRootLastPath = toDirectoryRootUri.lastPathSegment!!
-            var toDirectoryDocumentFile = DocumentFile.fromTreeUri(context, toDirectoryRootUri)!!
-            if (toDirectoryPath.lastPath != toDirectoryRootLastPath) {
-                val toDirectoryRelativePathList = toDirectoryPath.lastPath.substringAfter("$toDirectoryRootLastPath/").split("/")
-                for (toDirectoryRelativePath in toDirectoryRelativePathList)
-                    toDirectoryDocumentFile = toDirectoryDocumentFile.findFile(toDirectoryRelativePath) ?: toDirectoryDocumentFile.createDirectory(toDirectoryRelativePath)!!
-            }
+        // initialize to directory document file
+        var toDirectory = directoryArrayList[toDirectoryPosition]
+        val toDirectoryPath = toDirectory.directoryPath
+        val toDirectoryRootUri = Uri.parse(toDirectoryPath.rootUriString)
+        val toDirectoryRootLastPath = toDirectoryRootUri.lastPathSegment!!
+        var toDirectoryDocumentFile = DocumentFile.fromTreeUri(context, toDirectoryRootUri)!!
+        if (toDirectoryPath.lastPath != toDirectoryRootLastPath) {
+            val toDirectoryRelativePathList = toDirectoryPath.lastPath.substringAfter("$toDirectoryRootLastPath/").split("/")
+            for (toDirectoryRelativePath in toDirectoryRelativePathList)
+                toDirectoryDocumentFile = toDirectoryDocumentFile.findFile(toDirectoryRelativePath) ?: toDirectoryDocumentFile.createDirectory(
+                    toDirectoryRelativePath
+                )!!
+        }
 
-            // initialize to directory file name hash set
-            val toDirectoryFileNameHashSet: HashSet<String> = HashSet()
-            for (documentFile in toDirectoryDocumentFile.listFiles())
-                if (documentFile.name != null)
-                    toDirectoryFileNameHashSet.add(documentFile.name!!)
+        // initialize to directory file name hash set
+        val toDirectoryFileNameHashSet: HashSet<String> = HashSet()
+        for (documentFile in toDirectoryDocumentFile.listFiles())
+            if (documentFile.name != null)
+                toDirectoryFileNameHashSet.add(documentFile.name!!)
 
-            // copy directories
-            for (fromDirectoryPosition in fromDirectoryPositionHashSet) {
-                // case is canceled
-                if (progressDialogFragment.isCanceled)
-                    break
-
-                // copy contents
-                val fromDirectory = directoryArrayList[fromDirectoryPosition]
-                for (content in fromDirectory.contentArrayList) {
-                    // case is canceled
-                    if (progressDialogFragment.isCanceled)
-                        break
-
-                    // initialize to name
-                    val preName = content.name.substringBeforeLast(".")
-                    val postName = content.name.substringAfterLast(".")
-                    val isValidFormat = preName != postName
-                    var toName = content.name
-                    var index = 1
-                    while (toDirectoryFileNameHashSet.contains(toName)) {
-                        toName =
-                            if (isValidFormat)
-                                "$preName ($index).$postName"
-                            else
-                                "${content.name} ($index)"
-                        index++
-                    }
-                    toDirectoryFileNameHashSet.add(toName)
-
-                    // initialize content document file
-                    val mimeType = if (content.isVideo) MIME_TYPE_VIDEO else MIME_TYPE_IMAGE
-                    val contentDocumentFile = toDirectoryDocumentFile.createFile(mimeType, toName)!!
-
-                    try {
-                        // save content
-                        val inputStream: InputStream = context.contentResolver.openInputStream(content.uri)!!
-                        val bufferedInputStream = BufferedInputStream(inputStream)
-                        val outputStream = context.contentResolver.openOutputStream(contentDocumentFile.uri)!!
-                        val bufferedOutputStream = BufferedOutputStream(outputStream)
-
-                        var read: Int
-                        while (bufferedInputStream.read().also { read = it } != -1) {
-                            bufferedOutputStream.write(read)
-                        }
-
-                        bufferedInputStream.close()
-                        bufferedOutputStream.flush()
-                        bufferedOutputStream.close()
-                        inputStream.close()
-                        outputStream.flush()
-                        outputStream.close()
-
-                        // scan media
-                        MediaScannerConnection.scanFile(context, arrayOf(contentDocumentFile.uri.toString()), arrayOf(mimeType), null)
-                    } catch (e: Exception) {
-                    } finally {
-                        progressDialogFragment.progressBar.progress++
-                    }
-                }
-            }
-
-            // refresh to directory
-            toDirectory = Directory(toDirectoryPath)
-            val toDirectoryRelativePath = toDirectoryPath.lastPath.substringAfter(":") + "/"
-
-            val imageUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-            val imageProjection = arrayOf(
-                MediaStore.Images.Media._ID,
-                MediaStore.Images.Media.DISPLAY_NAME,
-                MediaStore.Images.Media.DATE_MODIFIED,
-                MediaStore.Images.Media.RELATIVE_PATH
-            )
-            val imageSelection = "${MediaStore.Images.Media.RELATIVE_PATH} = ?"
-            val imageSelectionArgs = arrayOf(toDirectoryRelativePath)
-            val imageCursor = context.contentResolver.query(imageUri, imageProjection, imageSelection, imageSelectionArgs, null)!!
-            while (imageCursor.moveToNext()) {
-                val id = imageCursor.getString(0)
-                val name = imageCursor.getString(1)
-                val date = imageCursor.getString(2).toLong()
-                val relativePath = imageCursor.getString(3)
-                val uri = Uri.withAppendedPath(imageUri, id.toString())
-
-                toDirectory.date = date.coerceAtLeast(toDirectory.date)
-                toDirectory.contentArrayList.add(Directory.Content(false, id, name, "-", 0, 0, date, relativePath, uri, 0L))
-            }
-            imageCursor.close()
-
-            val videoUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
-            val videoProjection = arrayOf(
-                MediaStore.Video.Media._ID,
-                MediaStore.Video.Media.DISPLAY_NAME,
-                MediaStore.Video.Media.DATE_MODIFIED,
-                MediaStore.Video.Media.RELATIVE_PATH
-            )
-            val videoSelection = "${MediaStore.Video.Media.RELATIVE_PATH} = ?"
-            val videoSelectionArgs = arrayOf(toDirectoryRelativePath)
-            val videoCursor = context.contentResolver.query(videoUri, videoProjection, videoSelection, videoSelectionArgs, null)!!
-            while (videoCursor.moveToNext()) {
-                val id = videoCursor.getString(0)
-                val name = videoCursor.getString(1)
-                val date = videoCursor.getString(2).toLong()
-                val relativePath = videoCursor.getString(3)
-                val uri = Uri.withAppendedPath(videoUri, id.toString())
-
-                toDirectory.date = date.coerceAtLeast(toDirectory.date)
-                toDirectory.contentArrayList.add(Directory.Content(true, id, name, "-", 0, 0, date, relativePath, uri, 0L))
-            }
-            videoCursor.close()
-
-            // sort content array list
-            directoryArrayList[toDirectoryPosition] = toDirectory
-            sortContentArrayList(toDirectoryPosition)
-
-            // set progress dialog fragment result
-            progressDialogFragment.setFragmentResult()
-
-            // on complete
-            emitter.onComplete()
-        }.subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : Observer<String> {
-                override fun onSubscribe(d: Disposable) {}
-
-                override fun onNext(t: String) {}
-
-                override fun onError(e: Throwable) {}
-
-                override fun onComplete() {
-                    progressDialogFragment.dismiss()
-                }
-            })
-    }
-
-    fun copyContents(fromDirectoryPosition: Int, toDirectoryPosition: Int, contentPositionSet: Collection<Int>, progressDialogFragment: ProgressDialogFragment) {
-        Observable.create { emitter: ObservableEmitter<String> ->
-            // set progressbar attributes
-            progressDialogFragment.progressBar.max = contentPositionSet.size
-
-            // initialize to directory document file
-            var toDirectory = directoryArrayList[toDirectoryPosition]
-            val toDirectoryPath = toDirectory.directoryPath
-            val toDirectoryRootUri = Uri.parse(toDirectoryPath.rootUriString)
-            val toDirectoryRootLastPath = toDirectoryRootUri.lastPathSegment!!
-            var toDirectoryDocumentFile = DocumentFile.fromTreeUri(context, toDirectoryRootUri)!!
-            if (toDirectoryPath.lastPath != toDirectoryRootLastPath) {
-                val toDirectoryRelativePathList = toDirectoryPath.lastPath.substringAfter("$toDirectoryRootLastPath/").split("/")
-                for (toDirectoryRelativePath in toDirectoryRelativePathList)
-                    toDirectoryDocumentFile = toDirectoryDocumentFile.findFile(toDirectoryRelativePath) ?: toDirectoryDocumentFile.createDirectory(toDirectoryRelativePath)!!
-            }
-
-            // initialize to directory file name hash set
-            val toDirectoryFileNameHashSet: HashSet<String> = HashSet()
-            for (documentFile in toDirectoryDocumentFile.listFiles())
-                if (documentFile.name != null)
-                    toDirectoryFileNameHashSet.add(documentFile.name!!)
+        // copy directories
+        for (fromDirectoryPosition in fromDirectoryPositionHashSet) {
+            // case is canceled
+            if (progressDialogFragment.isCanceled)
+                break
 
             // copy contents
             val fromDirectory = directoryArrayList[fromDirectoryPosition]
-            for (contentPosition in contentPositionSet) {
+            for (content in fromDirectory.contentArrayList) {
                 // case is canceled
                 if (progressDialogFragment.isCanceled)
                     break
-
-                // initialize content
-                val content = fromDirectory.contentArrayList[contentPosition]
 
                 // initialize to name
                 val preName = content.name.substringBeforeLast(".")
@@ -428,6 +282,156 @@ class ContentController(private val context: Context) {
                 val mimeType = if (content.isVideo) MIME_TYPE_VIDEO else MIME_TYPE_IMAGE
                 val contentDocumentFile = toDirectoryDocumentFile.createFile(mimeType, toName)!!
 
+                val temp = withContext(Dispatchers.IO) {
+                    try {
+                        // save content
+                        val inputStream: InputStream = context.contentResolver.openInputStream(content.uri)!!
+                        val bufferedInputStream = BufferedInputStream(inputStream)
+                        val outputStream = context.contentResolver.openOutputStream(contentDocumentFile.uri)!!
+                        val bufferedOutputStream = BufferedOutputStream(outputStream)
+
+                        var read: Int
+                        while (bufferedInputStream.read().also { read = it } != -1) {
+                            bufferedOutputStream.write(read)
+                        }
+
+                        bufferedInputStream.close()
+                        bufferedOutputStream.flush()
+                        bufferedOutputStream.close()
+                        inputStream.close()
+                        outputStream.flush()
+                        outputStream.close()
+
+                        // scan media
+                        MediaScannerConnection.scanFile(context, arrayOf(contentDocumentFile.uri.toString()), arrayOf(mimeType), null)
+                    } catch (ioException: IOException) {
+                        ioException.printStackTrace()
+                    } finally {
+                        progressDialogFragment.progressBar.progress++
+                    }
+                }
+            }
+        }
+
+        // refresh to directory
+        toDirectory = Directory(toDirectoryPath)
+        val toDirectoryRelativePath = toDirectoryPath.lastPath.substringAfter(":") + "/"
+
+        val imageUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        val imageProjection = arrayOf(
+            MediaStore.Images.Media._ID,
+            MediaStore.Images.Media.DISPLAY_NAME,
+            MediaStore.Images.Media.DATE_MODIFIED,
+            MediaStore.Images.Media.RELATIVE_PATH
+        )
+        val imageSelection = "${MediaStore.Images.Media.RELATIVE_PATH} = ?"
+        val imageSelectionArgs = arrayOf(toDirectoryRelativePath)
+        val imageCursor = context.contentResolver.query(imageUri, imageProjection, imageSelection, imageSelectionArgs, null)!!
+        while (imageCursor.moveToNext()) {
+            val id = imageCursor.getString(0)
+            val name = imageCursor.getString(1)
+            val date = imageCursor.getString(2).toLong()
+            val relativePath = imageCursor.getString(3)
+            val uri = Uri.withAppendedPath(imageUri, id.toString())
+
+            toDirectory.date = date.coerceAtLeast(toDirectory.date)
+            toDirectory.contentArrayList.add(Directory.Content(false, id, name, "-", 0, 0, date, relativePath, uri, 0L))
+        }
+        imageCursor.close()
+
+        val videoUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+        val videoProjection = arrayOf(
+            MediaStore.Video.Media._ID,
+            MediaStore.Video.Media.DISPLAY_NAME,
+            MediaStore.Video.Media.DATE_MODIFIED,
+            MediaStore.Video.Media.RELATIVE_PATH
+        )
+        val videoSelection = "${MediaStore.Video.Media.RELATIVE_PATH} = ?"
+        val videoSelectionArgs = arrayOf(toDirectoryRelativePath)
+        val videoCursor = context.contentResolver.query(videoUri, videoProjection, videoSelection, videoSelectionArgs, null)!!
+        while (videoCursor.moveToNext()) {
+            val id = videoCursor.getString(0)
+            val name = videoCursor.getString(1)
+            val date = videoCursor.getString(2).toLong()
+            val relativePath = videoCursor.getString(3)
+            val uri = Uri.withAppendedPath(videoUri, id.toString())
+
+            toDirectory.date = date.coerceAtLeast(toDirectory.date)
+            toDirectory.contentArrayList.add(Directory.Content(true, id, name, "-", 0, 0, date, relativePath, uri, 0L))
+        }
+        videoCursor.close()
+
+        // sort content array list
+        directoryArrayList[toDirectoryPosition] = toDirectory
+        sortContentArrayList(toDirectoryPosition)
+
+        // set progress dialog fragment result
+        progressDialogFragment.setFragmentResult()
+
+        // on complete
+        progressDialogFragment.dismiss()
+    }
+
+    suspend fun copyContents(
+        fromDirectoryPosition: Int,
+        toDirectoryPosition: Int,
+        contentPositionSet: Collection<Int>,
+        progressDialogFragment: ProgressDialogFragment
+    ) {
+        // set progressbar attributes
+        progressDialogFragment.progressBar.max = contentPositionSet.size
+
+        // initialize to directory document file
+        var toDirectory = directoryArrayList[toDirectoryPosition]
+        val toDirectoryPath = toDirectory.directoryPath
+        val toDirectoryRootUri = Uri.parse(toDirectoryPath.rootUriString)
+        val toDirectoryRootLastPath = toDirectoryRootUri.lastPathSegment!!
+        var toDirectoryDocumentFile = DocumentFile.fromTreeUri(context, toDirectoryRootUri)!!
+        if (toDirectoryPath.lastPath != toDirectoryRootLastPath) {
+            val toDirectoryRelativePathList = toDirectoryPath.lastPath.substringAfter("$toDirectoryRootLastPath/").split("/")
+            for (toDirectoryRelativePath in toDirectoryRelativePathList)
+                toDirectoryDocumentFile = toDirectoryDocumentFile.findFile(toDirectoryRelativePath) ?: toDirectoryDocumentFile.createDirectory(
+                    toDirectoryRelativePath
+                )!!
+        }
+
+        // initialize to directory file name hash set
+        val toDirectoryFileNameHashSet: HashSet<String> = HashSet()
+        for (documentFile in toDirectoryDocumentFile.listFiles())
+            if (documentFile.name != null)
+                toDirectoryFileNameHashSet.add(documentFile.name!!)
+
+        // copy contents
+        val fromDirectory = directoryArrayList[fromDirectoryPosition]
+        for (contentPosition in contentPositionSet) {
+            // case is canceled
+            if (progressDialogFragment.isCanceled)
+                break
+
+            // initialize content
+            val content = fromDirectory.contentArrayList[contentPosition]
+
+            // initialize to name
+            val preName = content.name.substringBeforeLast(".")
+            val postName = content.name.substringAfterLast(".")
+            val isValidFormat = preName != postName
+            var toName = content.name
+            var index = 1
+            while (toDirectoryFileNameHashSet.contains(toName)) {
+                toName =
+                    if (isValidFormat)
+                        "$preName ($index).$postName"
+                    else
+                        "${content.name} ($index)"
+                index++
+            }
+            toDirectoryFileNameHashSet.add(toName)
+
+            // initialize content document file
+            val mimeType = if (content.isVideo) MIME_TYPE_VIDEO else MIME_TYPE_IMAGE
+            val contentDocumentFile = toDirectoryDocumentFile.createFile(mimeType, toName)!!
+
+            withContext(Dispatchers.IO) {
                 try {
                     // save content
                     val inputStream: InputStream = context.contentResolver.openInputStream(content.uri)!!
@@ -449,88 +453,77 @@ class ContentController(private val context: Context) {
 
                     // scan media
                     MediaScannerConnection.scanFile(context, arrayOf(contentDocumentFile.uri.toString()), arrayOf(mimeType), null)
-                } catch (e: Exception) {
+                } catch (ioException: IOException) {
+                    ioException.printStackTrace()
                 } finally {
                     progressDialogFragment.progressBar.progress++
                 }
             }
+        }
 
-            // refresh to directory
-            toDirectory = Directory(toDirectoryPath)
-            val toDirectoryRelativePath = toDirectoryPath.lastPath.substringAfter(":") + "/"
+        // refresh to directory
+        toDirectory = Directory(toDirectoryPath)
+        val toDirectoryRelativePath = toDirectoryPath.lastPath.substringAfter(":") + "/"
 
-            val imageUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-            val imageProjection = arrayOf(
-                MediaStore.Images.Media._ID,
-                MediaStore.Images.Media.DISPLAY_NAME,
-                MediaStore.Images.Media.DATE_MODIFIED,
-                MediaStore.Images.Media.RELATIVE_PATH
-            )
-            val imageSelection = "${MediaStore.Images.Media.RELATIVE_PATH} = ?"
-            val imageSelectionArgs = arrayOf(toDirectoryRelativePath)
-            val imageCursor = context.contentResolver.query(imageUri, imageProjection, imageSelection, imageSelectionArgs, null)!!
-            while (imageCursor.moveToNext()) {
-                val id = imageCursor.getString(0)
-                val name = imageCursor.getString(1)
-                val date = imageCursor.getString(2).toLong()
-                val relativePath = imageCursor.getString(3)
-                val uri = Uri.withAppendedPath(imageUri, id.toString())
+        val imageUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        val imageProjection = arrayOf(
+            MediaStore.Images.Media._ID,
+            MediaStore.Images.Media.DISPLAY_NAME,
+            MediaStore.Images.Media.DATE_MODIFIED,
+            MediaStore.Images.Media.RELATIVE_PATH
+        )
+        val imageSelection = "${MediaStore.Images.Media.RELATIVE_PATH} = ?"
+        val imageSelectionArgs = arrayOf(toDirectoryRelativePath)
+        val imageCursor = context.contentResolver.query(imageUri, imageProjection, imageSelection, imageSelectionArgs, null)!!
+        while (imageCursor.moveToNext()) {
+            val id = imageCursor.getString(0)
+            val name = imageCursor.getString(1)
+            val date = imageCursor.getString(2).toLong()
+            val relativePath = imageCursor.getString(3)
+            val uri = Uri.withAppendedPath(imageUri, id.toString())
 
-                toDirectory.date = date.coerceAtLeast(toDirectory.date)
-                toDirectory.contentArrayList.add(Directory.Content(false, id, name, "-", 0, 0, date, relativePath, uri, 0L))
-            }
-            imageCursor.close()
+            toDirectory.date = date.coerceAtLeast(toDirectory.date)
+            toDirectory.contentArrayList.add(Directory.Content(false, id, name, "-", 0, 0, date, relativePath, uri, 0L))
+        }
+        imageCursor.close()
 
-            val videoUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
-            val videoProjection = arrayOf(
-                MediaStore.Video.Media._ID,
-                MediaStore.Video.Media.DISPLAY_NAME,
-                MediaStore.Video.Media.DATE_MODIFIED,
-                MediaStore.Video.Media.RELATIVE_PATH
-            )
-            val videoSelection = "${MediaStore.Video.Media.RELATIVE_PATH} = ?"
-            val videoSelectionArgs = arrayOf(toDirectoryRelativePath)
-            val videoCursor = context.contentResolver.query(videoUri, videoProjection, videoSelection, videoSelectionArgs, null)!!
-            while (videoCursor.moveToNext()) {
-                val id = videoCursor.getString(0)
-                val name = videoCursor.getString(1)
-                val date = videoCursor.getString(2).toLong()
-                val relativePath = videoCursor.getString(3)
-                val uri = Uri.withAppendedPath(videoUri, id.toString())
+        val videoUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+        val videoProjection = arrayOf(
+            MediaStore.Video.Media._ID,
+            MediaStore.Video.Media.DISPLAY_NAME,
+            MediaStore.Video.Media.DATE_MODIFIED,
+            MediaStore.Video.Media.RELATIVE_PATH
+        )
+        val videoSelection = "${MediaStore.Video.Media.RELATIVE_PATH} = ?"
+        val videoSelectionArgs = arrayOf(toDirectoryRelativePath)
+        val videoCursor = context.contentResolver.query(videoUri, videoProjection, videoSelection, videoSelectionArgs, null)!!
+        while (videoCursor.moveToNext()) {
+            val id = videoCursor.getString(0)
+            val name = videoCursor.getString(1)
+            val date = videoCursor.getString(2).toLong()
+            val relativePath = videoCursor.getString(3)
+            val uri = Uri.withAppendedPath(videoUri, id.toString())
 
-                toDirectory.date = date.coerceAtLeast(toDirectory.date)
-                toDirectory.contentArrayList.add(Directory.Content(true, id, name, "-", 0, 0, date, relativePath, uri, 0L))
-            }
-            videoCursor.close()
+            toDirectory.date = date.coerceAtLeast(toDirectory.date)
+            toDirectory.contentArrayList.add(Directory.Content(true, id, name, "-", 0, 0, date, relativePath, uri, 0L))
+        }
+        videoCursor.close()
 
-            // sort content array list
-            directoryArrayList[toDirectoryPosition] = toDirectory
-            sortContentArrayList(toDirectoryPosition)
+        // sort content array list
+        directoryArrayList[toDirectoryPosition] = toDirectory
+        sortContentArrayList(toDirectoryPosition)
 
-            // sort directory array list
-            sortDirectoryArrayList()
+        // sort directory array list
+        sortDirectoryArrayList()
 
-            // set progress dialog fragment result
-            progressDialogFragment.setFragmentResult(directoryArrayList.indexOf(fromDirectory))
+        // set progress dialog fragment result
+        progressDialogFragment.setFragmentResult(directoryArrayList.indexOf(fromDirectory))
 
-            // on complete
-            emitter.onComplete()
-        }.subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : Observer<String> {
-                override fun onSubscribe(d: Disposable) {}
-
-                override fun onNext(t: String) {}
-
-                override fun onError(e: Throwable) {}
-
-                override fun onComplete() {
-                    progressDialogFragment.dismiss()
-                }
-            })
+        // on complete
+        progressDialogFragment.dismiss()
     }
 
-    fun refreshSnapseed(){
+    fun refreshSnapseed() {
         val directoryPath = Slot.DirectoryPath(null, PATH_SNAPSEED)
         val directory = Directory(directoryPath)
         val directoryRelativePath = directoryPath.lastPath.substringAfter(":") + "/"
@@ -558,7 +551,7 @@ class ContentController(private val context: Context) {
         imageCursor.close()
 
         // sort content array list
-        for(i in directoryArrayList.indices){
+        for (i in directoryArrayList.indices) {
             if (directoryArrayList[i].name == directory.name && directoryArrayList[i].directoryPath == directory.directoryPath) {
                 directoryArrayList[i] = directory
                 sortContentArrayList(i)

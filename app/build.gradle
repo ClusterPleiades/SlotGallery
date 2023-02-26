@@ -50,34 +50,33 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
-    // glide
-    implementation 'com.github.bumptech.glide:glide:4.14.2'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.14.2'
+    // coroutine life cycle scope
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.5.1"
 
-    // photo view
-    implementation 'com.github.chrisbanes:PhotoView:2.3.0'
+    // data store
+    implementation "androidx.datastore:datastore-preferences:1.0.0"
 
     // drag select recyclerview
     implementation 'com.github.MFlisar:DragSelectRecyclerView:0.3'
 
+    // glide
+    implementation 'com.github.bumptech.glide:glide:4.14.2'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.14.2'
+
     // gson
     implementation 'com.google.code.gson:gson:2.9.0'
-
-    // video player
-    implementation "com.google.android.exoplayer:exoplayer-core:2.18.3"
-    implementation "com.google.android.exoplayer:exoplayer-ui:2.18.3"
-
-    // rx kotlin
-    implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
-    implementation 'io.reactivex.rxjava3:rxkotlin:3.0.1'
 
     // hilt
     implementation "com.google.dagger:hilt-android:2.44.2"
     kapt "com.google.dagger:hilt-compiler:2.44"
 
-    // data store
-    implementation "androidx.datastore:datastore-preferences:1.0.0"
+    // photo view
+    implementation 'com.github.chrisbanes:PhotoView:2.3.0'
 
-    // dual pane
+    // video player
+    implementation "com.google.android.exoplayer:exoplayer-core:2.18.3"
+    implementation "com.google.android.exoplayer:exoplayer-ui:2.18.3"
+
+    // window for dual pane
     implementation "androidx.window:window:1.0.0"
 }

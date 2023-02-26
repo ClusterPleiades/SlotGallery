@@ -20,6 +20,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -40,6 +41,7 @@ import com.pleiades.pleione.slotgallery.ui.activity.ChoiceActivity
 import com.pleiades.pleione.slotgallery.ui.activity.SettingActivity
 import com.pleiades.pleione.slotgallery.ui.fragment.dialog.ProgressDialogFragment
 import com.pleiades.pleione.slotgallery.ui.fragment.dialog.RecyclerDialogFragment
+import kotlinx.coroutines.launch
 
 class DirectoryFragment : Fragment() {
     companion object {
@@ -88,7 +90,13 @@ class DirectoryFragment : Fragment() {
                         progressDialogFragment.show((context as FragmentActivity).supportFragmentManager, null)
 
                         // copy directories (~ sort content array list)
-                        contentController.copyDirectories(toDirectoryPosition, recyclerAdapter.selectedHashSet, progressDialogFragment)
+                        lifecycleScope.launch {
+                            contentController.copyDirectories(
+                                toDirectoryPosition,
+                                recyclerAdapter.selectedHashSet,
+                                progressDialogFragment
+                            )
+                        }
                     }
                 }
             }
@@ -117,7 +125,10 @@ class DirectoryFragment : Fragment() {
         }
 
         // initialize fragment result listener
-        (context as FragmentActivity).supportFragmentManager.setFragmentResultListener(KEY_DIRECTORY_SORT_ORDER, viewLifecycleOwner) { key: String, _: Bundle ->
+        (context as FragmentActivity).supportFragmentManager.setFragmentResultListener(
+            KEY_DIRECTORY_SORT_ORDER,
+            viewLifecycleOwner
+        ) { key: String, _: Bundle ->
             if (key == KEY_DIRECTORY_SORT_ORDER) {
                 contentController.sortDirectoryArrayList()
                 recyclerAdapter.notifyItemRangeChanged(0, ContentController.directoryArrayList.size, false)
@@ -201,7 +212,10 @@ class DirectoryFragment : Fragment() {
                 return true
             }
             R.id.sort -> {
-                RecyclerDialogFragment(DIALOG_TYPE_SORT_DIRECTORY).show((context as FragmentActivity).supportFragmentManager, DIALOG_TYPE_SORT_DIRECTORY.toString())
+                RecyclerDialogFragment(DIALOG_TYPE_SORT_DIRECTORY).show(
+                    (context as FragmentActivity).supportFragmentManager,
+                    DIALOG_TYPE_SORT_DIRECTORY.toString()
+                )
                 return true
             }
             R.id.setting -> {
@@ -442,7 +456,8 @@ class DirectoryFragment : Fragment() {
             val shareIntent = Intent().apply {
                 action = Intent.ACTION_SEND_MULTIPLE
                 putParcelableArrayListExtra(Intent.EXTRA_STREAM, contentUriArrayList)
-                type = if (isContainVideo && isContainImage) Config.MIME_TYPE_ALL else if (isContainVideo) Config.MIME_TYPE_VIDEO else Config.MIME_TYPE_IMAGE
+                type =
+                    if (isContainVideo && isContainImage) Config.MIME_TYPE_ALL else if (isContainVideo) Config.MIME_TYPE_VIDEO else Config.MIME_TYPE_IMAGE
             }
             startActivity(Intent.createChooser(shareIntent, getString(R.string.action_share)))
         }

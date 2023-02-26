@@ -21,6 +21,7 @@ import androidx.core.view.WindowCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.pleiades.pleione.slotgallery.Config.Companion.ACTIVITY_CODE_IMAGE
@@ -38,7 +39,7 @@ import com.pleiades.pleione.slotgallery.info.Directory
 import com.pleiades.pleione.slotgallery.ui.fragment.dialog.ProgressDialogFragment
 import com.pleiades.pleione.slotgallery.ui.fragment.dialog.RecyclerDialogFragment
 import com.pleiades.pleione.slotgallery.ui.fragment.main.ImageFragment
-
+import kotlinx.coroutines.launch
 
 class ImageActivity : AppCompatActivity() {
     private lateinit var copyResultLauncher: ActivityResultLauncher<Intent>
@@ -107,7 +108,14 @@ class ImageActivity : AppCompatActivity() {
                         progressDialogFragment.show(supportFragmentManager, null)
 
                         // copy content
-                        ContentController(this).copyContents(directoryPosition, toDirectoryPosition, setOf(viewPager.currentItem), progressDialogFragment)
+                        lifecycleScope.launch {
+                            ContentController(applicationContext).copyContents(
+                                directoryPosition,
+                                toDirectoryPosition,
+                                setOf(viewPager.currentItem),
+                                progressDialogFragment
+                            )
+                        }
                     }
                 }
             }
@@ -283,7 +291,7 @@ class ImageActivity : AppCompatActivity() {
                         startActivity(intent)
                     }
                     // case snapseed installed
-                    else{
+                    else {
                         val editIntent = Intent().apply {
                             action = Intent.ACTION_SEND
                             putExtra(Intent.EXTRA_STREAM, currentContent.uri)

@@ -24,6 +24,7 @@ import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -49,6 +50,7 @@ import com.pleiades.pleione.slotgallery.ui.activity.ChoiceActivity
 import com.pleiades.pleione.slotgallery.ui.activity.ImageActivity
 import com.pleiades.pleione.slotgallery.ui.fragment.dialog.ProgressDialogFragment
 import com.pleiades.pleione.slotgallery.ui.fragment.dialog.RecyclerDialogFragment
+import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
 
@@ -106,7 +108,14 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
                         progressDialogFragment.show((context as FragmentActivity).supportFragmentManager, null)
 
                         // copy contents
-                        contentController.copyContents(directoryPosition, toDirectoryPosition, recyclerAdapter.selectedHashSet, progressDialogFragment)
+                        lifecycleScope.launch {
+                            contentController.copyContents(
+                                directoryPosition,
+                                toDirectoryPosition,
+                                recyclerAdapter.selectedHashSet,
+                                progressDialogFragment
+                            )
+                        }
                     }
                 }
             }
@@ -156,13 +165,19 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
         }
 
         // initialize fragment result listener
-        (context as FragmentActivity).supportFragmentManager.setFragmentResultListener(KEY_CONTENT_SORT_ORDER, viewLifecycleOwner) { key: String, _: Bundle ->
+        (context as FragmentActivity).supportFragmentManager.setFragmentResultListener(
+            KEY_CONTENT_SORT_ORDER,
+            viewLifecycleOwner
+        ) { key: String, _: Bundle ->
             if (key == KEY_CONTENT_SORT_ORDER) {
                 contentController.sortContentArrayList()
                 recyclerAdapter.notifyItemRangeChanged(0, directory.contentArrayList.size, false)
             }
         }
-        (context as FragmentActivity).supportFragmentManager.setFragmentResultListener(KEY_DIRECTORY_POSITION, viewLifecycleOwner) { key: String, bundle: Bundle ->
+        (context as FragmentActivity).supportFragmentManager.setFragmentResultListener(
+            KEY_DIRECTORY_POSITION,
+            viewLifecycleOwner
+        ) { key: String, bundle: Bundle ->
             if (key == KEY_DIRECTORY_POSITION) {
                 directoryPosition = bundle.getInt(KEY_DIRECTORY_POSITION)
             }
@@ -227,7 +242,10 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
                 return true
             }
             R.id.sort -> {
-                RecyclerDialogFragment(DIALOG_TYPE_SORT_CONTENT).show((context as FragmentActivity).supportFragmentManager, DIALOG_TYPE_SORT_CONTENT.toString())
+                RecyclerDialogFragment(DIALOG_TYPE_SORT_CONTENT).show(
+                    (context as FragmentActivity).supportFragmentManager,
+                    DIALOG_TYPE_SORT_CONTENT.toString()
+                )
                 return true
             }
             R.id.select_all -> {
