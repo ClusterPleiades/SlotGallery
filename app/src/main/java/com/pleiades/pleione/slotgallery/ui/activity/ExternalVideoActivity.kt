@@ -21,15 +21,17 @@ import com.pleiades.pleione.slotgallery.Config.Companion.ACTIVITY_CODE_VIDEO
 import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_NAME
 import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_URI
 import com.pleiades.pleione.slotgallery.R
+import com.pleiades.pleione.slotgallery.databinding.ActivityMainBinding
+import com.pleiades.pleione.slotgallery.databinding.ActivityVideoBinding
 
 
 class ExternalVideoActivity : AppCompatActivity() {
-    private lateinit var toolbar: Toolbar
+    private lateinit var binding: ActivityVideoBinding
+
     private lateinit var toolbarLayoutParams: ViewGroup.MarginLayoutParams
     private var statusBarHeight = 0
 
     private lateinit var exoPlayer: ExoPlayer
-    private lateinit var playerView: StyledPlayerView
     private lateinit var playerViewLayoutParams: ViewGroup.MarginLayoutParams
     private var navigationBarHeight = 0
 
@@ -38,19 +40,18 @@ class ExternalVideoActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_video)
+        binding = ActivityVideoBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         // set decor fits system windows
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         // initialize toolbar
-        val appbar = findViewById<View>(R.id.appbar_video)
-        toolbar = appbar.findViewById(R.id.toolbar)
-        setSupportActionBar(toolbar)
+        setSupportActionBar(binding.appbarVideo.toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
         // initialize toolbar layout params
-        toolbarLayoutParams = toolbar.layoutParams as ViewGroup.MarginLayoutParams
+        toolbarLayoutParams = binding.appbarVideo.toolbar.layoutParams as ViewGroup.MarginLayoutParams
 
         // initialize status bar height
         val statusBarHeightResId = resources.getIdentifier("status_bar_height", "dimen", "android")
@@ -68,8 +69,7 @@ class ExternalVideoActivity : AppCompatActivity() {
             val uri = Uri.parse(intent.data.toString())
 
             // initialize player
-            playerView = findViewById(R.id.player_video)
-            playerView.setOnClickListener { fullVideo() }
+            binding.playerVideo.setOnClickListener { fullVideo() }
 
             // initialize exoplayer
             exoPlayer = ExoPlayer.Builder(this).build()
@@ -85,10 +85,10 @@ class ExternalVideoActivity : AppCompatActivity() {
             exoPlayer.setMediaItem(MediaItem.fromUri(uri))
 
             // set exoplayer as player
-            playerView.player = exoPlayer
+            binding.playerVideo.player = exoPlayer
 
             // initialize player view layout params
-            playerViewLayoutParams = playerView.layoutParams as ViewGroup.MarginLayoutParams
+            playerViewLayoutParams = binding.playerVideo.layoutParams as ViewGroup.MarginLayoutParams
 
             // initialize navigation bar height
             val navigationBarHeightResId = resources.getIdentifier("navigation_bar_height", "dimen", "android")
@@ -202,11 +202,11 @@ class ExternalVideoActivity : AppCompatActivity() {
 
     private fun setToolbarMargin(apply: Boolean) {
         toolbarLayoutParams.topMargin = if (apply) statusBarHeight else 0
-        toolbar.layoutParams = toolbarLayoutParams
+        binding.appbarVideo.toolbar.layoutParams = toolbarLayoutParams
     }
 
     private fun setPlayerViewMargin(apply: Boolean) {
         playerViewLayoutParams.bottomMargin = if (apply) navigationBarHeight else 0
-        playerView.layoutParams = playerViewLayoutParams
+        binding.playerVideo.layoutParams = playerViewLayoutParams
     }
 }

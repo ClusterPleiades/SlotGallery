@@ -35,6 +35,9 @@ import com.pleiades.pleione.slotgallery.Config.Companion.PACKAGE_NAME_EDIT
 import com.pleiades.pleione.slotgallery.Config.Companion.STORE_URL_EDIT
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.controller.ContentController
+import com.pleiades.pleione.slotgallery.databinding.ActivityImageBinding
+import com.pleiades.pleione.slotgallery.databinding.ActivityMainBinding
+import com.pleiades.pleione.slotgallery.databinding.ActivityVideoBinding
 import com.pleiades.pleione.slotgallery.info.Directory
 import com.pleiades.pleione.slotgallery.ui.fragment.dialog.ProgressDialogFragment
 import com.pleiades.pleione.slotgallery.ui.fragment.dialog.RecyclerDialogFragment
@@ -42,11 +45,12 @@ import com.pleiades.pleione.slotgallery.ui.fragment.main.ImageFragment
 import kotlinx.coroutines.launch
 
 class ImageActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityImageBinding
+
     private lateinit var copyResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var editResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var deleteResultLauncher: ActivityResultLauncher<IntentSenderRequest>
     private lateinit var renameResultLauncher: ActivityResultLauncher<IntentSenderRequest>
-    private lateinit var viewPager: ViewPager2
     private lateinit var contentsPagerAdapter: ImageFragmentStateAdapter
     lateinit var titleEditText: EditText
 
@@ -58,7 +62,8 @@ class ImageActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_image)
+        binding = ActivityImageBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         // set decor fits system windows
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -67,8 +72,7 @@ class ImageActivity : AppCompatActivity() {
         title = ""
 
         // initialize appbar
-        val appbar = findViewById<View>(R.id.appbar_image)
-        val toolbar: Toolbar = appbar.findViewById(R.id.toolbar)
+        val toolbar: Toolbar = binding.appbarImage.toolbar
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
@@ -112,7 +116,7 @@ class ImageActivity : AppCompatActivity() {
                             ContentController(applicationContext).copyContents(
                                 directoryPosition,
                                 toDirectoryPosition,
-                                setOf(viewPager.currentItem),
+                                setOf(binding.pagerImage.currentItem),
                                 progressDialogFragment
                             )
                         }
@@ -132,7 +136,7 @@ class ImageActivity : AppCompatActivity() {
         deleteResultLauncher = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result: ActivityResult ->
             if (result.resultCode == Activity.RESULT_OK) {
                 // initialize position
-                val position = viewPager.currentItem
+                val position = binding.pagerImage.currentItem
 
                 // remove content
                 directory.contentArrayList.removeAt(position)
@@ -200,16 +204,16 @@ class ImageActivity : AppCompatActivity() {
                 contentResolver.update(currentContent.uri, values, null, null)
 
                 // update content
-                directory.contentArrayList[viewPager.currentItem].name = toName
+                directory.contentArrayList[binding.pagerImage.currentItem].name = toName
 
                 // backup
-                val backupContent = directory.contentArrayList[viewPager.currentItem]
+                val backupContent = directory.contentArrayList[binding.pagerImage.currentItem]
 
                 // sort
                 ContentController(this).sortContentArrayList(directoryPosition)
 
                 // restore
-                viewPager.setCurrentItem(directory.contentArrayList.indexOf(backupContent), false)
+                binding.pagerImage.setCurrentItem(directory.contentArrayList.indexOf(backupContent), false)
 
                 // cancel rename
                 cancelRename(toName)
@@ -224,12 +228,11 @@ class ImageActivity : AppCompatActivity() {
         }
 
         // initialize view pager
-        viewPager = findViewById(R.id.pager_image)
         contentsPagerAdapter = ImageFragmentStateAdapter(supportFragmentManager, lifecycle)
-        viewPager.offscreenPageLimit = 5
-        viewPager.adapter = contentsPagerAdapter
-        viewPager.setCurrentItem(contentPosition, false)
-        viewPager.requestDisallowInterceptTouchEvent(true)
+        binding.pagerImage.offscreenPageLimit = 5
+        binding.pagerImage.adapter = contentsPagerAdapter
+        binding.pagerImage.setCurrentItem(contentPosition, false)
+        binding.pagerImage.requestDisallowInterceptTouchEvent(true)
 
         // initialize title edit text
         titleEditText = findViewById(R.id.title_appbar)
@@ -340,7 +343,7 @@ class ImageActivity : AppCompatActivity() {
     }
 
     fun getCurrentContent(): Directory.Content {
-        return directory.contentArrayList[viewPager.currentItem]
+        return directory.contentArrayList[binding.pagerImage.currentItem]
     }
 
     fun fullImage() {

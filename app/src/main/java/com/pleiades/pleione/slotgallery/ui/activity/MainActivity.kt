@@ -15,11 +15,14 @@ import com.pleiades.pleione.slotgallery.Config.Companion.PERMISSION_IMAGES_VIDEO
 import com.pleiades.pleione.slotgallery.Config.Companion.PERMISSION_STORAGE
 import com.pleiades.pleione.slotgallery.Config.Companion.PREFS
 import com.pleiades.pleione.slotgallery.R
+import com.pleiades.pleione.slotgallery.databinding.ActivityMainBinding
 import com.pleiades.pleione.slotgallery.ui.fragment.dialog.DefaultDialogFragment
 import com.pleiades.pleione.slotgallery.ui.fragment.main.ContentFragment
 import com.pleiades.pleione.slotgallery.ui.fragment.main.DirectoryFragment
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityMainBinding
+
     companion object {
         var lastResumedActivityCode = ACTIVITY_CODE_MAIN
     }
@@ -28,15 +31,14 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         // set title
         title = ""
 
         // initialize appbar
-        val appbar = findViewById<View>(R.id.appbar_main)
-        val toolbar: Toolbar = appbar.findViewById(R.id.toolbar)
-        setSupportActionBar(toolbar)
+        setSupportActionBar(binding.appbarMain.toolbar)
 
         // update app version
         updateAppVersion()

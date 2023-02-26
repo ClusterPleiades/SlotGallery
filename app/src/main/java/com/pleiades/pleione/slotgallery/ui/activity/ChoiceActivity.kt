@@ -20,19 +20,22 @@ import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_POSITION_D
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.controller.ContentController
 import com.pleiades.pleione.slotgallery.controller.DeviceController
+import com.pleiades.pleione.slotgallery.databinding.ActivityChoiceBinding
+import com.pleiades.pleione.slotgallery.databinding.ActivityMainBinding
 
 class ChoiceActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityChoiceBinding
+
     private lateinit var recyclerView: RecyclerView
     private lateinit var recyclerAdapter: ChoiceRecyclerAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_choice)
+        binding = ActivityChoiceBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         // initialize appbar
-        val appbar = findViewById<View>(R.id.appbar_choice)
-        val toolbar: Toolbar = appbar.findViewById(R.id.toolbar)
-        setSupportActionBar(toolbar)
+        setSupportActionBar(binding.appbarChoice.toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
         // initialize directory recycler view

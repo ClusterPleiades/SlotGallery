@@ -7,17 +7,20 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.pleiades.pleione.slotgallery.Config.Companion.ACTIVITY_CODE_SETTING
 import com.pleiades.pleione.slotgallery.R
+import com.pleiades.pleione.slotgallery.databinding.ActivityImageBinding
+import com.pleiades.pleione.slotgallery.databinding.ActivitySettingBinding
 import com.pleiades.pleione.slotgallery.ui.fragment.setting.SettingFragment
 
 class SettingActivity : AppCompatActivity() {
+    private lateinit var binding: ActivitySettingBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_setting)
+        binding = ActivitySettingBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         // initialize appbar
-        val appbar = findViewById<View>(R.id.appbar_setting)
-        val toolbar: Toolbar = appbar.findViewById(R.id.toolbar)
-        setSupportActionBar(toolbar)
+        setSupportActionBar(binding.appbarSetting.toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
         // add fragment

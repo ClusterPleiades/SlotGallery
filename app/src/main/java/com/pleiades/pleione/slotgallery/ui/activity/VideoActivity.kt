@@ -21,10 +21,13 @@ import com.pleiades.pleione.slotgallery.Config.Companion.ACTIVITY_CODE_VIDEO
 import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_NAME
 import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_URI
 import com.pleiades.pleione.slotgallery.R
+import com.pleiades.pleione.slotgallery.databinding.ActivitySettingBinding
+import com.pleiades.pleione.slotgallery.databinding.ActivityVideoBinding
 
 
 class VideoActivity : AppCompatActivity() {
-    private lateinit var toolbar: Toolbar
+    private lateinit var binding: ActivityVideoBinding
+
     private lateinit var toolbarLayoutParams: ViewGroup.MarginLayoutParams
     private var statusBarHeight = 0
 
@@ -38,19 +41,18 @@ class VideoActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_video)
+        binding = ActivityVideoBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         // set decor fits system windows
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         // initialize toolbar
-        val appbar = findViewById<View>(R.id.appbar_video)
-        toolbar = appbar.findViewById(R.id.toolbar)
-        setSupportActionBar(toolbar)
+        setSupportActionBar(binding.appbarVideo.toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
         // initialize toolbar layout params
-        toolbarLayoutParams = toolbar.layoutParams as ViewGroup.MarginLayoutParams
+        toolbarLayoutParams = binding.appbarVideo.toolbar.layoutParams as ViewGroup.MarginLayoutParams
 
         // initialize status bar height
         val statusBarHeightResId = resources.getIdentifier("status_bar_height", "dimen", "android")
@@ -198,7 +200,7 @@ class VideoActivity : AppCompatActivity() {
 
     private fun setToolbarMargin(apply: Boolean) {
         toolbarLayoutParams.topMargin = if (apply) statusBarHeight else 0
-        toolbar.layoutParams = toolbarLayoutParams
+        binding.appbarVideo.toolbar.layoutParams = toolbarLayoutParams
     }
 
     private fun setPlayerViewMargin(apply: Boolean) {
