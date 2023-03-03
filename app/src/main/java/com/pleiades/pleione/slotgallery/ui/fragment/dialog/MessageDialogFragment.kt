@@ -19,7 +19,7 @@ import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.controller.DeviceController
 import com.pleiades.pleione.slotgallery.databinding.FragmentDialogDefaultBinding
 
-class DefaultDialogFragment(private val type: Int) : androidx.fragment.app.DialogFragment() {
+class MessageDialogFragment(private val type: Int) : androidx.fragment.app.DialogFragment() {
     private var _binding: FragmentDialogDefaultBinding? = null
     private val binding get() = _binding!!
 

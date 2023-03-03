@@ -3,9 +3,7 @@ package com.pleiades.pleione.slotgallery.ui.activity
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import com.pleiades.pleione.slotgallery.Config.Companion.ACTIVITY_CODE_IMAGE
 import com.pleiades.pleione.slotgallery.Config.Companion.ACTIVITY_CODE_MAIN
 import com.pleiades.pleione.slotgallery.Config.Companion.ACTIVITY_CODE_SETTING
@@ -16,7 +14,7 @@ import com.pleiades.pleione.slotgallery.Config.Companion.PERMISSION_STORAGE
 import com.pleiades.pleione.slotgallery.Config.Companion.PREFS
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.databinding.ActivityMainBinding
-import com.pleiades.pleione.slotgallery.ui.fragment.dialog.DefaultDialogFragment
+import com.pleiades.pleione.slotgallery.ui.fragment.dialog.MessageDialogFragment
 import com.pleiades.pleione.slotgallery.ui.fragment.main.ContentFragment
 import com.pleiades.pleione.slotgallery.ui.fragment.main.DirectoryFragment
 
@@ -77,8 +75,8 @@ class MainActivity : AppCompatActivity() {
             }
         } else {
             // request permission
-            val defaultDialogFragment = DefaultDialogFragment(DIALOG_TYPE_PERMISSION)
-            defaultDialogFragment.show(supportFragmentManager, DIALOG_TYPE_PERMISSION.toString())
+            val messageDialogFragment = MessageDialogFragment(DIALOG_TYPE_PERMISSION)
+            messageDialogFragment.show(supportFragmentManager, DIALOG_TYPE_PERMISSION.toString())
         }
 
         super.onStart()
