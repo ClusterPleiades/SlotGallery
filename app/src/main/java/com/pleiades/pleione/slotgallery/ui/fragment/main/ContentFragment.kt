@@ -49,7 +49,7 @@ import com.pleiades.pleione.slotgallery.info.Directory
 import com.pleiades.pleione.slotgallery.ui.activity.ChoiceActivity
 import com.pleiades.pleione.slotgallery.ui.activity.ImageActivity
 import com.pleiades.pleione.slotgallery.ui.fragment.dialog.ProgressDialogFragment
-import com.pleiades.pleione.slotgallery.ui.fragment.dialog.RecyclerDialogFragment
+import com.pleiades.pleione.slotgallery.ui.fragment.dialog.ListDialogFragment
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
@@ -249,7 +249,7 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
                 return true
             }
             R.id.sort -> {
-                RecyclerDialogFragment(DIALOG_TYPE_SORT_CONTENT).show(
+                ListDialogFragment(DIALOG_TYPE_SORT_CONTENT).show(
                     (context as FragmentActivity).supportFragmentManager,
                     DIALOG_TYPE_SORT_CONTENT.toString()
                 )

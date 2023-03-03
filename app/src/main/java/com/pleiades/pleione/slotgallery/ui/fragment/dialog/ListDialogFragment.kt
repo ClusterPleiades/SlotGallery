@@ -1,6 +1,5 @@
 package com.pleiades.pleione.slotgallery.ui.fragment.dialog
 
-import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
@@ -14,7 +13,6 @@ import android.view.ViewGroup
 import android.widget.RadioButton
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
-import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_INFORMATION
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_SORT_CONTENT
@@ -36,17 +34,21 @@ import com.pleiades.pleione.slotgallery.Config.Companion.PREFS
 import com.pleiades.pleione.slotgallery.NonScrollLinearLayoutManager
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.controller.DeviceController
+import com.pleiades.pleione.slotgallery.databinding.FragmentDialogListBinding
 import com.pleiades.pleione.slotgallery.ui.activity.ImageActivity
 import java.text.SimpleDateFormat
 import java.util.*
 
-
-class RecyclerDialogFragment(private val type: Int) : androidx.fragment.app.DialogFragment() {
+class ListDialogFragment(private val type: Int) : androidx.fragment.app.DialogFragment() {
+    private var _binding: FragmentDialogListBinding? = null
+    private val binding get() = _binding!!
     private lateinit var prefs: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
 
-    @SuppressLint("InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        // binding
+        _binding = FragmentDialogListBinding.inflate(requireActivity().layoutInflater)
+
         // initialize builder
         val builder = context?.let { AlertDialog.Builder(it) }
 
@@ -54,25 +56,17 @@ class RecyclerDialogFragment(private val type: Int) : androidx.fragment.app.Dial
         prefs = requireContext().getSharedPreferences(PREFS, Context.MODE_PRIVATE)
         editor = prefs.edit()
 
-        // initialize activity
-        val activity: FragmentActivity? = activity
-        if (activity != null) {
-            // initialize dialog view
-            val dialogView: View = activity.layoutInflater.inflate(R.layout.fragment_dialog_recycler, null)
-
-            // initialize recycler view
-            val dialogRecyclerView: RecyclerView = dialogView.findViewById(R.id.recycler_dialog)
-            dialogRecyclerView.setHasFixedSize(true)
-            dialogRecyclerView.layoutManager = NonScrollLinearLayoutManager(requireContext())
-            dialogRecyclerView.adapter = when (type) {
-                DIALOG_TYPE_SORT_DIRECTORY,
-                DIALOG_TYPE_SORT_CONTENT -> RadioRecyclerAdapter()
-                else -> InformationRecyclerAdapter()
-            }
-
-            // set dialog view
-            builder!!.setView(dialogView)
+        // initialize recycler view
+        binding.recyclerDialog.setHasFixedSize(true)
+        binding.recyclerDialog.layoutManager = NonScrollLinearLayoutManager(requireContext())
+        binding.recyclerDialog.adapter = when (type) {
+            DIALOG_TYPE_SORT_DIRECTORY,
+            DIALOG_TYPE_SORT_CONTENT -> RadioRecyclerAdapter()
+            else -> InformationRecyclerAdapter()
         }
+
+        // set dialog view
+        builder!!.setView(binding.root)
 
         // create dialog
         val dialog: AlertDialog = builder!!.create()
@@ -90,7 +84,8 @@ class RecyclerDialogFragment(private val type: Int) : androidx.fragment.app.Dial
         super.onStart()
 
         val screenWidth = DeviceController.getWidthMax(requireContext())
-        val width = if (type == DIALOG_TYPE_INFORMATION) screenWidth * DIALOG_WIDTH_PERCENTAGE_DEFAULT else screenWidth * DIALOG_WIDTH_PERCENTAGE_RECYCLER
+        val width =
+            if (type == DIALOG_TYPE_INFORMATION) screenWidth * DIALOG_WIDTH_PERCENTAGE_DEFAULT else screenWidth * DIALOG_WIDTH_PERCENTAGE_RECYCLER
         val height = ViewGroup.LayoutParams.WRAP_CONTENT
         dialog!!.window!!.setLayout(width.toInt(), height)
 

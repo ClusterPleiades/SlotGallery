@@ -37,7 +37,7 @@ import com.pleiades.pleione.slotgallery.controller.ContentController
 import com.pleiades.pleione.slotgallery.databinding.ActivityImageBinding
 import com.pleiades.pleione.slotgallery.info.Directory
 import com.pleiades.pleione.slotgallery.ui.fragment.dialog.ProgressDialogFragment
-import com.pleiades.pleione.slotgallery.ui.fragment.dialog.RecyclerDialogFragment
+import com.pleiades.pleione.slotgallery.ui.fragment.dialog.ListDialogFragment
 import com.pleiades.pleione.slotgallery.ui.fragment.main.ImageFragment
 import kotlinx.coroutines.launch
 
@@ -313,7 +313,7 @@ class ImageActivity : AppCompatActivity() {
                 return true
             }
             R.id.information -> {
-                RecyclerDialogFragment(DIALOG_TYPE_INFORMATION).show(supportFragmentManager, DIALOG_TYPE_INFORMATION.toString())
+                ListDialogFragment(DIALOG_TYPE_INFORMATION).show(supportFragmentManager, DIALOG_TYPE_INFORMATION.toString())
                 return true
             }
             R.id.rename -> {
