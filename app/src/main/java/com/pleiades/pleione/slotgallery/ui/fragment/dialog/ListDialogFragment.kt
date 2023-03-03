@@ -1,10 +1,8 @@
 package com.pleiades.pleione.slotgallery.ui.fragment.dialog
 
 import android.app.Dialog
-import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.DialogInterface
-import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -14,9 +12,7 @@ import android.view.ViewGroup
 import android.widget.RadioButton
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.RecyclerView
-import com.pleiades.pleione.slotgallery.Config
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_INFORMATION
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_SORT_CONTENT
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_SORT_DIRECTORY
@@ -38,6 +34,7 @@ import com.pleiades.pleione.slotgallery.NonScrollLinearLayoutManager
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.controller.DeviceController
 import com.pleiades.pleione.slotgallery.databinding.FragmentDialogListBinding
+import com.pleiades.pleione.slotgallery.databinding.RecyclerDialogInformationBinding
 import com.pleiades.pleione.slotgallery.ui.activity.ImageActivity
 import java.text.SimpleDateFormat
 import java.util.*
@@ -59,7 +56,7 @@ class ListDialogFragment(private val type: Int) : androidx.fragment.app.DialogFr
             adapter =
                 when (type) {
                     DIALOG_TYPE_SORT_DIRECTORY, DIALOG_TYPE_SORT_CONTENT -> RadioRecyclerAdapter()
-                    else -> InformationRecyclerAdapter()
+                    else -> InformationAdapter()
                 }
         }
 
@@ -92,40 +89,38 @@ class ListDialogFragment(private val type: Int) : androidx.fragment.app.DialogFr
         dismiss()
     }
 
-    inner class InformationRecyclerAdapter : RecyclerView.Adapter<InformationRecyclerAdapter.InformationViewHolder>() {
-        private val textArray: Array<String> = context!!.resources.getStringArray(R.array.information)
+    inner class InformationAdapter : RecyclerView.Adapter<InformationAdapter.ViewHolder>() {
 
-        inner class InformationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-            val titleTextView: TextView = itemView.findViewById(R.id.title_information)
-            val contentTextView: TextView = itemView.findViewById(R.id.content_information)
+        inner class ViewHolder(val binding: RecyclerDialogInformationBinding) : RecyclerView.ViewHolder(binding.root)
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+            return ViewHolder(
+                RecyclerDialogInformationBinding.bind(
+                    LayoutInflater.from(parent.context).inflate(R.layout.recycler_dialog_information, parent, false)
+                )
+            )
         }
 
-        override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): InformationRecyclerAdapter.InformationViewHolder {
-            val view: View = LayoutInflater.from(viewGroup.context).inflate(R.layout.recycler_dialog_information, viewGroup, false)
-            return InformationViewHolder(view)
-        }
-
-        override fun onBindViewHolder(holder: InformationRecyclerAdapter.InformationViewHolder, position: Int) {
+        override fun onBindViewHolder(holder: InformationAdapter.ViewHolder, position: Int) {
             // title
-            holder.titleTextView.text = textArray[position]
+            holder.binding.title.text = resources.getStringArray(R.array.information)[position]
 
             // content
             val content = (activity as ImageActivity).getCurrentContent()
-            holder.contentTextView.text = when (position) {
-                INFORMATION_POSITION_NAME -> content.name
-                INFORMATION_POSITION_DATE -> SimpleDateFormat(FORMAT_DATE, Locale.getDefault()).format(content.date * 1000)
-                INFORMATION_POSITION_TIME -> SimpleDateFormat(FORMAT_TIME, Locale.getDefault()).format(content.date * 1000)
-                INFORMATION_POSITION_SIZE -> content.size
-                INFORMATION_POSITION_WIDTH -> content.width.toString()
-                INFORMATION_POSITION_HEIGHT -> content.height.toString()
-                INFORMATION_POSITION_PATH -> content.relativePath + content.name
-                else -> null
-            }
+            holder.binding.content.text =
+                when (position) {
+                    INFORMATION_POSITION_NAME -> content.name
+                    INFORMATION_POSITION_DATE -> SimpleDateFormat(FORMAT_DATE, Locale.getDefault()).format(content.date * 1000)
+                    INFORMATION_POSITION_TIME -> SimpleDateFormat(FORMAT_TIME, Locale.getDefault()).format(content.date * 1000)
+                    INFORMATION_POSITION_SIZE -> content.size
+                    INFORMATION_POSITION_WIDTH -> content.width.toString()
+                    INFORMATION_POSITION_HEIGHT -> content.height.toString()
+                    INFORMATION_POSITION_PATH -> content.relativePath + content.name
+                    else -> null
+                }
         }
 
-        override fun getItemCount(): Int {
-            return textArray.size
-        }
+        override fun getItemCount() = resources.getStringArray(R.array.information).size
     }
 
     inner class RadioRecyclerAdapter : RecyclerView.Adapter<RadioRecyclerAdapter.RadioViewHolder>() {
