@@ -8,6 +8,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -21,54 +22,57 @@ import com.pleiades.pleione.slotgallery.Config.Companion.REQUEST_CODE_PERMISSION
 import com.pleiades.pleione.slotgallery.Config.Companion.REQUEST_CODE_PERMISSION_STORAGE
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.controller.DeviceController
+import com.pleiades.pleione.slotgallery.databinding.FragmentDialogDefaultBinding
+import com.pleiades.pleione.slotgallery.databinding.FragmentMainBinding
 
 class DefaultDialogFragment(private val type: Int) : androidx.fragment.app.DialogFragment() {
+    private var _binding: FragmentDialogDefaultBinding? = null
+    private val binding get() = _binding!!
 
     @SuppressLint("InflateParams", "UseRequireInsteadOfGet")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        // initialize binding
+        _binding = FragmentDialogDefaultBinding.inflate(requireActivity().layoutInflater)
+
         // initialize builder
         val builder = context?.let { AlertDialog.Builder(it) }
 
         // initialize activity
         val activity: FragmentActivity? = activity
         if (activity != null) {
-            // initialize dialog view
-            val dialogView: View = activity.layoutInflater.inflate(R.layout.fragment_dialog_default, null)
-
             // initialize and set message
-            val messageTextView = dialogView.findViewById<TextView>(R.id.message_dialog_default)
+            val messageTextView = binding.messageDialogDefault
             when (type) {
                 DIALOG_TYPE_PERMISSION -> messageTextView.setText(R.string.dialog_message_permission)
             }
 
             // set positive listener
-            dialogView.findViewById<View>(R.id.positive_dialog_default).setOnClickListener {
+            binding.positiveDialogDefault.setOnClickListener {
                 when (type) {
                     DIALOG_TYPE_PERMISSION -> {
                         if (Build.VERSION.SDK_INT >= 33)
                             (context as Activity).requestPermissions(PERMISSION_IMAGES_VIDEOS, REQUEST_CODE_PERMISSION_IMAGES_VIDEOS)
                         else
                             (context as Activity).requestPermissions(PERMISSION_STORAGE, REQUEST_CODE_PERMISSION_STORAGE)
-//                        startActivity(Intent(ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION))
                     }
                 }
                 dismiss()
             }
 
             // set negative listener
-            dialogView.findViewById<View>(R.id.negative_dialog_default).setOnClickListener {
+            binding.negativeDialogDefault.setOnClickListener {
                 dismiss()
             }
 
             // set negative visibility
-            val negativeTextView = dialogView.findViewById<TextView>(R.id.negative_dialog_default)
+            val negativeTextView = binding.negativeDialogDefault
             when (type) {
                 DIALOG_TYPE_PERMISSION -> negativeTextView.visibility = View.INVISIBLE
                 else -> negativeTextView.visibility = View.VISIBLE
             }
 
             // set dialog view
-            builder!!.setView(dialogView)
+            builder!!.setView(binding.root)
         }
 
         // create dialog
@@ -104,5 +108,10 @@ class DefaultDialogFragment(private val type: Int) : androidx.fragment.app.Dialo
     override fun onCancel(dialog: DialogInterface) {
         super.onCancel(dialog)
         dismiss()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
