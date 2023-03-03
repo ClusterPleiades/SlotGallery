@@ -7,37 +7,36 @@ import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
 import androidx.appcompat.app.AlertDialog
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_WIDTH_PERCENTAGE_DEFAULT
 import com.pleiades.pleione.slotgallery.Config.Companion.KEY_DIRECTORY_POSITION
 import com.pleiades.pleione.slotgallery.Config.Companion.REQUEST_KEY_COPY
-import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.controller.DeviceController
+import com.pleiades.pleione.slotgallery.databinding.FragmentDialogProgressBinding
 
 class ProgressDialogFragment(parentActivity: Activity) : androidx.fragment.app.DialogFragment() {
+    private var _binding: FragmentDialogProgressBinding? = null
+    private val binding get() = _binding!!
+
     private val builder = AlertDialog.Builder(parentActivity)
 
-    var progressBar: ProgressBar
     var isCanceled = false
 
     init {
-        // initialize dialog view
-        val dialogView: View = parentActivity.layoutInflater.inflate(R.layout.fragment_dialog_progress, null)
+        // binding
+        _binding = FragmentDialogProgressBinding.inflate(requireActivity().layoutInflater)
 
         // initialize progress bar
-        progressBar = dialogView.findViewById(R.id.progress_dialog_progress)
-        progressBar.progress = 0
+        binding.progressDialogProgress.progress = 0
 
         // set negative listener
-        dialogView.findViewById<View>(R.id.negative_dialog_progress).setOnClickListener {
+        binding.negativeDialogProgress.setOnClickListener {
             isCanceled = true
         }
 
         // set dialog view
-        builder.setView(dialogView)
+        builder.setView(binding.root)
     }
 
     @SuppressLint("InflateParams", "UseRequireInsteadOfGet")
@@ -77,8 +76,13 @@ class ProgressDialogFragment(parentActivity: Activity) : androidx.fragment.app.D
         parentFragmentManager.setFragmentResult(KEY_DIRECTORY_POSITION, resultBundle)
     }
 
-    fun setFragmentResult(){
+    fun setFragmentResult() {
         // set fragment result
         parentFragmentManager.setFragmentResult(REQUEST_KEY_COPY, Bundle())
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
