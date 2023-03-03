@@ -2,6 +2,7 @@ package com.pleiades.pleione.slotgallery.ui.fragment.dialog
 
 import android.app.Dialog
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import android.content.DialogInterface
 import android.content.SharedPreferences
 import android.graphics.Color
@@ -13,7 +14,9 @@ import android.view.ViewGroup
 import android.widget.RadioButton
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.RecyclerView
+import com.pleiades.pleione.slotgallery.Config
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_INFORMATION
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_SORT_CONTENT
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_SORT_DIRECTORY
@@ -42,55 +45,46 @@ import java.util.*
 class ListDialogFragment(private val type: Int) : androidx.fragment.app.DialogFragment() {
     private var _binding: FragmentDialogListBinding? = null
     private val binding get() = _binding!!
-    private lateinit var prefs: SharedPreferences
-    private lateinit var editor: SharedPreferences.Editor
+    private val prefs by lazy { requireContext().getSharedPreferences(PREFS, MODE_PRIVATE) }
+    private val editor by lazy { prefs.edit() }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // binding
         _binding = FragmentDialogListBinding.inflate(requireActivity().layoutInflater)
 
-        // initialize builder
-        val builder = context?.let { AlertDialog.Builder(it) }
-
-        // initialize prefs
-        prefs = requireContext().getSharedPreferences(PREFS, Context.MODE_PRIVATE)
-        editor = prefs.edit()
-
-        // initialize recycler view
-        binding.recyclerDialog.setHasFixedSize(true)
-        binding.recyclerDialog.layoutManager = NonScrollLinearLayoutManager(requireContext())
-        binding.recyclerDialog.adapter = when (type) {
-            DIALOG_TYPE_SORT_DIRECTORY,
-            DIALOG_TYPE_SORT_CONTENT -> RadioRecyclerAdapter()
-            else -> InformationRecyclerAdapter()
+        // list
+        binding.list.run {
+            setHasFixedSize(true)
+            layoutManager = NonScrollLinearLayoutManager(requireContext())
+            adapter =
+                when (type) {
+                    DIALOG_TYPE_SORT_DIRECTORY, DIALOG_TYPE_SORT_CONTENT -> RadioRecyclerAdapter()
+                    else -> InformationRecyclerAdapter()
+                }
         }
 
-        // set dialog view
-        builder!!.setView(binding.root)
-
-        // create dialog
-        val dialog: AlertDialog = builder!!.create()
-
-        // set transparent background
-        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-        // set canceled on touch outside
-        dialog.setCanceledOnTouchOutside(true)
-
-        return dialog
+        return AlertDialog
+            .Builder(requireContext())
+            .apply { setView(binding.root) }
+            .create()
+            .apply {
+                window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                setCanceledOnTouchOutside(true)
+                setCancelable(true)
+            }
     }
 
     override fun onStart() {
         super.onStart()
 
-        val screenWidth = DeviceController.getWidthMax(requireContext())
-        val width =
-            if (type == DIALOG_TYPE_INFORMATION) screenWidth * DIALOG_WIDTH_PERCENTAGE_DEFAULT else screenWidth * DIALOG_WIDTH_PERCENTAGE_RECYCLER
-        val height = ViewGroup.LayoutParams.WRAP_CONTENT
-        dialog!!.window!!.setLayout(width.toInt(), height)
+        val widthMultiplier =
+            if (type == DIALOG_TYPE_INFORMATION) DIALOG_WIDTH_PERCENTAGE_DEFAULT
+            else DIALOG_WIDTH_PERCENTAGE_RECYCLER
 
-        // set cancelable
-        dialog!!.setCancelable(true)
+        dialog?.window?.setLayout(
+            /* width = */ (DeviceController.getWidthMax(requireContext()) * widthMultiplier).toInt(),
+            /* height = */ ViewGroup.LayoutParams.WRAP_CONTENT
+        )
     }
 
     override fun onCancel(dialog: DialogInterface) {
