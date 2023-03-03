@@ -97,7 +97,7 @@ class DirectoryFragment : Fragment() {
                     }
                     else -> {
                         // show progress dialog fragment
-                        val progressDialogFragment = ProgressDialogFragment(requireActivity())
+                        val progressDialogFragment = ProgressDialogFragment()
                         progressDialogFragment.show((context as FragmentActivity).supportFragmentManager, null)
 
                         // copy directories (~ sort content array list)

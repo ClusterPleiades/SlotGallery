@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
-import android.util.Log
 import android.view.*
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -115,7 +114,7 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
                     }
                     else -> {
                         // show progress dialog fragment
-                        val progressDialogFragment = ProgressDialogFragment(requireActivity())
+                        val progressDialogFragment = ProgressDialogFragment()
                         progressDialogFragment.show((context as FragmentActivity).supportFragmentManager, null)
 
                         // copy contents
