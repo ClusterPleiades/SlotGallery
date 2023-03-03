@@ -9,8 +9,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RadioButton
-import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_INFORMATION
@@ -34,7 +32,8 @@ import com.pleiades.pleione.slotgallery.NonScrollLinearLayoutManager
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.controller.DeviceController
 import com.pleiades.pleione.slotgallery.databinding.FragmentDialogListBinding
-import com.pleiades.pleione.slotgallery.databinding.RecyclerDialogInformationBinding
+import com.pleiades.pleione.slotgallery.databinding.ItemDialogInformationBinding
+import com.pleiades.pleione.slotgallery.databinding.ItemDialogRadioBinding
 import com.pleiades.pleione.slotgallery.ui.activity.ImageActivity
 import java.text.SimpleDateFormat
 import java.util.*
@@ -55,7 +54,7 @@ class ListDialogFragment(private val type: Int) : androidx.fragment.app.DialogFr
             layoutManager = NonScrollLinearLayoutManager(requireContext())
             adapter =
                 when (type) {
-                    DIALOG_TYPE_SORT_DIRECTORY, DIALOG_TYPE_SORT_CONTENT -> RadioRecyclerAdapter()
+                    DIALOG_TYPE_SORT_DIRECTORY, DIALOG_TYPE_SORT_CONTENT -> RadioAdapter()
                     else -> InformationAdapter()
                 }
         }
@@ -90,13 +89,12 @@ class ListDialogFragment(private val type: Int) : androidx.fragment.app.DialogFr
     }
 
     inner class InformationAdapter : RecyclerView.Adapter<InformationAdapter.ViewHolder>() {
-
-        inner class ViewHolder(val binding: RecyclerDialogInformationBinding) : RecyclerView.ViewHolder(binding.root)
+        inner class ViewHolder(val binding: ItemDialogInformationBinding) : RecyclerView.ViewHolder(binding.root)
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             return ViewHolder(
-                RecyclerDialogInformationBinding.bind(
-                    LayoutInflater.from(parent.context).inflate(R.layout.recycler_dialog_information, parent, false)
+                ItemDialogInformationBinding.bind(
+                    LayoutInflater.from(parent.context).inflate(R.layout.item_dialog_information, parent, false)
                 )
             )
         }
@@ -123,70 +121,56 @@ class ListDialogFragment(private val type: Int) : androidx.fragment.app.DialogFr
         override fun getItemCount() = resources.getStringArray(R.array.information).size
     }
 
-    inner class RadioRecyclerAdapter : RecyclerView.Adapter<RadioRecyclerAdapter.RadioViewHolder>() {
-        private val radioPosition = when (type) {
-            DIALOG_TYPE_SORT_DIRECTORY -> prefs.getInt(KEY_DIRECTORY_SORT_ORDER, 0)
-            DIALOG_TYPE_SORT_CONTENT -> prefs.getInt(KEY_CONTENT_SORT_ORDER, 0)
-            else -> 0
-        }
-        private val textArray: Array<String> = when (type) {
-            DIALOG_TYPE_SORT_DIRECTORY -> context!!.resources.getStringArray(R.array.sort)
-            DIALOG_TYPE_SORT_CONTENT -> context!!.resources.getStringArray(R.array.sort)
-            else -> arrayOf("")
-        }
-
-        inner class RadioViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-            val radioButton: RadioButton = itemView.findViewById(R.id.radio_dialog)
-
+    inner class RadioAdapter : RecyclerView.Adapter<RadioAdapter.ViewHolder>() {
+        inner class ViewHolder(val binding: ItemDialogRadioBinding) : RecyclerView.ViewHolder(binding.root) {
             init {
-                radioButton.setOnClickListener {
-                    // case error
-                    val position = bindingAdapterPosition
-                    if (position == RecyclerView.NO_POSITION)
-                        return@setOnClickListener
-
+                binding.radioButton.setOnClickListener {
                     when (type) {
                         DIALOG_TYPE_SORT_DIRECTORY -> {
-                            editor.putInt(KEY_DIRECTORY_SORT_ORDER, position)
+                            editor.putInt(KEY_DIRECTORY_SORT_ORDER, bindingAdapterPosition)
                             editor.apply()
 
-                            // set fragment result
-                            val resultBundle = Bundle()
-                            resultBundle.putInt(KEY_DIRECTORY_SORT_ORDER, position)
-                            parentFragmentManager.setFragmentResult(KEY_DIRECTORY_SORT_ORDER, resultBundle)
+                            parentFragmentManager.setFragmentResult(
+                                KEY_DIRECTORY_SORT_ORDER,
+                                Bundle().apply { putInt(KEY_DIRECTORY_SORT_ORDER, bindingAdapterPosition) }
+                            )
                         }
                         DIALOG_TYPE_SORT_CONTENT -> {
-                            editor.putInt(KEY_CONTENT_SORT_ORDER, position)
+                            editor.putInt(KEY_CONTENT_SORT_ORDER, bindingAdapterPosition)
                             editor.apply()
 
-                            // set fragment result
-                            val resultBundle = Bundle()
-                            resultBundle.putInt(KEY_CONTENT_SORT_ORDER, position)
-                            parentFragmentManager.setFragmentResult(KEY_CONTENT_SORT_ORDER, resultBundle)
+                            parentFragmentManager.setFragmentResult(
+                                KEY_DIRECTORY_SORT_ORDER,
+                                Bundle().apply { putInt(KEY_CONTENT_SORT_ORDER, bindingAdapterPosition) }
+                            )
                         }
                     }
-
-                    // dismiss dialog
                     dismiss()
                 }
             }
         }
 
-        override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): RadioViewHolder {
-            val view: View = LayoutInflater.from(viewGroup.context).inflate(R.layout.recycler_dialog_radio, viewGroup, false)
-            return RadioViewHolder(view)
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+            return ViewHolder(
+                ItemDialogRadioBinding.bind(
+                    LayoutInflater.from(parent.context).inflate(R.layout.item_dialog_radio, parent, false)
+                )
+            )
         }
 
-        override fun onBindViewHolder(holder: RadioViewHolder, position: Int) {
-            // set text view
-            holder.radioButton.text = textArray[position]
-
-            // set radio checked
-            holder.radioButton.isChecked = position == radioPosition
+        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+            // radio
+            holder.binding.radioButton.run {
+                text = resources.getStringArray(R.array.sort)[position]
+                isChecked =
+                    position == when (type) {
+                        DIALOG_TYPE_SORT_DIRECTORY -> prefs.getInt(KEY_DIRECTORY_SORT_ORDER, 0)
+                        DIALOG_TYPE_SORT_CONTENT -> prefs.getInt(KEY_CONTENT_SORT_ORDER, 0)
+                        else -> 0
+                    }
+            }
         }
 
-        override fun getItemCount(): Int {
-            return textArray.size
-        }
+        override fun getItemCount() = resources.getStringArray(R.array.sort).size
     }
 }
