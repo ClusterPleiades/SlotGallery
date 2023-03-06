@@ -8,7 +8,9 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_INFORMATION
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_SORT_CONTENT
@@ -27,7 +29,6 @@ import com.pleiades.pleione.slotgallery.Config.Companion.INFORMATION_POSITION_WI
 import com.pleiades.pleione.slotgallery.Config.Companion.KEY_CONTENT_SORT_ORDER
 import com.pleiades.pleione.slotgallery.Config.Companion.KEY_DIRECTORY_SORT_ORDER
 import com.pleiades.pleione.slotgallery.Config.Companion.PREFS
-import com.pleiades.pleione.slotgallery.NonScrollLinearLayoutManager
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.controller.DeviceController
 import com.pleiades.pleione.slotgallery.databinding.FragmentDialogListBinding
@@ -50,7 +51,7 @@ class ListDialogFragment(private val type: Int) : androidx.fragment.app.DialogFr
         // list
         binding.list.run {
             setHasFixedSize(true)
-            layoutManager = NonScrollLinearLayoutManager(requireContext())
+            layoutManager = LinearLayoutManager(requireContext())
             adapter =
                 when (type) {
                     DIALOG_TYPE_SORT_DIRECTORY, DIALOG_TYPE_SORT_CONTENT -> RadioAdapter()
