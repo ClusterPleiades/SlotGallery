@@ -1,4 +1,4 @@
-package com.pleiades.pleione.slotgallery.presentation.main.media
+package com.pleiades.pleione.slotgallery.presentation.media
 
 import android.app.Activity
 import android.content.ContentValues

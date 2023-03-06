@@ -33,7 +33,7 @@ import com.pleiades.pleione.slotgallery.controller.DeviceController
 import com.pleiades.pleione.slotgallery.databinding.FragmentDialogListBinding
 import com.pleiades.pleione.slotgallery.databinding.ItemDialogInformationBinding
 import com.pleiades.pleione.slotgallery.databinding.ItemDialogRadioBinding
-import com.pleiades.pleione.slotgallery.presentation.main.media.MediaActivity
+import com.pleiades.pleione.slotgallery.presentation.media.MediaActivity
 import java.text.SimpleDateFormat
 import java.util.*
 
