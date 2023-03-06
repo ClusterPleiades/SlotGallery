@@ -109,7 +109,7 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
                         Toast.makeText(context, R.string.message_error_same_directory, Toast.LENGTH_SHORT).show()
                     }
                     // case default directory
-                    ContentController.directoryArrayList[toDirectoryPosition].directoryOverView.uri == URI_DEFAULT_DIRECTORY -> {
+                    ContentController.directoryArrayList[toDirectoryPosition].directoryOverview.uri == URI_DEFAULT_DIRECTORY -> {
                         // show toast
                         Toast.makeText(context, R.string.message_error_default_directory, Toast.LENGTH_SHORT).show()
                     }
@@ -289,7 +289,7 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
             // find directory
             var isFound = false
             for (i in ContentController.directoryArrayList.indices) {
-                if (ContentController.directoryArrayList[i].name == backupDirectory.name && ContentController.directoryArrayList[i].directoryOverView == backupDirectory.directoryOverView) {
+                if (ContentController.directoryArrayList[i].name == backupDirectory.name && ContentController.directoryArrayList[i].directoryOverview == backupDirectory.directoryOverview) {
                     directoryPosition = i
                     directory = ContentController.directoryArrayList[i]
                     isFound = true

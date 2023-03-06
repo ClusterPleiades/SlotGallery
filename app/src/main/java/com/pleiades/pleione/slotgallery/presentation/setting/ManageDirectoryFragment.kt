@@ -75,10 +75,10 @@ class ManageDirectoryFragment : Fragment() {
                     contentResolver.takePersistableUriPermission(uri!!, takeFlags)
 
                     // initialize directory path
-                    val directoryOverView = DirectoryOverview(uri.toString(), uri.lastPathSegment!!)
+                    val directoryOverview = DirectoryOverview(uri.toString(), uri.lastPathSegment!!)
 
                     // case not duplicated
-                    if (!selectedSlot.directoryOverviewLists.contains(directoryOverView)) {
+                    if (!selectedSlot.directoryOverviewLists.contains(directoryOverview)) {
                         // initialize directory document file
                         val directoryDocumentFile = DocumentFile.fromTreeUri(requireContext(), uri)!!
                         if (directoryDocumentFile.listFiles().isEmpty()) {
@@ -110,7 +110,7 @@ class ManageDirectoryFragment : Fragment() {
                         }
 
                         // add directory
-                        selectedSlot.directoryOverviewLists.toMutableList().add(directoryOverView)
+                        selectedSlot.directoryOverviewLists.toMutableList().add(directoryOverview)
 
                         // notify item inserted
                         recyclerAdapter.notifyItemInserted(selectedSlot.directoryOverviewLists.size - 1)

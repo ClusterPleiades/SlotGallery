@@ -92,7 +92,7 @@ class DirectoryFragment : Fragment() {
                         Toast.makeText(context, R.string.message_error_same_directory, Toast.LENGTH_SHORT).show()
                     }
                     // case default directory
-                    ContentController.directoryArrayList[toDirectoryPosition].directoryOverView.uri == URI_DEFAULT_DIRECTORY -> {
+                    ContentController.directoryArrayList[toDirectoryPosition].directoryOverview.uri == URI_DEFAULT_DIRECTORY -> {
                         // show toast
                         Toast.makeText(context, R.string.message_error_default_directory, Toast.LENGTH_SHORT).show()
                     }
@@ -402,7 +402,7 @@ class DirectoryFragment : Fragment() {
         }
 
         override fun getItemId(position: Int): Long {
-            return ContentController.directoryArrayList[position].directoryOverView.hashCode().toLong()
+            return ContentController.directoryArrayList[position].directoryOverview.hashCode().toLong()
         }
 
         fun setSelected(position: Int, isSelected: Boolean) {

@@ -102,7 +102,7 @@ class MediaActivity : AppCompatActivity() {
                         Toast.makeText(this, R.string.message_error_same_directory, Toast.LENGTH_SHORT).show()
                     }
                     // case default directory
-                    ContentController.directoryArrayList[toDirectoryPosition].directoryOverView.uri == URI_DEFAULT_DIRECTORY -> {
+                    ContentController.directoryArrayList[toDirectoryPosition].directoryOverview.uri == URI_DEFAULT_DIRECTORY -> {
                         // show toast
                         Toast.makeText(this, R.string.message_error_default_directory, Toast.LENGTH_SHORT).show()
                     }

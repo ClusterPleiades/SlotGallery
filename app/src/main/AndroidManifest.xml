@@ -21,7 +21,6 @@
         <activity
             android:name=".presentation.main.MainActivity"
             android:exported="true"
-            android:label=""
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity">
             <intent-filter>

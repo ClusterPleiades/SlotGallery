@@ -124,7 +124,7 @@ class ChoiceActivity : AppCompatActivity() {
         }
 
         override fun getItemId(position: Int): Long {
-            return ContentController.directoryArrayList[position].directoryOverView.hashCode().toLong()
+            return ContentController.directoryArrayList[position].directoryOverview.hashCode().toLong()
         }
     }
 }
