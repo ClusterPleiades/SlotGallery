@@ -3,7 +3,6 @@ package com.pleiades.pleione.slotgallery.domain.use_case.media.bundle
 import com.pleiades.pleione.slotgallery.domain.use_case.media.CopyDirectoryUseCase
 import com.pleiades.pleione.slotgallery.domain.use_case.media.CopyMediaUseCase
 import com.pleiades.pleione.slotgallery.domain.use_case.media.GetDirectoryListUseCase
-import com.pleiades.pleione.slotgallery.domain.use_case.slot.*
 
 data class MediaUseCaseBundle(
     val getDirectoryListUseCase: GetDirectoryListUseCase,
