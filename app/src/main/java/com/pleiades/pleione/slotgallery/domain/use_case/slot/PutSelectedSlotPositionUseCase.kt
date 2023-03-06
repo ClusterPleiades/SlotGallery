@@ -1,0 +1,7 @@
+package com.pleiades.pleione.slotgallery.domain.use_case.slot
+
+import com.pleiades.pleione.slotgallery.domain.repository.SlotRepository
+
+class PutSelectedSlotPositionUseCase(private val repository: SlotRepository) {
+    operator fun invoke(position: Int) = repository.putSelectedSlotPosition(position)
+}
