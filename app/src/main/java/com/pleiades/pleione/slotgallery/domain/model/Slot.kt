@@ -1,4 +1,4 @@
-package com.pleiades.pleione.slotgallery.info
+package com.pleiades.pleione.slotgallery.domain.model
 
 import com.pleiades.pleione.slotgallery.Config.Companion.PATH_CAMERA
 import com.pleiades.pleione.slotgallery.Config.Companion.PATH_DOWNLOAD

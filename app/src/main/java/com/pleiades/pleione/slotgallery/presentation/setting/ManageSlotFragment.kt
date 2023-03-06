@@ -17,7 +17,7 @@ import com.pleiades.pleione.slotgallery.Config.Companion.SETTING_POSITION_SLOT
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.controller.SlotController
 import com.pleiades.pleione.slotgallery.databinding.FragmentManageBinding
-import com.pleiades.pleione.slotgallery.info.Slot
+import com.pleiades.pleione.slotgallery.domain.model.Slot
 import java.util.*
 
 class ManageSlotFragment : Fragment() {

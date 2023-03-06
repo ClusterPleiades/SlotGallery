@@ -37,7 +37,7 @@ import com.pleiades.pleione.slotgallery.controller.ContentController
 import com.pleiades.pleione.slotgallery.controller.DeviceController
 import com.pleiades.pleione.slotgallery.controller.SlotController
 import com.pleiades.pleione.slotgallery.databinding.FragmentMainBinding
-import com.pleiades.pleione.slotgallery.info.Directory
+import com.pleiades.pleione.slotgallery.domain.model.Directory
 import com.pleiades.pleione.slotgallery.presentation.choice.ChoiceActivity
 import com.pleiades.pleione.slotgallery.presentation.setting.SettingActivity
 import com.pleiades.pleione.slotgallery.presentation.dialog.ProgressDialogFragment

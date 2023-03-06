@@ -35,7 +35,7 @@ import com.pleiades.pleione.slotgallery.Config.Companion.STORE_URL_EDIT
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.controller.ContentController
 import com.pleiades.pleione.slotgallery.databinding.ActivityImageBinding
-import com.pleiades.pleione.slotgallery.info.Directory
+import com.pleiades.pleione.slotgallery.domain.model.Directory
 import com.pleiades.pleione.slotgallery.presentation.choice.ChoiceActivity
 import com.pleiades.pleione.slotgallery.presentation.dialog.ProgressDialogFragment
 import com.pleiades.pleione.slotgallery.presentation.dialog.ListDialogFragment

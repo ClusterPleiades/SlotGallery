@@ -16,8 +16,8 @@ import com.pleiades.pleione.slotgallery.Config.Companion.PATH_SNAPSEED
 import com.pleiades.pleione.slotgallery.Config.Companion.SORT_POSITION_BY_NAME
 import com.pleiades.pleione.slotgallery.Config.Companion.SORT_POSITION_BY_NEWEST
 import com.pleiades.pleione.slotgallery.Config.Companion.SORT_POSITION_BY_OLDEST
-import com.pleiades.pleione.slotgallery.info.Directory
-import com.pleiades.pleione.slotgallery.info.Slot
+import com.pleiades.pleione.slotgallery.domain.model.Directory
+import com.pleiades.pleione.slotgallery.domain.model.Slot
 import com.pleiades.pleione.slotgallery.presentation.dialog.ProgressDialogFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

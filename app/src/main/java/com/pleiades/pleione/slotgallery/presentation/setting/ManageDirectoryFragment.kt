@@ -23,7 +23,7 @@ import com.pleiades.pleione.slotgallery.Config.Companion.SETTING_POSITION_DIRECT
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.controller.SlotController
 import com.pleiades.pleione.slotgallery.databinding.FragmentManageBinding
-import com.pleiades.pleione.slotgallery.info.Slot
+import com.pleiades.pleione.slotgallery.domain.model.Slot
 import java.io.BufferedInputStream
 import java.io.BufferedOutputStream
 import java.io.InputStream

@@ -8,7 +8,7 @@ import com.google.gson.reflect.TypeToken
 import com.pleiades.pleione.slotgallery.Config.Companion.KEY_SELECTED_SLOT_POSITION
 import com.pleiades.pleione.slotgallery.Config.Companion.KEY_SLOT_LIST
 import com.pleiades.pleione.slotgallery.Config.Companion.PREFS
-import com.pleiades.pleione.slotgallery.info.Slot
+import com.pleiades.pleione.slotgallery.domain.model.Slot
 import java.util.*
 
 class SlotController(context: Context) {

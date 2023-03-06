@@ -1,4 +1,4 @@
-package com.pleiades.pleione.slotgallery.info
+package com.pleiades.pleione.slotgallery.domain.model
 
 import android.net.Uri
 import com.pleiades.pleione.slotgallery.Config.Companion.PATH_PRIMARY
