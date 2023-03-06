@@ -1,5 +1,6 @@
 package com.pleiades.pleione.slotgallery.data.dependency_injection
 
+import android.content.ContentResolver
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
@@ -17,6 +18,10 @@ import javax.inject.Singleton
 object AppModule {
     @Provides
     @Singleton
+    fun provideApplicationContext(@ApplicationContext context: Context): Context = context
+
+    @Provides
+    @Singleton
     fun provideSharedPreference(@ApplicationContext context: Context): SharedPreferences = context.getSharedPreferences(PREFS, MODE_PRIVATE)
 
     @Provides
@@ -26,4 +31,8 @@ object AppModule {
     @Provides
     @Singleton
     fun provideResources(@ApplicationContext context: Context): Resources = context.resources
+
+    @Provides
+    @Singleton
+    fun provideContentResolver(@ApplicationContext context: Context): ContentResolver = context.contentResolver
 }
