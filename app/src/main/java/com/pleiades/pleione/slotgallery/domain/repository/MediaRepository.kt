@@ -1,6 +1,6 @@
 package com.pleiades.pleione.slotgallery.domain.repository
 
-import com.pleiades.pleione.slotgallery.domain.model.Content
+import com.pleiades.pleione.slotgallery.domain.model.Media
 import com.pleiades.pleione.slotgallery.domain.model.Directory
 
 interface MediaRepository {
@@ -14,6 +14,6 @@ interface MediaRepository {
     suspend fun copyMedia(
         fromDirectory: Directory,
         toDirectory: Directory,
-        mediaSet: Set<Content>
+        mediaSet: Set<Media>
     )
 }

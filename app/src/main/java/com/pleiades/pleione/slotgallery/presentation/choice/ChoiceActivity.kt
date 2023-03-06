@@ -102,7 +102,7 @@ class ChoiceActivity : AppCompatActivity() {
 
         override fun onBindViewHolder(holder: ChoiceViewHolder, position: Int) {
             val directory = ContentController.directoryArrayList[position]
-            val content = directory.contentArrayList[0]
+            val content = directory.mediaArrayList[0]
 
             // case thumbnail
             Glide.with(this@ChoiceActivity)
@@ -116,7 +116,7 @@ class ChoiceActivity : AppCompatActivity() {
             holder.titleTextView.text = directory.name
 
             // case content
-            holder.contentTextView.text = directory.contentArrayList.size.toString()
+            holder.contentTextView.text = directory.mediaArrayList.size.toString()
         }
 
         override fun getItemCount(): Int {

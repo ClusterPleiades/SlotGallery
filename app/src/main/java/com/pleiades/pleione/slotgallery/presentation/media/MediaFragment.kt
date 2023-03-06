@@ -27,7 +27,7 @@ class MediaFragment(directoryPosition: Int, contentPosition: Int) : Fragment() {
     private var _binding: FragmentImageBinding? = null
     private val binding get() = _binding!!
 
-    private val content = ContentController.directoryArrayList[directoryPosition].contentArrayList[contentPosition]
+    private val content = ContentController.directoryArrayList[directoryPosition].mediaArrayList[contentPosition]
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentImageBinding.inflate(inflater, container, false)

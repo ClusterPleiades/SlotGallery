@@ -377,7 +377,7 @@ class DirectoryFragment : Fragment() {
 
         override fun onBindViewHolder(holder: DirectoryViewHolder, position: Int) {
             val directory = ContentController.directoryArrayList[position]
-            val content = directory.contentArrayList[0]
+            val content = directory.mediaArrayList[0]
 
             // case thumbnail
             Glide.with(context!!)
@@ -394,7 +394,7 @@ class DirectoryFragment : Fragment() {
             holder.titleTextView.text = directory.name
 
             // case content
-            holder.contentTextView.text = directory.contentArrayList.size.toString()
+            holder.contentTextView.text = directory.mediaArrayList.size.toString()
         }
 
         override fun getItemCount(): Int {
@@ -450,7 +450,7 @@ class DirectoryFragment : Fragment() {
                 val directory = ContentController.directoryArrayList[position]
 
                 // add directory contents
-                for (content in directory.contentArrayList) {
+                for (content in directory.mediaArrayList) {
                     // set is contain video, image
                     if (content.isVideo) isContainVideo = true
                     else isContainImage = true
@@ -481,7 +481,7 @@ class DirectoryFragment : Fragment() {
                 val directory = ContentController.directoryArrayList[position]
 
                 // add content uris
-                for (content in directory.contentArrayList) contentUriArrayList.add(content.uri)
+                for (content in directory.mediaArrayList) contentUriArrayList.add(content.uri)
             }
 
             // initialize create delete request pending intent

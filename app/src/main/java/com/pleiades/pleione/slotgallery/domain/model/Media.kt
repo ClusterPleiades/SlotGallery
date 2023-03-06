@@ -2,7 +2,7 @@ package com.pleiades.pleione.slotgallery.domain.model
 
 import android.net.Uri
 
-data class Content(
+data class Media(
     val isVideo: Boolean,
     val id: String,
 

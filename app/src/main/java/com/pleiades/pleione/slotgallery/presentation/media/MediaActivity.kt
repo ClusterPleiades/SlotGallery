@@ -36,7 +36,7 @@ import com.pleiades.pleione.slotgallery.Config.Companion.URI_DEFAULT_DIRECTORY
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.controller.ContentController
 import com.pleiades.pleione.slotgallery.databinding.ActivityImageBinding
-import com.pleiades.pleione.slotgallery.domain.model.Content
+import com.pleiades.pleione.slotgallery.domain.model.Media
 import com.pleiades.pleione.slotgallery.domain.model.Directory
 import com.pleiades.pleione.slotgallery.presentation.choice.ChoiceActivity
 import com.pleiades.pleione.slotgallery.presentation.dialog.ProgressDialogFragment
@@ -139,13 +139,13 @@ class MediaActivity : AppCompatActivity() {
                 val position = binding.pagerImage.currentItem
 
                 // remove content
-                directory.contentArrayList.removeAt(position)
+                directory.mediaArrayList.removeAt(position)
 
                 // notify item removed
                 contentsPagerAdapter.notifyItemRemoved(position)
 
                 // case delete all
-                if (directory.contentArrayList.size == 0) {
+                if (directory.mediaArrayList.size == 0) {
                     // remove directory
                     ContentController.directoryArrayList.removeAt(directoryPosition)
 
@@ -178,7 +178,7 @@ class MediaActivity : AppCompatActivity() {
                 var index = 1
                 do {
                     isDuplicate = false
-                    for (content in directory.contentArrayList) {
+                    for (content in directory.mediaArrayList) {
                         if (toName == content.name) {
                             isDuplicate = true
                             toName =
@@ -204,16 +204,16 @@ class MediaActivity : AppCompatActivity() {
                 contentResolver.update(currentContent.uri, values, null, null)
 
                 // update content
-                directory.contentArrayList[binding.pagerImage.currentItem].name = toName
+                directory.mediaArrayList[binding.pagerImage.currentItem].name = toName
 
                 // backup
-                val backupContent = directory.contentArrayList[binding.pagerImage.currentItem]
+                val backupContent = directory.mediaArrayList[binding.pagerImage.currentItem]
 
                 // sort
                 ContentController(this).sortContentArrayList(directoryPosition)
 
                 // restore
-                binding.pagerImage.setCurrentItem(directory.contentArrayList.indexOf(backupContent), false)
+                binding.pagerImage.setCurrentItem(directory.mediaArrayList.indexOf(backupContent), false)
 
                 // cancel rename
                 cancelRename(toName)
@@ -236,7 +236,7 @@ class MediaActivity : AppCompatActivity() {
 
         // initialize title edit text
         titleEditText = findViewById(R.id.title_appbar)
-        titleEditText.setText(directory.contentArrayList[contentPosition].name)
+        titleEditText.setText(directory.mediaArrayList[contentPosition].name)
         titleEditText.setOnFocusChangeListener { _, b ->
             isEditFocused = b
             invalidateOptionsMenu()
@@ -342,8 +342,8 @@ class MediaActivity : AppCompatActivity() {
         super.onBackPressed()
     }
 
-    fun getCurrentContent(): Content {
-        return directory.contentArrayList[binding.pagerImage.currentItem]
+    fun getCurrentContent(): Media {
+        return directory.mediaArrayList[binding.pagerImage.currentItem]
     }
 
     fun fullImage() {
@@ -380,11 +380,11 @@ class MediaActivity : AppCompatActivity() {
         }
 
         override fun getItemCount(): Int {
-            return directory.contentArrayList.size
+            return directory.mediaArrayList.size
         }
 
         override fun getItemId(position: Int): Long {
-            return directory.contentArrayList[position].uri.hashCode().toLong()
+            return directory.mediaArrayList[position].uri.hashCode().toLong()
         }
     }
 

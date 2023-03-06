@@ -4,7 +4,7 @@ import com.pleiades.pleione.slotgallery.Config.Companion.PATH_PRIMARY
 
 class Directory(val directoryOverview: DirectoryOverview) {
     val name = directoryOverview.lastPath.substringAfter(PATH_PRIMARY).substringAfterLast("/")
-    val contentArrayList: ArrayList<Content> = ArrayList()
+    val mediaArrayList: ArrayList<Media> = ArrayList()
     var date = 0L
 
     override fun equals(other: Any?): Boolean {
@@ -14,18 +14,18 @@ class Directory(val directoryOverview: DirectoryOverview) {
         val otherDirectory = other as Directory
         return directoryOverview == otherDirectory.directoryOverview
                 && date == otherDirectory.date
-                && contentArrayList == otherDirectory.contentArrayList
+                && mediaArrayList == otherDirectory.mediaArrayList
     }
 
     override fun hashCode(): Int {
         var result = directoryOverview.hashCode()
         result = 31 * result + name.hashCode()
-        result = 31 * result + contentArrayList.hashCode()
+        result = 31 * result + mediaArrayList.hashCode()
         result = 31 * result + date.hashCode()
         return result
     }
 
     fun refreshDate() {
-        date = contentArrayList.maxOf { it.date }
+        date = mediaArrayList.maxOf { it.date }
     }
 }

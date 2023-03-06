@@ -17,7 +17,7 @@ import com.pleiades.pleione.slotgallery.Config.Companion.SORT_POSITION_BY_NAME
 import com.pleiades.pleione.slotgallery.Config.Companion.SORT_POSITION_BY_NEWEST
 import com.pleiades.pleione.slotgallery.Config.Companion.SORT_POSITION_BY_OLDEST
 import com.pleiades.pleione.slotgallery.Config.Companion.URI_DEFAULT_DIRECTORY
-import com.pleiades.pleione.slotgallery.domain.model.Content
+import com.pleiades.pleione.slotgallery.domain.model.Media
 import com.pleiades.pleione.slotgallery.domain.model.Directory
 import com.pleiades.pleione.slotgallery.domain.model.DirectoryOverview
 import com.pleiades.pleione.slotgallery.presentation.dialog.ProgressDialogFragment
@@ -103,14 +103,14 @@ class ContentController(private val context: Context) {
             // case allow sub directory
             if (allowSubDirectory) {
                 if (relativePath == directoryRelativePath) {
-                    directory.contentArrayList.add(Content(false, id, name, size, width, height, date, relativePath, uri, 0L))
+                    directory.mediaArrayList.add(Media(false, id, name, size, width, height, date, relativePath, uri, 0L))
                 } else {
                     // case sub directory
                     subDirectoryLastPathHashSet.add(directoryOverview.lastPath.substringBefore(":") + ":" + relativePath.substringBeforeLast("/"))
                 }
             } else {
                 // add image
-                directory.contentArrayList.add(Content(false, id, name, size, width, height, date, relativePath, uri, 0L))
+                directory.mediaArrayList.add(Media(false, id, name, size, width, height, date, relativePath, uri, 0L))
             }
         }
 
@@ -154,14 +154,14 @@ class ContentController(private val context: Context) {
             if (allowSubDirectory) {
                 if (relativePath == directoryRelativePath) {
                     // add image
-                    directory.contentArrayList.add(Content(true, id, name, size, width, height, date, relativePath, uri, duration))
+                    directory.mediaArrayList.add(Media(true, id, name, size, width, height, date, relativePath, uri, duration))
                 } else {
                     // case sub directory
                     subDirectoryLastPathHashSet.add(directoryOverview.lastPath.substringBefore(":") + ":" + relativePath.substringBeforeLast("/"))
                 }
             } else {
                 // add image
-                directory.contentArrayList.add(Content(true, id, name, size, width, height, date, relativePath, uri, duration))
+                directory.mediaArrayList.add(Media(true, id, name, size, width, height, date, relativePath, uri, duration))
             }
         }
 
@@ -169,7 +169,7 @@ class ContentController(private val context: Context) {
         videoCursor.close()
 
         // case contents exist
-        if (directory.contentArrayList.size > 0) {
+        if (directory.mediaArrayList.size > 0) {
             // add directory
             directoryArrayList.add(directory)
         }
@@ -203,17 +203,17 @@ class ContentController(private val context: Context) {
 
     fun sortContentArrayList() {
         when (prefs.getInt(KEY_CONTENT_SORT_ORDER, 0)) {
-            SORT_POSITION_BY_NAME -> for (directory in directoryArrayList) directory.contentArrayList.sortBy { it.name }
-            SORT_POSITION_BY_NEWEST -> for (directory in directoryArrayList) directory.contentArrayList.sortByDescending { it.date }
-            SORT_POSITION_BY_OLDEST -> for (directory in directoryArrayList) directory.contentArrayList.sortBy { it.date }
+            SORT_POSITION_BY_NAME -> for (directory in directoryArrayList) directory.mediaArrayList.sortBy { it.name }
+            SORT_POSITION_BY_NEWEST -> for (directory in directoryArrayList) directory.mediaArrayList.sortByDescending { it.date }
+            SORT_POSITION_BY_OLDEST -> for (directory in directoryArrayList) directory.mediaArrayList.sortBy { it.date }
         }
     }
 
     fun sortContentArrayList(directoryPosition: Int) {
         when (prefs.getInt(KEY_CONTENT_SORT_ORDER, 0)) {
-            SORT_POSITION_BY_NAME -> directoryArrayList[directoryPosition].contentArrayList.sortBy { it.name }
-            SORT_POSITION_BY_NEWEST -> directoryArrayList[directoryPosition].contentArrayList.sortByDescending { it.date }
-            SORT_POSITION_BY_OLDEST -> directoryArrayList[directoryPosition].contentArrayList.sortBy { it.date }
+            SORT_POSITION_BY_NAME -> directoryArrayList[directoryPosition].mediaArrayList.sortBy { it.name }
+            SORT_POSITION_BY_NEWEST -> directoryArrayList[directoryPosition].mediaArrayList.sortByDescending { it.date }
+            SORT_POSITION_BY_OLDEST -> directoryArrayList[directoryPosition].mediaArrayList.sortBy { it.date }
         }
     }
 
@@ -225,7 +225,7 @@ class ContentController(private val context: Context) {
         // set progressbar attributes
         var max = 0
         for (fromDirectoryPosition in fromDirectoryPositionHashSet)
-            max += directoryArrayList[fromDirectoryPosition].contentArrayList.size
+            max += directoryArrayList[fromDirectoryPosition].mediaArrayList.size
         progressDialogFragment.progressBar.max = max
 
         // initialize to directory document file
@@ -256,7 +256,7 @@ class ContentController(private val context: Context) {
 
             // copy contents
             val fromDirectory = directoryArrayList[fromDirectoryPosition]
-            for (content in fromDirectory.contentArrayList) {
+            for (content in fromDirectory.mediaArrayList) {
                 // case is canceled
                 if (progressDialogFragment.isCanceled)
                     break
@@ -334,7 +334,7 @@ class ContentController(private val context: Context) {
             val uri = Uri.withAppendedPath(imageUri, id.toString())
 
             toDirectory.date = date.coerceAtLeast(toDirectory.date)
-            toDirectory.contentArrayList.add(Content(false, id, name, "-", 0, 0, date, relativePath, uri, 0L))
+            toDirectory.mediaArrayList.add(Media(false, id, name, "-", 0, 0, date, relativePath, uri, 0L))
         }
         imageCursor.close()
 
@@ -356,7 +356,7 @@ class ContentController(private val context: Context) {
             val uri = Uri.withAppendedPath(videoUri, id.toString())
 
             toDirectory.date = date.coerceAtLeast(toDirectory.date)
-            toDirectory.contentArrayList.add(Content(true, id, name, "-", 0, 0, date, relativePath, uri, 0L))
+            toDirectory.mediaArrayList.add(Media(true, id, name, "-", 0, 0, date, relativePath, uri, 0L))
         }
         videoCursor.close()
 
@@ -408,7 +408,7 @@ class ContentController(private val context: Context) {
                 break
 
             // initialize content
-            val content = fromDirectory.contentArrayList[contentPosition]
+            val content = fromDirectory.mediaArrayList[contentPosition]
 
             // initialize to name
             val preName = content.name.substringBeforeLast(".")
@@ -482,7 +482,7 @@ class ContentController(private val context: Context) {
             val uri = Uri.withAppendedPath(imageUri, id.toString())
 
             toDirectory.date = date.coerceAtLeast(toDirectory.date)
-            toDirectory.contentArrayList.add(Content(false, id, name, "-", 0, 0, date, relativePath, uri, 0L))
+            toDirectory.mediaArrayList.add(Media(false, id, name, "-", 0, 0, date, relativePath, uri, 0L))
         }
         imageCursor.close()
 
@@ -504,7 +504,7 @@ class ContentController(private val context: Context) {
             val uri = Uri.withAppendedPath(videoUri, id.toString())
 
             toDirectory.date = date.coerceAtLeast(toDirectory.date)
-            toDirectory.contentArrayList.add(Content(true, id, name, "-", 0, 0, date, relativePath, uri, 0L))
+            toDirectory.mediaArrayList.add(Media(true, id, name, "-", 0, 0, date, relativePath, uri, 0L))
         }
         videoCursor.close()
 
@@ -545,7 +545,7 @@ class ContentController(private val context: Context) {
             val uri = Uri.withAppendedPath(imageUri, id.toString())
 
             directory.date = date.coerceAtLeast(directory.date)
-            directory.contentArrayList.add(Content(false, id, name, "-", 0, 0, date, relativePath, uri, 0L))
+            directory.mediaArrayList.add(Media(false, id, name, "-", 0, 0, date, relativePath, uri, 0L))
         }
         imageCursor.close()
 
