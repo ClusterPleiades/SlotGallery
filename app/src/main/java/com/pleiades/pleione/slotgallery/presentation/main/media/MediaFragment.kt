@@ -1,31 +1,26 @@
-package com.pleiades.pleione.slotgallery.ui.fragment.main
+package com.pleiades.pleione.slotgallery.presentation.main.media
 
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.github.chrisbanes.photoview.PhotoView
 import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_NAME
 import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_URI
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.controller.ContentController
 import com.pleiades.pleione.slotgallery.databinding.FragmentImageBinding
-import com.pleiades.pleione.slotgallery.databinding.FragmentMainBinding
-import com.pleiades.pleione.slotgallery.ui.activity.ImageActivity
-import com.pleiades.pleione.slotgallery.ui.activity.VideoActivity
+import com.pleiades.pleione.slotgallery.presentation.main.media.video.VideoActivity
 import java.util.concurrent.TimeUnit
 
-class ImageFragment(directoryPosition: Int, contentPosition: Int) : Fragment() {
+class MediaFragment(directoryPosition: Int, contentPosition: Int) : Fragment() {
     companion object {
-        fun newInstance(directoryPosition: Int, contentPosition: Int): ImageFragment {
-            return ImageFragment(directoryPosition, contentPosition)
+        fun newInstance(directoryPosition: Int, contentPosition: Int): MediaFragment {
+            return MediaFragment(directoryPosition, contentPosition)
         }
     }
 
@@ -49,7 +44,7 @@ class ImageFragment(directoryPosition: Int, contentPosition: Int) : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // initialize views
-        binding.photoImage.setOnClickListener { (activity as ImageActivity).fullImage() }
+        binding.photoImage.setOnClickListener { (activity as MediaActivity).fullImage() }
 
         // load image
         Glide.with(requireContext())
@@ -81,7 +76,7 @@ class ImageFragment(directoryPosition: Int, contentPosition: Int) : Fragment() {
 
     override fun onResume() {
         // set action bar title
-        (requireActivity() as ImageActivity).titleEditText.setText(content.name)
+        (requireActivity() as MediaActivity).titleEditText.setText(content.name)
 
         super.onResume()
     }

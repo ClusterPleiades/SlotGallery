@@ -1,4 +1,4 @@
-package com.pleiades.pleione.slotgallery.ui.fragment.dialog
+package com.pleiades.pleione.slotgallery.presentation.dialog
 
 import android.app.Dialog
 import android.content.Context.MODE_PRIVATE
@@ -7,7 +7,6 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
@@ -34,7 +33,7 @@ import com.pleiades.pleione.slotgallery.controller.DeviceController
 import com.pleiades.pleione.slotgallery.databinding.FragmentDialogListBinding
 import com.pleiades.pleione.slotgallery.databinding.ItemDialogInformationBinding
 import com.pleiades.pleione.slotgallery.databinding.ItemDialogRadioBinding
-import com.pleiades.pleione.slotgallery.ui.activity.ImageActivity
+import com.pleiades.pleione.slotgallery.presentation.main.media.MediaActivity
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -99,12 +98,12 @@ class ListDialogFragment(private val type: Int) : androidx.fragment.app.DialogFr
             )
         }
 
-        override fun onBindViewHolder(holder: InformationAdapter.ViewHolder, position: Int) {
+        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             // title
             holder.binding.title.text = resources.getStringArray(R.array.information)[position]
 
             // content
-            val content = (activity as ImageActivity).getCurrentContent()
+            val content = (activity as MediaActivity).getCurrentContent()
             holder.binding.content.text =
                 when (position) {
                     INFORMATION_POSITION_NAME -> content.name

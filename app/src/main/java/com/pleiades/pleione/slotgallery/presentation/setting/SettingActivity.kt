@@ -1,15 +1,12 @@
-package com.pleiades.pleione.slotgallery.ui.activity
+package com.pleiades.pleione.slotgallery.presentation.setting
 
 import android.os.Bundle
 import android.view.MenuItem
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import com.pleiades.pleione.slotgallery.Config.Companion.ACTIVITY_CODE_SETTING
 import com.pleiades.pleione.slotgallery.R
-import com.pleiades.pleione.slotgallery.databinding.ActivityImageBinding
 import com.pleiades.pleione.slotgallery.databinding.ActivitySettingBinding
-import com.pleiades.pleione.slotgallery.ui.fragment.setting.SettingFragment
+import com.pleiades.pleione.slotgallery.presentation.main.MainActivity
 
 class SettingActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySettingBinding

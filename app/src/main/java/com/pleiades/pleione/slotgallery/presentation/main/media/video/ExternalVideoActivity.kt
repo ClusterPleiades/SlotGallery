@@ -1,4 +1,4 @@
-package com.pleiades.pleione.slotgallery.ui.activity
+package com.pleiades.pleione.slotgallery.presentation.main.media.video
 
 import android.content.Intent
 import android.content.pm.ActivityInfo
@@ -6,23 +6,18 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.pleiades.pleione.slotgallery.Config.Companion.ACTIVITY_CODE_VIDEO
-import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_NAME
-import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_URI
 import com.pleiades.pleione.slotgallery.R
-import com.pleiades.pleione.slotgallery.databinding.ActivityMainBinding
 import com.pleiades.pleione.slotgallery.databinding.ActivityVideoBinding
+import com.pleiades.pleione.slotgallery.presentation.main.MainActivity
 
 
 class ExternalVideoActivity : AppCompatActivity() {

@@ -1,4 +1,4 @@
-package com.pleiades.pleione.slotgallery.ui.activity
+package com.pleiades.pleione.slotgallery.presentation.main.media
 
 import android.app.Activity
 import android.content.ContentValues
@@ -36,12 +36,13 @@ import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.controller.ContentController
 import com.pleiades.pleione.slotgallery.databinding.ActivityImageBinding
 import com.pleiades.pleione.slotgallery.info.Directory
-import com.pleiades.pleione.slotgallery.ui.fragment.dialog.ProgressDialogFragment
-import com.pleiades.pleione.slotgallery.ui.fragment.dialog.ListDialogFragment
-import com.pleiades.pleione.slotgallery.ui.fragment.main.ImageFragment
+import com.pleiades.pleione.slotgallery.presentation.choice.ChoiceActivity
+import com.pleiades.pleione.slotgallery.presentation.dialog.ProgressDialogFragment
+import com.pleiades.pleione.slotgallery.presentation.dialog.ListDialogFragment
+import com.pleiades.pleione.slotgallery.presentation.main.MainActivity
 import kotlinx.coroutines.launch
 
-class ImageActivity : AppCompatActivity() {
+class MediaActivity : AppCompatActivity() {
     private lateinit var binding: ActivityImageBinding
 
     private lateinit var copyResultLauncher: ActivityResultLauncher<Intent>
@@ -373,7 +374,7 @@ class ImageActivity : AppCompatActivity() {
 
     inner class ImageFragmentStateAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle) : FragmentStateAdapter(fragmentManager, lifecycle) {
         override fun createFragment(position: Int): Fragment {
-            return ImageFragment.newInstance(directoryPosition, position)
+            return MediaFragment.newInstance(directoryPosition, position)
         }
 
         override fun getItemCount(): Int {

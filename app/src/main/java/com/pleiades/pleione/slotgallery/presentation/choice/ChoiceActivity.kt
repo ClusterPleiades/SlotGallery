@@ -1,4 +1,4 @@
-package com.pleiades.pleione.slotgallery.ui.activity
+package com.pleiades.pleione.slotgallery.presentation.choice
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -21,7 +20,7 @@ import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.controller.ContentController
 import com.pleiades.pleione.slotgallery.controller.DeviceController
 import com.pleiades.pleione.slotgallery.databinding.ActivityChoiceBinding
-import com.pleiades.pleione.slotgallery.databinding.ActivityMainBinding
+import com.pleiades.pleione.slotgallery.presentation.main.MainActivity
 
 class ChoiceActivity : AppCompatActivity() {
     private lateinit var binding: ActivityChoiceBinding

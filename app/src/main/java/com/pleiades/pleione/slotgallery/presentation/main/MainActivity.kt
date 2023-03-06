@@ -1,4 +1,4 @@
-package com.pleiades.pleione.slotgallery.ui.activity
+package com.pleiades.pleione.slotgallery.presentation.main
 
 import android.content.pm.PackageManager
 import android.os.Build
@@ -14,9 +14,7 @@ import com.pleiades.pleione.slotgallery.Config.Companion.PERMISSION_STORAGE
 import com.pleiades.pleione.slotgallery.Config.Companion.PREFS
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.databinding.ActivityMainBinding
-import com.pleiades.pleione.slotgallery.ui.fragment.dialog.MessageDialogFragment
-import com.pleiades.pleione.slotgallery.ui.fragment.main.ContentFragment
-import com.pleiades.pleione.slotgallery.ui.fragment.main.DirectoryFragment
+import com.pleiades.pleione.slotgallery.presentation.dialog.MessageDialogFragment
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
