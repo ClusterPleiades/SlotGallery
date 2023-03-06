@@ -35,6 +35,7 @@ import com.pleiades.pleione.slotgallery.Config.Companion.STORE_URL_EDIT
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.controller.ContentController
 import com.pleiades.pleione.slotgallery.databinding.ActivityImageBinding
+import com.pleiades.pleione.slotgallery.domain.model.Content
 import com.pleiades.pleione.slotgallery.domain.model.Directory
 import com.pleiades.pleione.slotgallery.presentation.choice.ChoiceActivity
 import com.pleiades.pleione.slotgallery.presentation.dialog.ProgressDialogFragment
@@ -340,7 +341,7 @@ class MediaActivity : AppCompatActivity() {
         super.onBackPressed()
     }
 
-    fun getCurrentContent(): Directory.Content {
+    fun getCurrentContent(): Content {
         return directory.contentArrayList[binding.pagerImage.currentItem]
     }
 

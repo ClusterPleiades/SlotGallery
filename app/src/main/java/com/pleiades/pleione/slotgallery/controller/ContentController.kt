@@ -16,6 +16,7 @@ import com.pleiades.pleione.slotgallery.Config.Companion.PATH_SNAPSEED
 import com.pleiades.pleione.slotgallery.Config.Companion.SORT_POSITION_BY_NAME
 import com.pleiades.pleione.slotgallery.Config.Companion.SORT_POSITION_BY_NEWEST
 import com.pleiades.pleione.slotgallery.Config.Companion.SORT_POSITION_BY_OLDEST
+import com.pleiades.pleione.slotgallery.domain.model.Content
 import com.pleiades.pleione.slotgallery.domain.model.Directory
 import com.pleiades.pleione.slotgallery.domain.model.Slot
 import com.pleiades.pleione.slotgallery.presentation.dialog.ProgressDialogFragment
@@ -101,14 +102,14 @@ class ContentController(private val context: Context) {
             // case allow sub directory
             if (allowSubDirectory) {
                 if (relativePath == directoryRelativePath) {
-                    directory.contentArrayList.add(Directory.Content(false, id, name, size, width, height, date, relativePath, uri, 0L))
+                    directory.contentArrayList.add(Content(false, id, name, size, width, height, date, relativePath, uri, 0L))
                 } else {
                     // case sub directory
                     subDirectoryLastPathHashSet.add(directoryPath.lastPath.substringBefore(":") + ":" + relativePath.substringBeforeLast("/"))
                 }
             } else {
                 // add image
-                directory.contentArrayList.add(Directory.Content(false, id, name, size, width, height, date, relativePath, uri, 0L))
+                directory.contentArrayList.add(Content(false, id, name, size, width, height, date, relativePath, uri, 0L))
             }
         }
 
@@ -152,14 +153,14 @@ class ContentController(private val context: Context) {
             if (allowSubDirectory) {
                 if (relativePath == directoryRelativePath) {
                     // add image
-                    directory.contentArrayList.add(Directory.Content(true, id, name, size, width, height, date, relativePath, uri, duration))
+                    directory.contentArrayList.add(Content(true, id, name, size, width, height, date, relativePath, uri, duration))
                 } else {
                     // case sub directory
                     subDirectoryLastPathHashSet.add(directoryPath.lastPath.substringBefore(":") + ":" + relativePath.substringBeforeLast("/"))
                 }
             } else {
                 // add image
-                directory.contentArrayList.add(Directory.Content(true, id, name, size, width, height, date, relativePath, uri, duration))
+                directory.contentArrayList.add(Content(true, id, name, size, width, height, date, relativePath, uri, duration))
             }
         }
 
@@ -332,7 +333,7 @@ class ContentController(private val context: Context) {
             val uri = Uri.withAppendedPath(imageUri, id.toString())
 
             toDirectory.date = date.coerceAtLeast(toDirectory.date)
-            toDirectory.contentArrayList.add(Directory.Content(false, id, name, "-", 0, 0, date, relativePath, uri, 0L))
+            toDirectory.contentArrayList.add(Content(false, id, name, "-", 0, 0, date, relativePath, uri, 0L))
         }
         imageCursor.close()
 
@@ -354,7 +355,7 @@ class ContentController(private val context: Context) {
             val uri = Uri.withAppendedPath(videoUri, id.toString())
 
             toDirectory.date = date.coerceAtLeast(toDirectory.date)
-            toDirectory.contentArrayList.add(Directory.Content(true, id, name, "-", 0, 0, date, relativePath, uri, 0L))
+            toDirectory.contentArrayList.add(Content(true, id, name, "-", 0, 0, date, relativePath, uri, 0L))
         }
         videoCursor.close()
 
@@ -480,7 +481,7 @@ class ContentController(private val context: Context) {
             val uri = Uri.withAppendedPath(imageUri, id.toString())
 
             toDirectory.date = date.coerceAtLeast(toDirectory.date)
-            toDirectory.contentArrayList.add(Directory.Content(false, id, name, "-", 0, 0, date, relativePath, uri, 0L))
+            toDirectory.contentArrayList.add(Content(false, id, name, "-", 0, 0, date, relativePath, uri, 0L))
         }
         imageCursor.close()
 
@@ -502,7 +503,7 @@ class ContentController(private val context: Context) {
             val uri = Uri.withAppendedPath(videoUri, id.toString())
 
             toDirectory.date = date.coerceAtLeast(toDirectory.date)
-            toDirectory.contentArrayList.add(Directory.Content(true, id, name, "-", 0, 0, date, relativePath, uri, 0L))
+            toDirectory.contentArrayList.add(Content(true, id, name, "-", 0, 0, date, relativePath, uri, 0L))
         }
         videoCursor.close()
 
@@ -543,7 +544,7 @@ class ContentController(private val context: Context) {
             val uri = Uri.withAppendedPath(imageUri, id.toString())
 
             directory.date = date.coerceAtLeast(directory.date)
-            directory.contentArrayList.add(Directory.Content(false, id, name, "-", 0, 0, date, relativePath, uri, 0L))
+            directory.contentArrayList.add(Content(false, id, name, "-", 0, 0, date, relativePath, uri, 0L))
         }
         imageCursor.close()
 
