@@ -1,0 +1,7 @@
+package com.pleiades.pleione.slotgallery.domain.use_case.media
+
+import com.pleiades.pleione.slotgallery.domain.repository.MediaRepository
+
+class GetDirectoryListUseCase(private val repository: MediaRepository) {
+    operator fun invoke() = repository.getDirectoryList()
+}
