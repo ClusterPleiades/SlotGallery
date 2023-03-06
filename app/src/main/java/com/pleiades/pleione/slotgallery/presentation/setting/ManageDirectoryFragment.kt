@@ -78,7 +78,7 @@ class ManageDirectoryFragment : Fragment() {
                     val directoryOverview = DirectoryOverview(uri.toString(), uri.lastPathSegment!!)
 
                     // case not duplicated
-                    if (!selectedSlot.directoryOverviewLists.contains(directoryOverview)) {
+                    if (!selectedSlot.directoryOverviewList.contains(directoryOverview)) {
                         // initialize directory document file
                         val directoryDocumentFile = DocumentFile.fromTreeUri(requireContext(), uri)!!
                         if (directoryDocumentFile.listFiles().isEmpty()) {
@@ -110,10 +110,10 @@ class ManageDirectoryFragment : Fragment() {
                         }
 
                         // add directory
-                        selectedSlot.directoryOverviewLists.toMutableList().add(directoryOverview)
+                        selectedSlot.directoryOverviewList.toMutableList().add(directoryOverview)
 
                         // notify item inserted
-                        recyclerAdapter.notifyItemInserted(selectedSlot.directoryOverviewLists.size - 1)
+                        recyclerAdapter.notifyItemInserted(selectedSlot.directoryOverviewList.size - 1)
 
                         // put selected slot
                         slotController.putSelectedSlotInfo(selectedSlot)
@@ -177,12 +177,12 @@ class ManageDirectoryFragment : Fragment() {
                         return@setOnClickListener
 
                     if (position < COUNT_DEFAULT_DIRECTORY) {
-                        selectedSlot.directoryOverviewLists.toMutableList()[position] = selectedSlot.directoryOverviewLists[position].copy(
+                        selectedSlot.directoryOverviewList.toMutableList()[position] = selectedSlot.directoryOverviewList[position].copy(
                             isVisible = !isVisible
                         )
                         notifyItemChanged(position)
                     } else {
-                        selectedSlot.directoryOverviewLists.toMutableList().removeAt(position)
+                        selectedSlot.directoryOverviewList.toMutableList().removeAt(position)
                         notifyItemRemoved(position)
                     }
 
@@ -198,11 +198,11 @@ class ManageDirectoryFragment : Fragment() {
 
         override fun onBindViewHolder(holder: ManageDirectoryViewHolder, position: Int) {
             // case title
-            holder.titleEditText.setText(selectedSlot.directoryOverviewLists[position].lastPath)
+            holder.titleEditText.setText(selectedSlot.directoryOverviewList[position].lastPath)
 
             // case remove button
             if (position < COUNT_DEFAULT_DIRECTORY) {
-                if (selectedSlot.directoryOverviewLists[position].isVisible)
+                if (selectedSlot.directoryOverviewList[position].isVisible)
                     holder.removeButton.setImageResource(R.drawable.icon_visible)
                 else
                     holder.removeButton.setImageResource(R.drawable.icon_invisible)
@@ -212,7 +212,7 @@ class ManageDirectoryFragment : Fragment() {
         }
 
         override fun getItemCount(): Int {
-            return selectedSlot.directoryOverviewLists.size
+            return selectedSlot.directoryOverviewList.size
         }
     }
 }
