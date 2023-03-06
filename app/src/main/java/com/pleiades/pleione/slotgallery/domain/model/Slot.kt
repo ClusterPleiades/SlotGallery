@@ -4,21 +4,19 @@ import com.pleiades.pleione.slotgallery.Config.Companion.PATH_CAMERA
 import com.pleiades.pleione.slotgallery.Config.Companion.PATH_DOWNLOAD
 import com.pleiades.pleione.slotgallery.Config.Companion.PATH_SCREENSHOTS
 import com.pleiades.pleione.slotgallery.Config.Companion.PATH_SNAPSEED
-import java.util.*
 
-class Slot(var name: String) {
-    val directoryPathLinkedList: LinkedList<DirectoryPath> = LinkedList()
-    val isVisible = arrayOf(true, true, true, true) // download, snapseed, camera, screenshot
-
-    init {
-        directoryPathLinkedList.add(DirectoryPath(lastPath = PATH_DOWNLOAD))
-        directoryPathLinkedList.add(DirectoryPath(lastPath = PATH_SNAPSEED))
-        directoryPathLinkedList.add(DirectoryPath(lastPath = PATH_CAMERA))
-        directoryPathLinkedList.add(DirectoryPath(lastPath = PATH_SCREENSHOTS))
-    }
+data class Slot(val name: String) {
+    val directoryPathList: List<DirectoryPath> =
+        listOf(
+            DirectoryPath(lastPath = PATH_DOWNLOAD, isVisible = true),
+            DirectoryPath(lastPath = PATH_SNAPSEED, isVisible = true),
+            DirectoryPath(lastPath = PATH_CAMERA, isVisible = true),
+            DirectoryPath(lastPath = PATH_SCREENSHOTS, isVisible = true)
+        )
 
     data class DirectoryPath(
         val rootUriString: String? = null,
-        val lastPath: String
+        val lastPath: String,
+        val isVisible: Boolean = true
     )
 }

@@ -42,10 +42,10 @@ class ContentController(private val context: Context) {
         // initialize selected slot
         val selectedSlot = SlotController(context).getSelectedSlot()
 
-        for (i in selectedSlot!!.directoryPathLinkedList.indices) {
-            val directoryPath = selectedSlot.directoryPathLinkedList[i]
+        for (i in selectedSlot!!.directoryPathList.indices) {
+            val directoryPath = selectedSlot.directoryPathList[i]
             if (i < COUNT_DEFAULT_DIRECTORY) {
-                if (selectedSlot.isVisible[i]) {
+                if (selectedSlot.directoryPathList[i].isVisible) {
                     // add default directory
                     addDirectory(false, directoryPath)
                 }
