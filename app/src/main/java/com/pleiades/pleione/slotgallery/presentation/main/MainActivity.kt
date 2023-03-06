@@ -30,14 +30,8 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // set title
-        title = ""
-
         // initialize appbar
         setSupportActionBar(binding.appbarMain.toolbar)
-
-        // update app version
-        updateAppVersion()
     }
 
     override fun onStart() {
@@ -116,32 +110,5 @@ class MainActivity : AppCompatActivity() {
 
         // set is initialized true
         isFragmentAdded = true
-    }
-
-    // TODO check
-    private fun updateAppVersion() {
-        try {
-            val prefs = getSharedPreferences(PREFS, MODE_PRIVATE)
-            val editor = prefs.edit()
-
-            // initialize version code
-            val existVersionCode = prefs.getInt(KEY_USER_LAST_VERSION_CODE, 1)
-            val latestVersionCode = packageManager.getPackageInfo(packageName, 0).versionCode
-
-            // case version code is not latest
-            if (existVersionCode != latestVersionCode) {
-                // case prev 1.2.0 (add snapseed)
-                if (existVersionCode < 5) {
-                    editor.clear()
-                    editor.apply()
-                }
-
-                // apply app version
-                editor.putInt(KEY_USER_LAST_VERSION_CODE, latestVersionCode)
-                editor.apply()
-            }
-        } catch (e: Exception) {
-            // ignore exception block
-        }
     }
 }

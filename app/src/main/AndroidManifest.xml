@@ -21,6 +21,7 @@
         <activity
             android:name=".presentation.main.MainActivity"
             android:exported="true"
+            android:label=""
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity">
             <intent-filter>
@@ -36,19 +37,19 @@
             android:exported="true" />
 
         <activity
-            android:name=".presentation.main.media.MediaActivity"
+            android:name=".presentation.media.MediaActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:exported="true" />
 
         <activity
-            android:name=".presentation.main.media.video.VideoActivity"
+            android:name=".presentation.media.video.VideoActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:exported="true"
             android:theme="@style/AppTheme.Dark">
         </activity>
 
         <activity
-            android:name=".presentation.main.media.video.ExternalVideoActivity"
+            android:name=".presentation.media.video.ExternalVideoActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:exported="true"
             android:theme="@style/AppTheme.Dark">
