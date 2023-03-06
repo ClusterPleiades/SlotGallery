@@ -18,7 +18,7 @@ import com.pleiades.pleione.slotgallery.Config.Companion.SORT_POSITION_BY_NEWEST
 import com.pleiades.pleione.slotgallery.Config.Companion.SORT_POSITION_BY_OLDEST
 import com.pleiades.pleione.slotgallery.domain.model.Content
 import com.pleiades.pleione.slotgallery.domain.model.Directory
-import com.pleiades.pleione.slotgallery.domain.model.Slot
+import com.pleiades.pleione.slotgallery.domain.model.DirectoryOverview
 import com.pleiades.pleione.slotgallery.presentation.dialog.ProgressDialogFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -43,10 +43,10 @@ class ContentController(private val context: Context) {
         // initialize selected slot
         val selectedSlot = SlotController(context).getSelectedSlot()
 
-        for (i in selectedSlot!!.directoryPathList.indices) {
-            val directoryPath = selectedSlot.directoryPathList[i]
+        for (i in selectedSlot!!.directoryOverviewLists.indices) {
+            val directoryPath = selectedSlot.directoryOverviewLists[i]
             if (i < COUNT_DEFAULT_DIRECTORY) {
-                if (selectedSlot.directoryPathList[i].isVisible) {
+                if (selectedSlot.directoryOverviewLists[i].isVisible) {
                     // add default directory
                     addDirectory(false, directoryPath)
                 }
@@ -63,9 +63,9 @@ class ContentController(private val context: Context) {
         sortContentArrayList()
     }
 
-    private fun addDirectory(allowSubDirectory: Boolean, directoryPath: Slot.DirectoryPath) {
-        val directory = Directory(directoryPath)
-        val directoryRelativePath = directoryPath.lastPath.substringAfter(":") + "/"
+    private fun addDirectory(allowSubDirectory: Boolean, directoryOverView: DirectoryOverview) {
+        val directory = Directory(directoryOverView)
+        val directoryRelativePath = directoryOverView.lastPath.substringAfter(":") + "/"
         val subDirectoryLastPathHashSet: HashSet<String> = HashSet()
 
         // case image
@@ -105,7 +105,7 @@ class ContentController(private val context: Context) {
                     directory.contentArrayList.add(Content(false, id, name, size, width, height, date, relativePath, uri, 0L))
                 } else {
                     // case sub directory
-                    subDirectoryLastPathHashSet.add(directoryPath.lastPath.substringBefore(":") + ":" + relativePath.substringBeforeLast("/"))
+                    subDirectoryLastPathHashSet.add(directoryOverView.lastPath.substringBefore(":") + ":" + relativePath.substringBeforeLast("/"))
                 }
             } else {
                 // add image
@@ -156,7 +156,7 @@ class ContentController(private val context: Context) {
                     directory.contentArrayList.add(Content(true, id, name, size, width, height, date, relativePath, uri, duration))
                 } else {
                     // case sub directory
-                    subDirectoryLastPathHashSet.add(directoryPath.lastPath.substringBefore(":") + ":" + relativePath.substringBeforeLast("/"))
+                    subDirectoryLastPathHashSet.add(directoryOverView.lastPath.substringBefore(":") + ":" + relativePath.substringBeforeLast("/"))
                 }
             } else {
                 // add image
@@ -175,7 +175,7 @@ class ContentController(private val context: Context) {
 
         // add sub directory
         for (subDirectoryLastPath in subDirectoryLastPathHashSet) {
-            addDirectory(false, Slot.DirectoryPath(directoryPath.rootUriString, subDirectoryLastPath))
+            addDirectory(false, DirectoryOverview(directoryOverView.uri, subDirectoryLastPath))
         }
     }
 
@@ -229,8 +229,8 @@ class ContentController(private val context: Context) {
 
         // initialize to directory document file
         var toDirectory = directoryArrayList[toDirectoryPosition]
-        val toDirectoryPath = toDirectory.directoryPath
-        val toDirectoryRootUri = Uri.parse(toDirectoryPath.rootUriString)
+        val toDirectoryPath = toDirectory.directoryOverView
+        val toDirectoryRootUri = Uri.parse(toDirectoryPath.uri)
         val toDirectoryRootLastPath = toDirectoryRootUri.lastPathSegment!!
         var toDirectoryDocumentFile = DocumentFile.fromTreeUri(context, toDirectoryRootUri)!!
         if (toDirectoryPath.lastPath != toDirectoryRootLastPath) {
@@ -280,7 +280,7 @@ class ContentController(private val context: Context) {
                 val mimeType = if (content.isVideo) MIME_TYPE_VIDEO else MIME_TYPE_IMAGE
                 val contentDocumentFile = toDirectoryDocumentFile.createFile(mimeType, toName)!!
 
-                val temp = withContext(Dispatchers.IO) {
+                withContext(Dispatchers.IO) {
                     try {
                         // save content
                         val inputStream: InputStream = context.contentResolver.openInputStream(content.uri)!!
@@ -381,8 +381,8 @@ class ContentController(private val context: Context) {
 
         // initialize to directory document file
         var toDirectory = directoryArrayList[toDirectoryPosition]
-        val toDirectoryPath = toDirectory.directoryPath
-        val toDirectoryRootUri = Uri.parse(toDirectoryPath.rootUriString)
+        val toDirectoryPath = toDirectory.directoryOverView
+        val toDirectoryRootUri = Uri.parse(toDirectoryPath.uri)
         val toDirectoryRootLastPath = toDirectoryRootUri.lastPathSegment!!
         var toDirectoryDocumentFile = DocumentFile.fromTreeUri(context, toDirectoryRootUri)!!
         if (toDirectoryPath.lastPath != toDirectoryRootLastPath) {
@@ -522,9 +522,9 @@ class ContentController(private val context: Context) {
     }
 
     fun refreshSnapseed() {
-        val directoryPath = Slot.DirectoryPath(null, PATH_SNAPSEED)
-        val directory = Directory(directoryPath)
-        val directoryRelativePath = directoryPath.lastPath.substringAfter(":") + "/"
+        val directoryOverView = DirectoryOverview(null, PATH_SNAPSEED)
+        val directory = Directory(directoryOverView)
+        val directoryRelativePath = directoryOverView.lastPath.substringAfter(":") + "/"
 
         val imageUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
         val imageProjection = arrayOf(
@@ -550,7 +550,7 @@ class ContentController(private val context: Context) {
 
         // sort content array list
         for (i in directoryArrayList.indices) {
-            if (directoryArrayList[i].name == directory.name && directoryArrayList[i].directoryPath == directory.directoryPath) {
+            if (directoryArrayList[i].name == directory.name && directoryArrayList[i].directoryOverView == directory.directoryOverView) {
                 directoryArrayList[i] = directory
                 sortContentArrayList(i)
                 break

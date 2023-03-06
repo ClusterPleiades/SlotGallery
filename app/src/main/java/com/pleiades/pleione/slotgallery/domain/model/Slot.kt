@@ -6,17 +6,23 @@ import com.pleiades.pleione.slotgallery.Config.Companion.PATH_SCREENSHOTS
 import com.pleiades.pleione.slotgallery.Config.Companion.PATH_SNAPSEED
 
 data class Slot(val name: String) {
-    val directoryPathList: List<DirectoryPath> =
+    val directoryOverviewLists: List<DirectoryOverview> =
         listOf(
-            DirectoryPath(lastPath = PATH_DOWNLOAD, isVisible = true),
-            DirectoryPath(lastPath = PATH_SNAPSEED, isVisible = true),
-            DirectoryPath(lastPath = PATH_CAMERA, isVisible = true),
-            DirectoryPath(lastPath = PATH_SCREENSHOTS, isVisible = true)
+            DirectoryOverview(
+                lastPath = PATH_DOWNLOAD,
+                isVisible = true
+            ),
+            DirectoryOverview(
+                lastPath = PATH_SNAPSEED,
+                isVisible = true
+            ),
+            DirectoryOverview(
+                lastPath = PATH_CAMERA,
+                isVisible = true
+            ),
+            DirectoryOverview(
+                lastPath = PATH_SCREENSHOTS,
+                isVisible = true
+            )
         )
-
-    data class DirectoryPath(
-        val rootUriString: String? = null,
-        val lastPath: String,
-        val isVisible: Boolean = true
-    )
 }

@@ -32,6 +32,7 @@ import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_IMAGE
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_VIDEO
 import com.pleiades.pleione.slotgallery.Config.Companion.PACKAGE_NAME_EDIT
 import com.pleiades.pleione.slotgallery.Config.Companion.STORE_URL_EDIT
+import com.pleiades.pleione.slotgallery.Config.Companion.URI_DEFAULT_DIRECTORY
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.controller.ContentController
 import com.pleiades.pleione.slotgallery.databinding.ActivityImageBinding
@@ -101,7 +102,7 @@ class MediaActivity : AppCompatActivity() {
                         Toast.makeText(this, R.string.message_error_same_directory, Toast.LENGTH_SHORT).show()
                     }
                     // case default directory
-                    ContentController.directoryArrayList[toDirectoryPosition].directoryPath.rootUriString == null -> {
+                    ContentController.directoryArrayList[toDirectoryPosition].directoryOverView.uri == URI_DEFAULT_DIRECTORY -> {
                         // show toast
                         Toast.makeText(this, R.string.message_error_default_directory, Toast.LENGTH_SHORT).show()
                     }

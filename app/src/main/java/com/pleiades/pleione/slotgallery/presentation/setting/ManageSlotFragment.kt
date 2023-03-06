@@ -150,7 +150,9 @@ class ManageSlotFragment : Fragment() {
                     saveButton.visibility = INVISIBLE
 
                     // update slot name
-                    slotLinkedList[position].name = titleEditText.text.toString()
+                    slotLinkedList[position] = slotLinkedList[position].copy(
+                        name = titleEditText.text.toString()
+                    )
 
                     // clear focus from title edit text
                     titleEditText.clearFocus()
@@ -200,7 +202,10 @@ class ManageSlotFragment : Fragment() {
             holder.titleEditText.setText(slotLinkedList[position].name)
 
             // case layout
-            val backgroundColor = if (position == slotController.getSelectedSlotInfoPosition()) ContextCompat.getColor(context!!, R.color.color_light_gray) else Color.WHITE
+            val backgroundColor = if (position == slotController.getSelectedSlotInfoPosition()) ContextCompat.getColor(
+                context!!,
+                R.color.color_light_gray
+            ) else Color.WHITE
             holder.layout.setBackgroundColor(backgroundColor)
         }
 

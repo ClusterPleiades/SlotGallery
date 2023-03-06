@@ -40,6 +40,7 @@ import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_IMAGE
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_VIDEO
 import com.pleiades.pleione.slotgallery.Config.Companion.SPAN_COUNT_CONTENT
 import com.pleiades.pleione.slotgallery.Config.Companion.SPAN_COUNT_DIRECTORY
+import com.pleiades.pleione.slotgallery.Config.Companion.URI_DEFAULT_DIRECTORY
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.controller.ContentController
 import com.pleiades.pleione.slotgallery.controller.DeviceController
@@ -108,7 +109,7 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
                         Toast.makeText(context, R.string.message_error_same_directory, Toast.LENGTH_SHORT).show()
                     }
                     // case default directory
-                    ContentController.directoryArrayList[toDirectoryPosition].directoryPath.rootUriString == null -> {
+                    ContentController.directoryArrayList[toDirectoryPosition].directoryOverView.uri == URI_DEFAULT_DIRECTORY -> {
                         // show toast
                         Toast.makeText(context, R.string.message_error_default_directory, Toast.LENGTH_SHORT).show()
                     }
@@ -288,7 +289,7 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
             // find directory
             var isFound = false
             for (i in ContentController.directoryArrayList.indices) {
-                if (ContentController.directoryArrayList[i].name == backupDirectory.name && ContentController.directoryArrayList[i].directoryPath == backupDirectory.directoryPath) {
+                if (ContentController.directoryArrayList[i].name == backupDirectory.name && ContentController.directoryArrayList[i].directoryOverView == backupDirectory.directoryOverView) {
                     directoryPosition = i
                     directory = ContentController.directoryArrayList[i]
                     isFound = true

@@ -78,5 +78,7 @@ class Config {
 
         const val PACKAGE_NAME_EDIT = "com.niksoftware.snapseed"
         const val STORE_URL_EDIT = "https://play.google.com/store/apps/details?id=com.niksoftware.snapseed"
+
+        const val URI_DEFAULT_DIRECTORY = "default_uri"
     }
 }

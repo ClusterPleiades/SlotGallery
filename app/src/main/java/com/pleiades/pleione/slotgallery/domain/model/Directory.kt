@@ -1,10 +1,9 @@
 package com.pleiades.pleione.slotgallery.domain.model
 
-import android.net.Uri
 import com.pleiades.pleione.slotgallery.Config.Companion.PATH_PRIMARY
 
-class Directory(val directoryPath: Slot.DirectoryPath) {
-    val name = directoryPath.lastPath.substringAfter(PATH_PRIMARY).substringAfterLast("/")
+class Directory(val directoryOverView: DirectoryOverview) {
+    val name = directoryOverView.lastPath.substringAfter(PATH_PRIMARY).substringAfterLast("/")
     val contentArrayList: ArrayList<Content> = ArrayList()
     var date = 0L
 
@@ -13,13 +12,13 @@ class Directory(val directoryPath: Slot.DirectoryPath) {
         if (javaClass != other.javaClass) return false
 
         val otherDirectory = other as Directory
-        return directoryPath == otherDirectory.directoryPath
+        return directoryOverView == otherDirectory.directoryOverView
                 && date == otherDirectory.date
                 && contentArrayList == otherDirectory.contentArrayList
     }
 
     override fun hashCode(): Int {
-        var result = directoryPath.hashCode()
+        var result = directoryOverView.hashCode()
         result = 31 * result + name.hashCode()
         result = 31 * result + contentArrayList.hashCode()
         result = 31 * result + date.hashCode()

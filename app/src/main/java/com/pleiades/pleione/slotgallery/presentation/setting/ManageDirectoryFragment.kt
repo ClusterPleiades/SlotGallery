@@ -23,6 +23,7 @@ import com.pleiades.pleione.slotgallery.Config.Companion.SETTING_POSITION_DIRECT
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.controller.SlotController
 import com.pleiades.pleione.slotgallery.databinding.FragmentManageBinding
+import com.pleiades.pleione.slotgallery.domain.model.DirectoryOverview
 import com.pleiades.pleione.slotgallery.domain.model.Slot
 import java.io.BufferedInputStream
 import java.io.BufferedOutputStream
@@ -74,10 +75,10 @@ class ManageDirectoryFragment : Fragment() {
                     contentResolver.takePersistableUriPermission(uri!!, takeFlags)
 
                     // initialize directory path
-                    val directoryPath = Slot.DirectoryPath(uri.toString(), uri.lastPathSegment!!)
+                    val directoryOverView = DirectoryOverview(uri.toString(), uri.lastPathSegment!!)
 
                     // case not duplicated
-                    if (!selectedSlot.directoryPathList.contains(directoryPath)) {
+                    if (!selectedSlot.directoryOverviewLists.contains(directoryOverView)) {
                         // initialize directory document file
                         val directoryDocumentFile = DocumentFile.fromTreeUri(requireContext(), uri)!!
                         if (directoryDocumentFile.listFiles().isEmpty()) {
@@ -109,10 +110,10 @@ class ManageDirectoryFragment : Fragment() {
                         }
 
                         // add directory
-                        selectedSlot.directoryPathList.toMutableList().add(directoryPath)
+                        selectedSlot.directoryOverviewLists.toMutableList().add(directoryOverView)
 
                         // notify item inserted
-                        recyclerAdapter.notifyItemInserted(selectedSlot.directoryPathList.size - 1)
+                        recyclerAdapter.notifyItemInserted(selectedSlot.directoryOverviewLists.size - 1)
 
                         // put selected slot
                         slotController.putSelectedSlotInfo(selectedSlot)
@@ -176,12 +177,12 @@ class ManageDirectoryFragment : Fragment() {
                         return@setOnClickListener
 
                     if (position < COUNT_DEFAULT_DIRECTORY) {
-                        selectedSlot.directoryPathList.toMutableList()[position] = selectedSlot.directoryPathList[position].copy(
+                        selectedSlot.directoryOverviewLists.toMutableList()[position] = selectedSlot.directoryOverviewLists[position].copy(
                             isVisible = !isVisible
                         )
                         notifyItemChanged(position)
                     } else {
-                        selectedSlot.directoryPathList.toMutableList().removeAt(position)
+                        selectedSlot.directoryOverviewLists.toMutableList().removeAt(position)
                         notifyItemRemoved(position)
                     }
 
@@ -197,11 +198,11 @@ class ManageDirectoryFragment : Fragment() {
 
         override fun onBindViewHolder(holder: ManageDirectoryViewHolder, position: Int) {
             // case title
-            holder.titleEditText.setText(selectedSlot.directoryPathList[position].lastPath)
+            holder.titleEditText.setText(selectedSlot.directoryOverviewLists[position].lastPath)
 
             // case remove button
             if (position < COUNT_DEFAULT_DIRECTORY) {
-                if (selectedSlot.directoryPathList[position].isVisible)
+                if (selectedSlot.directoryOverviewLists[position].isVisible)
                     holder.removeButton.setImageResource(R.drawable.icon_visible)
                 else
                     holder.removeButton.setImageResource(R.drawable.icon_invisible)
@@ -211,7 +212,7 @@ class ManageDirectoryFragment : Fragment() {
         }
 
         override fun getItemCount(): Int {
-            return selectedSlot.directoryPathList.size
+            return selectedSlot.directoryOverviewLists.size
         }
     }
 }

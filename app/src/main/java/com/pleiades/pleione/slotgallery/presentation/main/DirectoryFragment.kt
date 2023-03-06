@@ -32,6 +32,7 @@ import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_SORT_DIRECT
 import com.pleiades.pleione.slotgallery.Config.Companion.KEY_DIRECTORY_SORT_ORDER
 import com.pleiades.pleione.slotgallery.Config.Companion.REQUEST_KEY_COPY
 import com.pleiades.pleione.slotgallery.Config.Companion.SPAN_COUNT_DIRECTORY
+import com.pleiades.pleione.slotgallery.Config.Companion.URI_DEFAULT_DIRECTORY
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.controller.ContentController
 import com.pleiades.pleione.slotgallery.controller.DeviceController
@@ -91,7 +92,7 @@ class DirectoryFragment : Fragment() {
                         Toast.makeText(context, R.string.message_error_same_directory, Toast.LENGTH_SHORT).show()
                     }
                     // case default directory
-                    ContentController.directoryArrayList[toDirectoryPosition].directoryPath.rootUriString == null -> {
+                    ContentController.directoryArrayList[toDirectoryPosition].directoryOverView.uri == URI_DEFAULT_DIRECTORY -> {
                         // show toast
                         Toast.makeText(context, R.string.message_error_default_directory, Toast.LENGTH_SHORT).show()
                     }
@@ -401,7 +402,7 @@ class DirectoryFragment : Fragment() {
         }
 
         override fun getItemId(position: Int): Long {
-            return ContentController.directoryArrayList[position].directoryPath.hashCode().toLong()
+            return ContentController.directoryArrayList[position].directoryOverView.hashCode().toLong()
         }
 
         fun setSelected(position: Int, isSelected: Boolean) {
