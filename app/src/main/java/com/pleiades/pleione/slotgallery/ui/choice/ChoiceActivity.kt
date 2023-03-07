@@ -1,4 +1,4 @@
-package com.pleiades.pleione.slotgallery.presentation.choice
+package com.pleiades.pleione.slotgallery.ui.choice
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -20,7 +20,7 @@ import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.controller.ContentController
 import com.pleiades.pleione.slotgallery.controller.DeviceController
 import com.pleiades.pleione.slotgallery.databinding.ActivityChoiceBinding
-import com.pleiades.pleione.slotgallery.presentation.main.MainActivity
+import com.pleiades.pleione.slotgallery.ui.main.MainActivity
 
 class ChoiceActivity : AppCompatActivity() {
     private lateinit var binding: ActivityChoiceBinding

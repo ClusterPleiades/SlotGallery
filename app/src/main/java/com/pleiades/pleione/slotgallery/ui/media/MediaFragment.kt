@@ -1,4 +1,4 @@
-package com.pleiades.pleione.slotgallery.presentation.media
+package com.pleiades.pleione.slotgallery.ui.media
 
 import android.content.Intent
 import android.os.Bundle
@@ -14,7 +14,7 @@ import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_URI
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.controller.ContentController
 import com.pleiades.pleione.slotgallery.databinding.FragmentImageBinding
-import com.pleiades.pleione.slotgallery.presentation.media.video.VideoActivity
+import com.pleiades.pleione.slotgallery.ui.media.video.VideoActivity
 import java.util.concurrent.TimeUnit
 
 class MediaFragment(directoryPosition: Int, contentPosition: Int) : Fragment() {

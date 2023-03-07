@@ -1,4 +1,4 @@
-package com.pleiades.pleione.slotgallery.presentation.media.video
+package com.pleiades.pleione.slotgallery.ui.media.video
 
 import android.content.pm.ActivityInfo
 import android.net.Uri
@@ -19,7 +19,7 @@ import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_NAME
 import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_URI
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.databinding.ActivityVideoBinding
-import com.pleiades.pleione.slotgallery.presentation.main.MainActivity
+import com.pleiades.pleione.slotgallery.ui.main.MainActivity
 
 
 class VideoActivity : AppCompatActivity() {

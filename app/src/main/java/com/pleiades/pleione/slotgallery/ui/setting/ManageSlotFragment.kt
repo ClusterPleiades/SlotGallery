@@ -1,4 +1,4 @@
-package com.pleiades.pleione.slotgallery.presentation.setting
+package com.pleiades.pleione.slotgallery.ui.setting
 
 import android.graphics.Color
 import android.os.Bundle

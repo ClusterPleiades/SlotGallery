@@ -1,4 +1,4 @@
-package com.pleiades.pleione.slotgallery.presentation.main
+package com.pleiades.pleione.slotgallery.ui.main
 
 import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
@@ -39,10 +39,10 @@ import com.pleiades.pleione.slotgallery.controller.DeviceController
 import com.pleiades.pleione.slotgallery.controller.SlotController
 import com.pleiades.pleione.slotgallery.databinding.FragmentMainBinding
 import com.pleiades.pleione.slotgallery.domain.model.Directory
-import com.pleiades.pleione.slotgallery.presentation.choice.ChoiceActivity
-import com.pleiades.pleione.slotgallery.presentation.setting.SettingActivity
-import com.pleiades.pleione.slotgallery.presentation.dialog.ProgressDialogFragment
-import com.pleiades.pleione.slotgallery.presentation.dialog.ListDialogFragment
+import com.pleiades.pleione.slotgallery.ui.choice.ChoiceActivity
+import com.pleiades.pleione.slotgallery.ui.setting.SettingActivity
+import com.pleiades.pleione.slotgallery.ui.dialog.ProgressDialogFragment
+import com.pleiades.pleione.slotgallery.ui.dialog.ListDialogFragment
 import kotlinx.coroutines.launch
 
 class DirectoryFragment : Fragment() {

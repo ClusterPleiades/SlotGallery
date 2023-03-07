@@ -20,7 +20,7 @@ import com.pleiades.pleione.slotgallery.Config.Companion.URI_DEFAULT_DIRECTORY
 import com.pleiades.pleione.slotgallery.domain.model.Media
 import com.pleiades.pleione.slotgallery.domain.model.Directory
 import com.pleiades.pleione.slotgallery.domain.model.DirectoryOverview
-import com.pleiades.pleione.slotgallery.presentation.dialog.ProgressDialogFragment
+import com.pleiades.pleione.slotgallery.ui.dialog.ProgressDialogFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.BufferedInputStream

@@ -1,4 +1,4 @@
-package com.pleiades.pleione.slotgallery.presentation.setting
+package com.pleiades.pleione.slotgallery.ui.setting
 
 import android.content.Intent
 import android.media.MediaScannerConnection
