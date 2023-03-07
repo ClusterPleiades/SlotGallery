@@ -33,7 +33,7 @@ class DefaultMediaRepository @Inject constructor(
 ) : MediaRepository {
     override fun getDirectoryList(selectedSlot: Slot): List<Directory> {
         val directoryMutableList = mutableListOf<Directory>()
-        selectedSlot.directoryOverviewList.forEach {
+        selectedSlot.directoryOverviewMutableList.forEach {
             if (it.uri == URI_DEFAULT_DIRECTORY) {
                 if (it.isVisible)
                     addDirectory(

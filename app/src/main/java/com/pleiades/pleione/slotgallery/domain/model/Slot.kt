@@ -6,8 +6,8 @@ import com.pleiades.pleione.slotgallery.Config.Companion.PATH_SCREENSHOTS
 import com.pleiades.pleione.slotgallery.Config.Companion.PATH_SNAPSEED
 
 data class Slot(val name: String) {
-    val directoryOverviewList: List<DirectoryOverview> =
-        listOf(
+    val directoryOverviewMutableList: MutableList<DirectoryOverview> =
+        mutableListOf(
             DirectoryOverview(
                 lastPath = PATH_DOWNLOAD,
                 isVisible = true
