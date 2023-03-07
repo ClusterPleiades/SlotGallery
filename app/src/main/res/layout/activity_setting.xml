@@ -5,11 +5,11 @@
     android:orientation="vertical">
 
     <include
-        android:id="@+id/appbar_setting"
+        android:id="@+id/appbar"
         layout="@layout/layout_appbar_light" />
 
     <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fragment_setting"
+        android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
