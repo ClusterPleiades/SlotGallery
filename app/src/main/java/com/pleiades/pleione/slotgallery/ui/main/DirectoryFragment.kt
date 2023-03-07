@@ -314,7 +314,7 @@ class DirectoryFragment : Fragment() {
         inner class DirectoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             val thumbnailImageView: ImageView = itemView.findViewById(R.id.thumbnail)
             val selectImageView: ImageView = itemView.findViewById(R.id.select)
-            val titleTextView: TextView = itemView.findViewById(R.id.title)
+            val titleTextView: TextView = itemView.findViewById(R.id.edit)
             val contentTextView: TextView = itemView.findViewById(R.id.content)
 
             init {

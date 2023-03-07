@@ -73,7 +73,7 @@ class ChoiceActivity : AppCompatActivity() {
 
         inner class ChoiceViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             val thumbnailImageView: ImageView = itemView.findViewById(R.id.thumbnail)
-            val titleTextView: TextView = itemView.findViewById(R.id.title)
+            val titleTextView: TextView = itemView.findViewById(R.id.edit)
             val contentTextView: TextView = itemView.findViewById(R.id.content)
             private val selectImageView: ImageView = itemView.findViewById(R.id.select)
 
