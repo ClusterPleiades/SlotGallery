@@ -31,10 +31,10 @@
             </intent-filter>
         </activity>
 
-        <!--        <activity-->
-        <!--            android:name=".ui.setting.SettingActivity"-->
-        <!--            android:configChanges="orientation|screenSize|keyboardHidden"-->
-        <!--            android:exported="true" />-->
+        <activity
+            android:name=".presentation.setting.SettingActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:exported="true" />
 
         <!--        <activity-->
         <!--            android:name=".ui.media.MediaActivity"-->
