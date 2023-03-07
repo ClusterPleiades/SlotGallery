@@ -42,9 +42,9 @@ class ProgressDialogFragment : androidx.fragment.app.DialogFragment() {
     override fun onStart() {
         super.onStart()
 
-        dialog?.window?.setLayout(
-            /* width = */ (DeviceController.getWidthMax(requireContext()) * DIALOG_WIDTH_PERCENTAGE_DEFAULT).toInt(),
-            /* height = */ ViewGroup.LayoutParams.WRAP_CONTENT
+        dialog?.window?.setLayoutSize(
+            width = (DeviceController.getWidthMax(requireContext()) * DIALOG_WIDTH_PERCENTAGE_DEFAULT).toInt(),
+            height = ViewGroup.LayoutParams.WRAP_CONTENT
         )
     }
 

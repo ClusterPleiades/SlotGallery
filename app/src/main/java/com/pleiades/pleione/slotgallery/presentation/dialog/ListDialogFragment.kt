@@ -8,7 +8,6 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -77,9 +76,9 @@ class ListDialogFragment(private val type: Int) : androidx.fragment.app.DialogFr
             if (type == DIALOG_TYPE_INFORMATION) DIALOG_WIDTH_PERCENTAGE_DEFAULT
             else DIALOG_WIDTH_PERCENTAGE_RECYCLER
 
-        dialog?.window?.setLayout(
-            /* width = */ (DeviceController.getWidthMax(requireContext()) * widthMultiplier).toInt(),
-            /* height = */ ViewGroup.LayoutParams.WRAP_CONTENT
+        dialog?.window?.setLayoutSize(
+             width = (DeviceController.getWidthMax(requireContext()) * widthMultiplier),
+             height = ViewGroup.LayoutParams.WRAP_CONTENT
         )
     }
 

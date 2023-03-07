@@ -84,9 +84,9 @@ class MessageDialogFragment(private val type: Int) : androidx.fragment.app.Dialo
     override fun onStart() {
         super.onStart()
 
-        dialog?.window?.setLayout(
-            /* width = */ (DeviceController.getWidthMax(requireContext()) * DIALOG_WIDTH_PERCENTAGE_DEFAULT).toInt(),
-            /* height = */ ViewGroup.LayoutParams.WRAP_CONTENT
+        dialog?.window?.setLayoutSize(
+            width = (DeviceController.getWidthMax(requireContext()) * DIALOG_WIDTH_PERCENTAGE_DEFAULT),
+            height = ViewGroup.LayoutParams.WRAP_CONTENT
         )
     }
 
