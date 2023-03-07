@@ -54,13 +54,10 @@ class ProgressDialogFragment : androidx.fragment.app.DialogFragment() {
     }
 
     fun setFragmentResult(directoryPosition: Int) =
-        parentFragmentManager
-            .setFragmentResult(
-                KEY_DIRECTORY_POSITION,
-                Bundle().apply {
-                    putInt(KEY_DIRECTORY_POSITION, directoryPosition)
-                }
-            )
+        parentFragmentManager.setFragmentResult(
+            KEY_DIRECTORY_POSITION,
+            Bundle().apply { putInt(KEY_DIRECTORY_POSITION, directoryPosition) }
+        )
 
     fun setFragmentResult() =
         parentFragmentManager.setFragmentResult(REQUEST_KEY_COPY, Bundle())
