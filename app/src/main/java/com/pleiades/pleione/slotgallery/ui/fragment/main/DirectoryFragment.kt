@@ -41,7 +41,7 @@ import com.pleiades.pleione.slotgallery.info.Directory
 import com.pleiades.pleione.slotgallery.ui.activity.ChoiceActivity
 import com.pleiades.pleione.slotgallery.ui.activity.SettingActivity
 import com.pleiades.pleione.slotgallery.ui.fragment.dialog.ProgressDialogFragment
-import com.pleiades.pleione.slotgallery.ui.fragment.dialog.RecyclerDialogFragment
+import com.pleiades.pleione.slotgallery.ui.fragment.dialog.ListDialogFragment
 import kotlinx.coroutines.launch
 
 class DirectoryFragment : Fragment() {
@@ -97,7 +97,7 @@ class DirectoryFragment : Fragment() {
                     }
                     else -> {
                         // show progress dialog fragment
-                        val progressDialogFragment = ProgressDialogFragment(requireActivity())
+                        val progressDialogFragment = ProgressDialogFragment()
                         progressDialogFragment.show((context as FragmentActivity).supportFragmentManager, null)
 
                         // copy directories (~ sort content array list)
@@ -220,7 +220,7 @@ class DirectoryFragment : Fragment() {
                 return true
             }
             R.id.sort -> {
-                RecyclerDialogFragment(DIALOG_TYPE_SORT_DIRECTORY).show(
+                ListDialogFragment(DIALOG_TYPE_SORT_DIRECTORY).show(
                     (context as FragmentActivity).supportFragmentManager,
                     DIALOG_TYPE_SORT_DIRECTORY.toString()
                 )

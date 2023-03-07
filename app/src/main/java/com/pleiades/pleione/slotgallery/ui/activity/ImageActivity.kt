@@ -23,7 +23,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import androidx.viewpager2.widget.ViewPager2
 import com.pleiades.pleione.slotgallery.Config.Companion.ACTIVITY_CODE_IMAGE
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_INFORMATION
 import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_POSITION_CONTENT
@@ -36,11 +35,9 @@ import com.pleiades.pleione.slotgallery.Config.Companion.STORE_URL_EDIT
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.controller.ContentController
 import com.pleiades.pleione.slotgallery.databinding.ActivityImageBinding
-import com.pleiades.pleione.slotgallery.databinding.ActivityMainBinding
-import com.pleiades.pleione.slotgallery.databinding.ActivityVideoBinding
 import com.pleiades.pleione.slotgallery.info.Directory
 import com.pleiades.pleione.slotgallery.ui.fragment.dialog.ProgressDialogFragment
-import com.pleiades.pleione.slotgallery.ui.fragment.dialog.RecyclerDialogFragment
+import com.pleiades.pleione.slotgallery.ui.fragment.dialog.ListDialogFragment
 import com.pleiades.pleione.slotgallery.ui.fragment.main.ImageFragment
 import kotlinx.coroutines.launch
 
@@ -108,7 +105,7 @@ class ImageActivity : AppCompatActivity() {
                     }
                     else -> {
                         // show progress dialog fragment
-                        val progressDialogFragment = ProgressDialogFragment(this)
+                        val progressDialogFragment = ProgressDialogFragment()
                         progressDialogFragment.show(supportFragmentManager, null)
 
                         // copy content
@@ -316,7 +313,7 @@ class ImageActivity : AppCompatActivity() {
                 return true
             }
             R.id.information -> {
-                RecyclerDialogFragment(DIALOG_TYPE_INFORMATION).show(supportFragmentManager, DIALOG_TYPE_INFORMATION.toString())
+                ListDialogFragment(DIALOG_TYPE_INFORMATION).show(supportFragmentManager, DIALOG_TYPE_INFORMATION.toString())
                 return true
             }
             R.id.rename -> {

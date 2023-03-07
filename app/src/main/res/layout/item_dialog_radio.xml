@@ -8,7 +8,7 @@
     android:paddingEnd="@dimen/margin_default">
 
     <RadioButton
-        android:id="@+id/radio_dialog"
+        android:id="@+id/radio_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAlignment="textStart"

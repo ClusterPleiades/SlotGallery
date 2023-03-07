@@ -5,11 +5,11 @@
     <string name="dialog_cancel">취소</string>
     <string name="dialog_confirm">확인</string>
 
-    <string name="dialog_message_permission">스토리지 접근을 허용해 주세요.</string>
-
     <string name="name_new_slot">새 슬롯</string>
 
     <!-- message -->
+    <string name="message_invalid">유효하지 않은 결과입니다.</string>
+    <string name="message_dialog_permission">스토리지 접근을 허용해 주세요.</string>
     <string name="message_saved">저장되었습니다.</string>
     <string name="message_snapseed">Snapseed 폴더에 저장되었습니다.</string>
     <string name="message_error_no_slot">슬롯을 먼저 생성하세요.</string>

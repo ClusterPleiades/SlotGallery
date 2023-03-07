@@ -1,84 +1,72 @@
 package com.pleiades.pleione.slotgallery.ui.fragment.dialog
 
-import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.Dialog
 import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
 import androidx.appcompat.app.AlertDialog
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_WIDTH_PERCENTAGE_DEFAULT
 import com.pleiades.pleione.slotgallery.Config.Companion.KEY_DIRECTORY_POSITION
 import com.pleiades.pleione.slotgallery.Config.Companion.REQUEST_KEY_COPY
-import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.controller.DeviceController
+import com.pleiades.pleione.slotgallery.databinding.FragmentDialogProgressBinding
 
-class ProgressDialogFragment(parentActivity: Activity) : androidx.fragment.app.DialogFragment() {
-    private val builder = AlertDialog.Builder(parentActivity)
-
-    var progressBar: ProgressBar
+class ProgressDialogFragment : androidx.fragment.app.DialogFragment() {
+    private var _binding: FragmentDialogProgressBinding? = null
+    private val binding get() = _binding!!
     var isCanceled = false
+    val progressBar by lazy { binding.progressBar }
 
-    init {
-        // initialize dialog view
-        val dialogView: View = parentActivity.layoutInflater.inflate(R.layout.fragment_dialog_progress, null)
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        // binding
+        _binding = FragmentDialogProgressBinding.inflate(requireActivity().layoutInflater)
 
-        // initialize progress bar
-        progressBar = dialogView.findViewById(R.id.progress_dialog_progress)
-        progressBar.progress = 0
-
-        // set negative listener
-        dialogView.findViewById<View>(R.id.negative_dialog_progress).setOnClickListener {
+        // negative button
+        binding.negativeButton.setOnClickListener {
             isCanceled = true
         }
 
-        // set dialog view
-        builder.setView(dialogView)
-    }
-
-    @SuppressLint("InflateParams", "UseRequireInsteadOfGet")
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        // create dialog
-        val dialog: AlertDialog = builder.create()
-
-        // set transparent background
-        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-        // set canceled on touch outside
-        dialog.setCanceledOnTouchOutside(false)
-
-        return dialog
+        return AlertDialog
+            .Builder(requireContext())
+            .apply { setView(binding.root) }
+            .create()
+            .apply {
+                window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                setCanceledOnTouchOutside(false)
+                setCancelable(false)
+            }
     }
 
     override fun onStart() {
         super.onStart()
 
-        val width = (DeviceController.getWidthMax(requireContext()) * DIALOG_WIDTH_PERCENTAGE_DEFAULT).toInt()
-        val height = ViewGroup.LayoutParams.WRAP_CONTENT
-        dialog!!.window!!.setLayout(width, height)
-
-        // set cancelable
-        dialog!!.setCancelable(false)
+        dialog?.window?.setLayout(
+            /* width = */ (DeviceController.getWidthMax(requireContext()) * DIALOG_WIDTH_PERCENTAGE_DEFAULT).toInt(),
+            /* height = */ ViewGroup.LayoutParams.WRAP_CONTENT
+        )
     }
 
     override fun onCancel(dialog: DialogInterface) {
-        dismiss()
         super.onCancel(dialog)
+        dismiss()
     }
 
-    fun setFragmentResult(directoryPosition: Int) {
-        // set fragment result
-        val resultBundle = Bundle()
-        resultBundle.putInt(KEY_DIRECTORY_POSITION, directoryPosition)
-        parentFragmentManager.setFragmentResult(KEY_DIRECTORY_POSITION, resultBundle)
-    }
+    fun setFragmentResult(directoryPosition: Int) =
+        parentFragmentManager
+            .setFragmentResult(
+                KEY_DIRECTORY_POSITION,
+                Bundle().apply {
+                    putInt(KEY_DIRECTORY_POSITION, directoryPosition)
+                }
+            )
 
-    fun setFragmentResult(){
-        // set fragment result
+    fun setFragmentResult() =
         parentFragmentManager.setFragmentResult(REQUEST_KEY_COPY, Bundle())
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

@@ -5,11 +5,11 @@
     <string name="dialog_cancel">Cancel</string>
     <string name="dialog_confirm">Confirm</string>
 
-    <string name="dialog_message_permission">Please allow to access storage.</string>
-
     <string name="name_new_slot">New Slot</string>
 
     <!-- message -->
+    <string name="message_invalid">It\'s invalid result.</string>
+    <string name="message_dialog_permission">Please allow to access storage.</string>
     <string name="message_saved">It\'s saved.</string>
     <string name="message_snapseed">It\'s saved to Snapseed.</string>
     <string name="message_error_no_slot">Create a slot first.</string>
