@@ -7,7 +7,10 @@ import android.media.MediaScannerConnection
 import android.net.Uri
 import android.provider.MediaStore
 import androidx.documentfile.provider.DocumentFile
-import com.pleiades.pleione.slotgallery.Config
+import com.pleiades.pleione.slotgallery.Config.Companion.KEY_CONTENT_SORT_ORDER
+import com.pleiades.pleione.slotgallery.Config.Companion.KEY_DIRECTORY_SORT_ORDER
+import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_IMAGE
+import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_VIDEO
 import com.pleiades.pleione.slotgallery.Config.Companion.SORT_POSITION_BY_NAME
 import com.pleiades.pleione.slotgallery.Config.Companion.SORT_POSITION_BY_NEWEST
 import com.pleiades.pleione.slotgallery.Config.Companion.SORT_POSITION_BY_OLDEST
@@ -96,8 +99,8 @@ class DefaultMediaRepository @Inject constructor(
                 toDirectoryFileNameMutableSet.add(toName)
 
                 val mimeType =
-                    if (media.isVideo) Config.MIME_TYPE_VIDEO
-                    else Config.MIME_TYPE_IMAGE
+                    if (media.isVideo) MIME_TYPE_VIDEO
+                    else MIME_TYPE_IMAGE
                 val mediaDocumentFile = toDirectoryDocumentFile.createFile(mimeType, toName) ?: return
 
                 withContext(Dispatchers.IO) {
@@ -180,8 +183,8 @@ class DefaultMediaRepository @Inject constructor(
             toDirectoryFileNameMutableSet.add(toName)
 
             val mimeType =
-                if (media.isVideo) Config.MIME_TYPE_VIDEO
-                else Config.MIME_TYPE_IMAGE
+                if (media.isVideo) MIME_TYPE_VIDEO
+                else MIME_TYPE_IMAGE
             val mediaDocumentFile = toDirectoryDocumentFile.createFile(mimeType, toName) ?: return
 
             withContext(Dispatchers.IO) {
@@ -384,7 +387,7 @@ class DefaultMediaRepository @Inject constructor(
     }
 
     private fun sortDirectoryList(directoryMutableList: MutableList<Directory>) {
-        when (sharedPreferences.getInt(Config.KEY_DIRECTORY_SORT_ORDER, 0)) {
+        when (sharedPreferences.getInt(KEY_DIRECTORY_SORT_ORDER, 0)) {
             SORT_POSITION_BY_NAME -> directoryMutableList.sortBy { it.name }
             SORT_POSITION_BY_NEWEST -> directoryMutableList.sortByDescending { it.date }
             SORT_POSITION_BY_OLDEST -> directoryMutableList.sortBy { it.date }
@@ -392,7 +395,7 @@ class DefaultMediaRepository @Inject constructor(
     }
 
     private fun sortMediaList(directoryMutableList: MutableList<Directory>) {
-        when (sharedPreferences.getInt(Config.KEY_CONTENT_SORT_ORDER, 0)) {
+        when (sharedPreferences.getInt(KEY_CONTENT_SORT_ORDER, 0)) {
             SORT_POSITION_BY_NAME -> for (directory in directoryMutableList) directory.mediaMutableList.sortBy { it.name }
             SORT_POSITION_BY_NEWEST -> for (directory in directoryMutableList) directory.mediaMutableList.sortByDescending { it.date }
             SORT_POSITION_BY_OLDEST -> for (directory in directoryMutableList) directory.mediaMutableList.sortBy { it.date }

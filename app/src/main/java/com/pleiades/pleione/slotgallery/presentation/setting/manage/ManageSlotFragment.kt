@@ -5,34 +5,30 @@ import android.os.Bundle
 import android.view.*
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
-import android.widget.EditText
-import android.widget.ImageButton
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.*
 import com.pleiades.pleione.slotgallery.Config.Companion.SETTING_POSITION_SLOT
 import com.pleiades.pleione.slotgallery.R
-import com.pleiades.pleione.slotgallery.controller.SlotController
 import com.pleiades.pleione.slotgallery.databinding.FragmentManageBinding
+import com.pleiades.pleione.slotgallery.databinding.ItemEditBinding
 import com.pleiades.pleione.slotgallery.domain.model.Slot
+import com.pleiades.pleione.slotgallery.presentation.setting.SettingViewModel
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.selects.select
 import java.util.*
 
 class ManageSlotFragment : Fragment() {
-    companion object {
-        fun newInstance(): ManageSlotFragment {
-            return ManageSlotFragment()
-        }
-    }
-
     private var _binding: FragmentManageBinding? = null
     private val binding get() = _binding!!
+    private val activityViewModel: SettingViewModel by activityViewModels()
 
-    private lateinit var slotController: SlotController
-    private lateinit var slotLinkedList: LinkedList<Slot>
-    private lateinit var recyclerAdapter: ManageSlotRecyclerAdapter
+    private val listAdapter: ManageSlotListAdapter by lazy { ManageSlotListAdapter() }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentManageBinding.inflate(inflater, container, false)
@@ -47,170 +43,93 @@ class ManageSlotFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // set title
-        activity?.title = resources.getStringArray(R.array.setting)[SETTING_POSITION_SLOT]
+        // title
+        requireActivity().title = resources.getStringArray(R.array.setting)[SETTING_POSITION_SLOT]
 
-        // set options menu
+        // options menu
         setHasOptionsMenu(true)
 
-        // initialize slot controller
-        slotController = SlotController(requireContext())
+        // list
+        with(binding.list) {
+            setHasFixedSize(true)
+            addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = listAdapter
+        }
 
-        // initialize slot array list
-        slotLinkedList = slotController.getSlotInfoLinkedList()
-
-        // initialize slot recycler adapter
-        recyclerAdapter = ManageSlotRecyclerAdapter()
-
-        // initialize slot recycler view
-        binding.recyclerManage.setHasFixedSize(true)
-        binding.recyclerManage.addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
-        binding.recyclerManage.layoutManager = LinearLayoutManager(requireContext())
-        binding.recyclerManage.adapter = recyclerAdapter
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        // case default
-        inflater.inflate(R.menu.menu_manage, menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.add -> {
-                slotLinkedList.add(Slot(getString(R.string.name_new_slot)))
-                recyclerAdapter.notifyItemInserted(slotLinkedList.size - 1)
-                slotController.putSlotInfoLinkedList(slotLinkedList)
-                true
+        // setting state
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                activityViewModel.state.collect { state ->
+                    listAdapter.submitList(state.slotList)
+                }
             }
-            else -> super.onOptionsItemSelected(item)
         }
     }
 
-    inner class ManageSlotRecyclerAdapter : RecyclerView.Adapter<ManageSlotRecyclerAdapter.ManageSlotViewHolder>() {
-        inner class ManageSlotViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-            val titleEditText: EditText = itemView.findViewById(R.id.title_edit)
-            val layout: ConstraintLayout = itemView.findViewById(R.id.layout_edit)
-            private val saveButton: ImageButton = itemView.findViewById(R.id.save_edit)
-            private val removeButton: ImageButton = itemView.findViewById(R.id.remove_edit)
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) = inflater.inflate(R.menu.menu_manage, menu)
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean =
+        if (item.itemId == R.id.add) {
+            activityViewModel.addSlot(getString(R.string.name_new_slot))
+            true
+        } else {
+            super.onOptionsItemSelected(item)
+        }
+
+    inner class ManageSlotListAdapter : ListAdapter<Slot, ManageSlotListAdapter.ViewHolder>(
+        object : DiffUtil.ItemCallback<Slot>() {
+            override fun areItemsTheSame(
+                oldItem: Slot,
+                newItem: Slot
+            ): Boolean = oldItem == newItem
+
+            override fun areContentsTheSame(
+                oldItem: Slot,
+                newItem: Slot
+            ): Boolean = oldItem == newItem
+        }
+    ) {
+        inner class ViewHolder(val binding: ItemEditBinding) : RecyclerView.ViewHolder(binding.root) {
             init {
-                // set title edit text on focus change listener
-                titleEditText.setOnFocusChangeListener { _: View, b: Boolean ->
-                    // case error
-                    val position = bindingAdapterPosition
-                    if (position == RecyclerView.NO_POSITION)
-                        return@setOnFocusChangeListener
+                val position = bindingAdapterPosition
 
-                    // case focused
-                    if (b) saveButton.visibility = VISIBLE
-                    // case not focused
-                    else {
-                        // set save button visibility
-                        saveButton.visibility = INVISIBLE
-
-                        // rollback title text
-                        titleEditText.setText(slotLinkedList[position].name)
-                    }
-
+                binding.layout.setOnClickListener {
+                    it.requestFocus()
+                    binding.edit.clearFocus()
+                    activityViewModel.selectSlot(position)
                 }
-                // set layout on click listener
-                layout.setOnClickListener {
-                    // case error
-                    val position = bindingAdapterPosition
-                    if (position == RecyclerView.NO_POSITION)
-                        return@setOnClickListener
-
-                    // request focus to layout
-                    layout.requestFocus()
-
-                    // clear focus from title edit text
-                    titleEditText.clearFocus()
-
-                    // initialize selected slot position
-                    val beforeSelectedSlotPosition = slotController.getSelectedSlotInfoPosition()
-
-                    // case selected slot position changed
-                    if (beforeSelectedSlotPosition != position) {
-                        // put selected slot position
-                        slotController.putSelectedSlotInfoPosition(position)
-
-                        // notify item changed
-                        recyclerAdapter.notifyItemChanged(beforeSelectedSlotPosition)
-                        recyclerAdapter.notifyItemChanged(position)
-                    }
+                binding.edit.setOnFocusChangeListener { _: View, isFocused: Boolean ->
+                    binding.save.isVisible = isFocused
+                    if (!isFocused) binding.edit.setText(activityViewModel.state.value.slotList[position].name)
                 }
-                // set save button on click listener
-                saveButton.setOnClickListener {
-                    // case error
-                    val position = bindingAdapterPosition
-                    if (position == RecyclerView.NO_POSITION)
-                        return@setOnClickListener
-
-                    // set save button visibility
-                    saveButton.visibility = INVISIBLE
-
-                    // update slot name
-                    slotLinkedList[position] = slotLinkedList[position].copy(
-                        name = titleEditText.text.toString()
-                    )
-
-                    // clear focus from title edit text
-                    titleEditText.clearFocus()
-
-                    // put slot array list
-                    slotController.putSlotInfoLinkedList(slotLinkedList)
+                binding.save.setOnClickListener {
+                    it.isVisible = false
+                    activityViewModel.renameSlot(position, binding.edit.text.toString())
+                    binding.edit.clearFocus()
                 }
-                // set remove button on click listener
-                removeButton.setOnClickListener {
-                    // case error
-                    val position = bindingAdapterPosition
-                    if (position == RecyclerView.NO_POSITION)
-                        return@setOnClickListener
-
-                    // remove slot
-                    slotLinkedList.removeAt(position)
-
-                    // notify item removed
-                    recyclerAdapter.notifyItemRemoved(position)
-
-                    // initialize selected slot position
-                    val selectedSlotPosition = slotController.getSelectedSlotInfoPosition()
-
-                    // case position is lower
-                    if (position < selectedSlotPosition) {
-                        slotController.putSelectedSlotInfoPosition(selectedSlotPosition - 1)
-                    }
-                    // case position is same to selected slot position
-                    else if (position == selectedSlotPosition) {
-                        val beforePosition = 0.coerceAtLeast(position - 1)
-                        slotController.putSelectedSlotInfoPosition(beforePosition)
-                        recyclerAdapter.notifyItemChanged(beforePosition)
-                    }
-
-                    // put slot array list
-                    slotController.putSlotInfoLinkedList(slotLinkedList)
+                binding.remove.setOnClickListener {
+                    activityViewModel.removeSlot(position)
                 }
             }
         }
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ManageSlotViewHolder {
-            return ManageSlotViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.recycler_edit, parent, false))
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
+            ViewHolder(ItemEditBinding.bind(LayoutInflater.from(parent.context).inflate(R.layout.item_edit, parent, false)))
+
+        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+            val slot = activityViewModel.state.value.slotList[position]
+            val selectedSlot = activityViewModel.getSelectedSlot()
+
+            with(holder.binding) {
+                edit.setText(slot.name)
+                layout.setBackgroundColor(
+                    if (slot == selectedSlot) ContextCompat.getColor(requireContext(), R.color.color_light_gray)
+                    else Color.WHITE
+                )
+            }
         }
 
-        override fun onBindViewHolder(holder: ManageSlotViewHolder, position: Int) {
-            // case title
-            holder.titleEditText.setText(slotLinkedList[position].name)
-
-            // case layout
-            val backgroundColor = if (position == slotController.getSelectedSlotInfoPosition()) ContextCompat.getColor(
-                context!!,
-                R.color.color_light_gray
-            ) else Color.WHITE
-            holder.layout.setBackgroundColor(backgroundColor)
-        }
-
-        override fun getItemCount(): Int {
-            return slotLinkedList.size
-        }
+        override fun getItemCount() = activityViewModel.state.value.slotList.size
     }
 }

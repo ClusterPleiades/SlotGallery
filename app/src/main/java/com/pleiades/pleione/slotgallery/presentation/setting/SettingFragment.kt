@@ -95,7 +95,11 @@ class SettingFragment : Fragment() {
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             with(holder.binding) {
                 title.text = resources.getStringArray(R.array.setting)[position]
-                if (position == SETTING_POSITION_DIRECTORY) content.text = activityViewModel.getSelectedSlot()?.name
+                if (position == SETTING_POSITION_DIRECTORY) {
+                    activityViewModel.getSelectedSlot()?.let {
+                        content.text = it.name
+                    }
+                }
             }
         }
 

@@ -32,7 +32,7 @@ class DirectoryFragment : Fragment() {
     private val activityViewModel: MainViewModel by activityViewModels()
     private val fragmentViewModel: DirectoryViewModel by viewModels()
 
-    private val listAdapter: DirectoryRecyclerAdapter by lazy { DirectoryRecyclerAdapter().apply { setHasStableIds(true) } }
+    private val listAdapter: DirectoryListAdapter by lazy { DirectoryListAdapter() }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -91,7 +91,7 @@ class DirectoryFragment : Fragment() {
         }
     }
 
-    inner class DirectoryRecyclerAdapter : ListAdapter<Directory, DirectoryRecyclerAdapter.ViewHolder>(
+    inner class DirectoryListAdapter : ListAdapter<Directory, DirectoryListAdapter.ViewHolder>(
         object : DiffUtil.ItemCallback<Directory>() {
             override fun areItemsTheSame(
                 oldItem: Directory,
@@ -107,7 +107,7 @@ class DirectoryFragment : Fragment() {
         inner class ViewHolder(val binding: ItemThumbnailBinding) : RecyclerView.ViewHolder(binding.root) {
             init {
                 itemView.setOnClickListener {
-
+                    // TODO
                 }
                 itemView.setOnLongClickListener {
                     true
@@ -144,7 +144,5 @@ class DirectoryFragment : Fragment() {
         }
 
         override fun getItemCount() = activityViewModel.state.value.directoryList.size
-
-        override fun getItemId(position: Int) = activityViewModel.state.value.directoryList[position].directoryOverview.hashCode().toLong()
     }
 }
