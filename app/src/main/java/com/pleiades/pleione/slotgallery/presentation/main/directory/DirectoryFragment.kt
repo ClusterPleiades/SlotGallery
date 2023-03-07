@@ -18,7 +18,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.pleiades.pleione.slotgallery.Config.Companion.SPAN_COUNT_DIRECTORY
 import com.pleiades.pleione.slotgallery.R
-import com.pleiades.pleione.slotgallery.controller.ContentController
 import com.pleiades.pleione.slotgallery.databinding.FragmentMainBinding
 import com.pleiades.pleione.slotgallery.databinding.ItemThumbnailBinding
 import com.pleiades.pleione.slotgallery.domain.model.Directory
@@ -35,7 +34,11 @@ class DirectoryFragment : Fragment() {
 
     private val listAdapter: DirectoryRecyclerAdapter by lazy { DirectoryRecyclerAdapter().apply { setHasStableIds(true) } }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentMainBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -140,12 +143,8 @@ class DirectoryFragment : Fragment() {
             }
         }
 
-        override fun getItemCount(): Int {
-            return ContentController.directoryArrayList.size
-        }
+        override fun getItemCount() = activityViewModel.state.value.directoryList.size
 
-        override fun getItemId(position: Int): Long {
-            return ContentController.directoryArrayList[position].directoryOverview.hashCode().toLong()
-        }
+        override fun getItemId(position: Int) = activityViewModel.state.value.directoryList[position].directoryOverview.hashCode().toLong()
     }
 }
