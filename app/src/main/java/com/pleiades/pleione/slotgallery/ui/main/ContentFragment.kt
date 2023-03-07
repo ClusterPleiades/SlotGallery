@@ -134,7 +134,7 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
         deleteResultLauncher = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result: ActivityResult ->
             if (result.resultCode == Activity.RESULT_OK) {
                 // case delete all
-                if (recyclerAdapter.selectedHashSet.size == directory.mediaArrayList.size) {
+                if (recyclerAdapter.selectedHashSet.size == directory.mediaMutableList.size) {
                     // remove directory
                     ContentController.directoryArrayList.removeAt(directoryPosition)
 
@@ -150,12 +150,9 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
 
                     // remove content
                     for (position in selectedArray) {
-                        directory.mediaArrayList.removeAt(position)
+                        directory.mediaMutableList.removeAt(position)
                         recyclerAdapter.notifyItemRemoved(position)
                     }
-
-                    // refresh directory date
-                    directory.refreshDate()
 
                     // sort directory array list
                     contentController.sortDirectoryArrayList()
@@ -182,7 +179,7 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
         ) { key: String, _: Bundle ->
             if (key == KEY_CONTENT_SORT_ORDER) {
                 contentController.sortContentArrayList()
-                recyclerAdapter.notifyItemRangeChanged(0, directory.mediaArrayList.size, false)
+                recyclerAdapter.notifyItemRangeChanged(0, directory.mediaMutableList.size, false)
             }
         }
         (context as FragmentActivity).supportFragmentManager.setFragmentResultListener(
@@ -201,14 +198,14 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
         contentController = ContentController(requireContext())
 
         // initialize directory recycler view
-        binding.recyclerThumbnail.setHasFixedSize(true)
-        binding.recyclerThumbnail.layoutManager = GridLayoutManager(context, SPAN_COUNT_CONTENT)
+        binding.list.setHasFixedSize(true)
+        binding.list.layoutManager = GridLayoutManager(context, SPAN_COUNT_CONTENT)
 
         // initialize recycler adapter
         recyclerAdapter = DirectoryRecyclerAdapter()
         recyclerAdapter.setHasStableIds(true)
         recyclerAdapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
-        binding.recyclerThumbnail.adapter = recyclerAdapter
+        binding.list.adapter = recyclerAdapter
 
         // initialize drag selection listener
         val onDragSelectionListener = OnDragSelectListener { start: Int, end: Int, isSelected: Boolean ->
@@ -223,7 +220,7 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
             .withMaxScrollDistance(24)
 
         // add on item touch listener to recycler view
-        binding.recyclerThumbnail.addOnItemTouchListener(dragSelectTouchListener)
+        binding.list.addOnItemTouchListener(dragSelectTouchListener)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -300,7 +297,7 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
             // case same directory found
             if (isFound) {
                 // case content changed
-                if (directory.mediaArrayList != backupDirectory.mediaArrayList) {
+                if (directory.mediaMutableList != backupDirectory.mediaMutableList) {
                     recyclerAdapter.selectedHashSet.clear()
                     recyclerAdapter.isSelecting = false
                     (context as FragmentActivity).invalidateOptionsMenu()
@@ -335,11 +332,11 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
         var isSelecting = false
 
         inner class DirectoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-            val thumbnailImageView: ImageView = itemView.findViewById(R.id.image_thumbnail)
-            val selectImageView: ImageView = itemView.findViewById(R.id.select_thumbnail)
-            val playImageView: ImageView = itemView.findViewById(R.id.play_thumbnail)
-            val timeTextView: TextView = itemView.findViewById(R.id.time_thumbnail)
-            private val descriptionLinearLayout: LinearLayoutCompat = itemView.findViewById(R.id.description_thumbnail)
+            val thumbnailImageView: ImageView = itemView.findViewById(R.id.thumbnail)
+            val selectImageView: ImageView = itemView.findViewById(R.id.select)
+            val playImageView: ImageView = itemView.findViewById(R.id.play_button)
+            val timeTextView: TextView = itemView.findViewById(R.id.time)
+            private val descriptionLinearLayout: LinearLayoutCompat = itemView.findViewById(R.id.description)
 
             init {
                 // set description linear layout gone
@@ -398,11 +395,11 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DirectoryViewHolder {
-            return DirectoryViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.recycler_thumbnail, parent, false))
+            return DirectoryViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_thumbnail, parent, false))
         }
 
         override fun onBindViewHolder(holder: DirectoryViewHolder, position: Int) {
-            val content = directory.mediaArrayList[position]
+            val content = directory.mediaMutableList[position]
 
             // case thumbnail
             Glide.with(context!!)
@@ -435,11 +432,11 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
         }
 
         override fun getItemCount(): Int {
-            return directory.mediaArrayList.size
+            return directory.mediaMutableList.size
         }
 
         override fun getItemId(position: Int): Long {
-            return directory.mediaArrayList[position].uri.hashCode().toLong()
+            return directory.mediaMutableList[position].uri.hashCode().toLong()
         }
 
         fun setSelected(position: Int, isSelected: Boolean) {
@@ -484,7 +481,7 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
             var isContainImage = false
             for (position in selectedArray) {
                 // initialize content
-                val content = directory.mediaArrayList[position]
+                val content = directory.mediaMutableList[position]
 
                 // set is contain video, image
                 if (content.isVideo) isContainVideo = true
@@ -511,7 +508,7 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
             val contentUriArrayList: ArrayList<Uri> = ArrayList()
             for (position in selectedArray) {
                 // add content uri
-                contentUriArrayList.add(directory.mediaArrayList[position].uri)
+                contentUriArrayList.add(directory.mediaMutableList[position].uri)
             }
 
             // initialize create delete request pending intent

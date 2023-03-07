@@ -72,10 +72,10 @@ class ChoiceActivity : AppCompatActivity() {
         private val screenWidth = DeviceController.getWidthMax(this@ChoiceActivity)
 
         inner class ChoiceViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-            val thumbnailImageView: ImageView = itemView.findViewById(R.id.image_thumbnail)
-            val titleTextView: TextView = itemView.findViewById(R.id.title_thumbnail)
-            val contentTextView: TextView = itemView.findViewById(R.id.content_thumbnail)
-            private val selectImageView: ImageView = itemView.findViewById(R.id.select_thumbnail)
+            val thumbnailImageView: ImageView = itemView.findViewById(R.id.thumbnail)
+            val titleTextView: TextView = itemView.findViewById(R.id.title)
+            val contentTextView: TextView = itemView.findViewById(R.id.content)
+            private val selectImageView: ImageView = itemView.findViewById(R.id.select)
 
             init {
                 selectImageView.visibility = GONE
@@ -97,12 +97,12 @@ class ChoiceActivity : AppCompatActivity() {
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChoiceViewHolder {
-            return ChoiceViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.recycler_thumbnail, parent, false))
+            return ChoiceViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_thumbnail, parent, false))
         }
 
         override fun onBindViewHolder(holder: ChoiceViewHolder, position: Int) {
             val directory = ContentController.directoryArrayList[position]
-            val content = directory.mediaArrayList[0]
+            val content = directory.mediaMutableList[0]
 
             // case thumbnail
             Glide.with(this@ChoiceActivity)
@@ -116,7 +116,7 @@ class ChoiceActivity : AppCompatActivity() {
             holder.titleTextView.text = directory.name
 
             // case content
-            holder.contentTextView.text = directory.mediaArrayList.size.toString()
+            holder.contentTextView.text = directory.mediaMutableList.size.toString()
         }
 
         override fun getItemCount(): Int {

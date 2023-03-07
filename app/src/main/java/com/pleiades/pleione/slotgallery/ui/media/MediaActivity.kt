@@ -139,22 +139,19 @@ class MediaActivity : AppCompatActivity() {
                 val position = binding.pagerImage.currentItem
 
                 // remove content
-                directory.mediaArrayList.removeAt(position)
+                directory.mediaMutableList.removeAt(position)
 
                 // notify item removed
                 contentsPagerAdapter.notifyItemRemoved(position)
 
                 // case delete all
-                if (directory.mediaArrayList.size == 0) {
+                if (directory.mediaMutableList.size == 0) {
                     // remove directory
                     ContentController.directoryArrayList.removeAt(directoryPosition)
 
                     // on back pressed
                     onBackPressed()
                 } else {
-                    // refresh directory date
-                    directory.refreshDate()
-
                     // sort directory array list
                     ContentController(this).sortDirectoryArrayList()
 
@@ -178,7 +175,7 @@ class MediaActivity : AppCompatActivity() {
                 var index = 1
                 do {
                     isDuplicate = false
-                    for (content in directory.mediaArrayList) {
+                    for (content in directory.mediaMutableList) {
                         if (toName == content.name) {
                             isDuplicate = true
                             toName =
@@ -204,16 +201,16 @@ class MediaActivity : AppCompatActivity() {
                 contentResolver.update(currentContent.uri, values, null, null)
 
                 // update content
-                directory.mediaArrayList[binding.pagerImage.currentItem].name = toName
+                directory.mediaMutableList[binding.pagerImage.currentItem].name = toName
 
                 // backup
-                val backupContent = directory.mediaArrayList[binding.pagerImage.currentItem]
+                val backupContent = directory.mediaMutableList[binding.pagerImage.currentItem]
 
                 // sort
                 ContentController(this).sortContentArrayList(directoryPosition)
 
                 // restore
-                binding.pagerImage.setCurrentItem(directory.mediaArrayList.indexOf(backupContent), false)
+                binding.pagerImage.setCurrentItem(directory.mediaMutableList.indexOf(backupContent), false)
 
                 // cancel rename
                 cancelRename(toName)
@@ -236,7 +233,7 @@ class MediaActivity : AppCompatActivity() {
 
         // initialize title edit text
         titleEditText = findViewById(R.id.title_appbar)
-        titleEditText.setText(directory.mediaArrayList[contentPosition].name)
+        titleEditText.setText(directory.mediaMutableList[contentPosition].name)
         titleEditText.setOnFocusChangeListener { _, b ->
             isEditFocused = b
             invalidateOptionsMenu()
@@ -343,7 +340,7 @@ class MediaActivity : AppCompatActivity() {
     }
 
     fun getCurrentContent(): Media {
-        return directory.mediaArrayList[binding.pagerImage.currentItem]
+        return directory.mediaMutableList[binding.pagerImage.currentItem]
     }
 
     fun fullImage() {
@@ -380,11 +377,11 @@ class MediaActivity : AppCompatActivity() {
         }
 
         override fun getItemCount(): Int {
-            return directory.mediaArrayList.size
+            return directory.mediaMutableList.size
         }
 
         override fun getItemId(position: Int): Long {
-            return directory.mediaArrayList[position].uri.hashCode().toLong()
+            return directory.mediaMutableList[position].uri.hashCode().toLong()
         }
     }
 

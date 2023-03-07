@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
         title = ""
 
         // initialize appbar
-        setSupportActionBar(binding.appbarMain.toolbar)
+        setSupportActionBar(binding.appbar.toolbar)
     }
 
     override fun onStart() {
@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity() {
                 addFragment()
 
             // initialize fragment
-            val fragment = supportFragmentManager.findFragmentById(R.id.fragment_main)
+            val fragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
 
             when (lastResumedActivityCode) {
                 // refresh fragment
@@ -86,7 +86,7 @@ class MainActivity : AppCompatActivity() {
         var isSelecting = false
 
         // initialize fragment
-        val fragment = supportFragmentManager.findFragmentById(R.id.fragment_main)
+        val fragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
 
         if (fragment is DirectoryFragment)
             isSelecting = fragment.onBackPressed()
@@ -107,7 +107,7 @@ class MainActivity : AppCompatActivity() {
     private fun addFragment() {
         // add fragment
         val fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction.add(R.id.fragment_main, DirectoryFragment.newInstance()).commit()
+        fragmentTransaction.add(R.id.fragment_container, DirectoryFragment.newInstance()).commit()
 
         // set is initialized true
         isFragmentAdded = true

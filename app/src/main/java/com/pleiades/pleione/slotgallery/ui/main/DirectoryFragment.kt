@@ -167,14 +167,14 @@ class DirectoryFragment : Fragment() {
         contentController = ContentController(requireContext())
 
         // initialize directory recycler view
-        binding.recyclerThumbnail.setHasFixedSize(true)
-        binding.recyclerThumbnail.layoutManager = GridLayoutManager(context, SPAN_COUNT_DIRECTORY)
+        binding.list.setHasFixedSize(true)
+        binding.list.layoutManager = GridLayoutManager(context, SPAN_COUNT_DIRECTORY)
 
         // initialize recycler adapter
         recyclerAdapter = DirectoryRecyclerAdapter()
         recyclerAdapter.setHasStableIds(true)
         recyclerAdapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
-        binding.recyclerThumbnail.adapter = recyclerAdapter
+        binding.list.adapter = recyclerAdapter
 
         // initialize drag selection listener
         val onDragSelectionListener = OnDragSelectListener { start: Int, end: Int, isSelected: Boolean ->
@@ -189,7 +189,7 @@ class DirectoryFragment : Fragment() {
             .withMaxScrollDistance(24)
 
         // add on item touch listener to recycler view
-        binding.recyclerThumbnail.addOnItemTouchListener(dragSelectTouchListener)
+        binding.list.addOnItemTouchListener(dragSelectTouchListener)
 
         // case launch application
         if (ContentController.directoryArrayList.size == 0) {
@@ -261,12 +261,12 @@ class DirectoryFragment : Fragment() {
 
             // case no slot
             if (selectedSlot == null) {
-                binding.messageMain.setText(R.string.message_error_no_slot)
-                binding.messageMain.visibility = VISIBLE
-                binding.recyclerThumbnail.visibility = INVISIBLE
+                binding.message.setText(R.string.message_error_no_slot)
+                binding.message.visibility = VISIBLE
+                binding.list.visibility = INVISIBLE
             } else {
-                binding.messageMain.visibility = GONE
-                binding.recyclerThumbnail.visibility = VISIBLE
+                binding.message.visibility = GONE
+                binding.list.visibility = VISIBLE
 
                 // backup directory array list
                 val backupDirectoryArrayList: ArrayList<Directory> = ArrayList()
@@ -312,10 +312,10 @@ class DirectoryFragment : Fragment() {
         var isSelecting = false
 
         inner class DirectoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-            val thumbnailImageView: ImageView = itemView.findViewById(R.id.image_thumbnail)
-            val selectImageView: ImageView = itemView.findViewById(R.id.select_thumbnail)
-            val titleTextView: TextView = itemView.findViewById(R.id.title_thumbnail)
-            val contentTextView: TextView = itemView.findViewById(R.id.content_thumbnail)
+            val thumbnailImageView: ImageView = itemView.findViewById(R.id.thumbnail)
+            val selectImageView: ImageView = itemView.findViewById(R.id.select)
+            val titleTextView: TextView = itemView.findViewById(R.id.title)
+            val contentTextView: TextView = itemView.findViewById(R.id.content)
 
             init {
                 itemView.setOnClickListener {
@@ -340,7 +340,7 @@ class DirectoryFragment : Fragment() {
                         // replace fragment
                         activity!!.supportFragmentManager
                             .beginTransaction()
-                            .replace(R.id.fragment_main, ContentFragment.newInstance(position))
+                            .replace(R.id.fragment_container, ContentFragment.newInstance(position))
                             .addToBackStack(Config.KEY_STACK)
                             .commit()
                     }
@@ -372,12 +372,12 @@ class DirectoryFragment : Fragment() {
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DirectoryViewHolder {
-            return DirectoryViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.recycler_thumbnail, parent, false))
+            return DirectoryViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_thumbnail, parent, false))
         }
 
         override fun onBindViewHolder(holder: DirectoryViewHolder, position: Int) {
             val directory = ContentController.directoryArrayList[position]
-            val content = directory.mediaArrayList[0]
+            val content = directory.mediaMutableList[0]
 
             // case thumbnail
             Glide.with(context!!)
@@ -394,7 +394,7 @@ class DirectoryFragment : Fragment() {
             holder.titleTextView.text = directory.name
 
             // case content
-            holder.contentTextView.text = directory.mediaArrayList.size.toString()
+            holder.contentTextView.text = directory.mediaMutableList.size.toString()
         }
 
         override fun getItemCount(): Int {
@@ -450,7 +450,7 @@ class DirectoryFragment : Fragment() {
                 val directory = ContentController.directoryArrayList[position]
 
                 // add directory contents
-                for (content in directory.mediaArrayList) {
+                for (content in directory.mediaMutableList) {
                     // set is contain video, image
                     if (content.isVideo) isContainVideo = true
                     else isContainImage = true
@@ -481,7 +481,7 @@ class DirectoryFragment : Fragment() {
                 val directory = ContentController.directoryArrayList[position]
 
                 // add content uris
-                for (content in directory.mediaArrayList) contentUriArrayList.add(content.uri)
+                for (content in directory.mediaMutableList) contentUriArrayList.add(content.uri)
             }
 
             // initialize create delete request pending intent
