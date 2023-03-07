@@ -48,7 +48,7 @@ class ListDialogFragment(private val type: Int) : androidx.fragment.app.DialogFr
         _binding = FragmentDialogListBinding.inflate(requireActivity().layoutInflater)
 
         // list
-        binding.list.run {
+        with(binding.list) {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(requireContext())
             adapter =
@@ -77,8 +77,8 @@ class ListDialogFragment(private val type: Int) : androidx.fragment.app.DialogFr
             else DIALOG_WIDTH_PERCENTAGE_RECYCLER
 
         dialog?.window?.setLayoutSize(
-             width = (DeviceController.getWidthMax(requireContext()) * widthMultiplier),
-             height = ViewGroup.LayoutParams.WRAP_CONTENT
+            width = (DeviceController.getWidthMax(requireContext()) * widthMultiplier),
+            height = ViewGroup.LayoutParams.WRAP_CONTENT
         )
     }
 
@@ -159,7 +159,7 @@ class ListDialogFragment(private val type: Int) : androidx.fragment.app.DialogFr
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             // radio
-            holder.binding.radioButton.run {
+            with(holder.binding.radioButton) {
                 text = resources.getStringArray(R.array.sort)[position]
                 isChecked =
                     position == when (type) {

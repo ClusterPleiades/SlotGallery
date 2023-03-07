@@ -50,7 +50,7 @@ class MessageDialogFragment(private val type: Int) : androidx.fragment.app.Dialo
         }
 
         // negative button
-        binding.negativeButton.run {
+        with(binding.negativeButton) {
             isVisible = when (type) {
                 DIALOG_TYPE_PERMISSION -> false
                 else -> true
