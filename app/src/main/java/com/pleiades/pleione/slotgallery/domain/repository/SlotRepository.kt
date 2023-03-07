@@ -10,8 +10,4 @@ interface SlotRepository {
     fun putSelectedSlotPosition(position: Int)
 
     fun getSelectedSlotPosition(): Int
-
-    fun putSelectedSlotInfo(slot: Slot)
-
-    fun getSelectedSlotInfo(): Slot?
 }

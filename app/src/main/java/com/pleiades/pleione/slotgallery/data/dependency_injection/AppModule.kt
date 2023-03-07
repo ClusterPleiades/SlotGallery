@@ -63,8 +63,6 @@ object AppModule {
             getSlotListUseCase = GetSlotListUseCase(repository),
             putSelectedSlotPositionUseCase = PutSelectedSlotPositionUseCase(repository),
             getSelectedSlotPositionUseCase = GetSelectedSlotPositionUseCase(repository),
-            putSelectedSlotUseCase = PutSelectedSlotUseCase(repository),
-            getSelectedSlotUseCase = GetSelectedSlotUseCase(repository)
         )
 
     @Provides
