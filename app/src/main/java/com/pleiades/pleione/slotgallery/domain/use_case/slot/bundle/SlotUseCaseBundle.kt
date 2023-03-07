@@ -7,6 +7,6 @@ data class SlotUseCaseBundle(
     val getSlotListUseCase: GetSlotListUseCase,
     val putSelectedSlotPositionUseCase: PutSelectedSlotPositionUseCase,
     val getSelectedSlotPositionUseCase: GetSelectedSlotPositionUseCase,
-    val putSelectedSlotInfoUseCase: PutSelectedSlotInfoUseCase,
-    val getSelectedSlotInfoUseCase: GetSelectedSlotInfoUseCase
+    val putSelectedSlotUseCase: PutSelectedSlotUseCase,
+    val getSelectedSlotUseCase: GetSelectedSlotUseCase
 )

@@ -79,7 +79,7 @@ class DefaultMediaRepository @Inject constructor(
         }
 
         for (fromDirectory in fromDirectorySet) {
-            for (media in fromDirectory.mediaArrayList) {
+            for (media in fromDirectory.mediaMutableList) {
                 // TODO break if progress dialog canceled
 
                 val preName = media.name.substringBeforeLast(".")
@@ -163,7 +163,7 @@ class DefaultMediaRepository @Inject constructor(
             documentFile.name?.let { toDirectoryFileNameMutableSet.add(it) }
         }
 
-        for (media in fromDirectory.mediaArrayList) {
+        for (media in fromDirectory.mediaMutableList) {
             // TODO break if progress dialog canceled
 
             val preName = media.name.substringBeforeLast(".")
@@ -272,11 +272,10 @@ class DefaultMediaRepository @Inject constructor(
                 val relativePath = it.getString(6)
                 val uri = Uri.withAppendedPath(imageUri, id.toString())
 
-                directory.date = date.coerceAtLeast(directory.date)
                 if (isSubDirectoryAllowed && relativePath != directoryRelativePath)
                     subDirectoryLastPathMutableSet.add(directoryOverview.lastPath.substringBefore(":") + ":" + relativePath.substringBeforeLast("/"))
                 else {
-                    directory.mediaArrayList.add(
+                    directory.mediaMutableList.add(
                         Media(
                             isVideo = false,
                             id = id,
@@ -340,11 +339,10 @@ class DefaultMediaRepository @Inject constructor(
                     if (it.getString(7) == null) 0L
                     else it.getString(7).toLong()
 
-                directory.date = date.coerceAtLeast(directory.date)
                 if (isSubDirectoryAllowed && relativePath != directoryRelativePath)
                     subDirectoryLastPathMutableSet.add(directoryOverview.lastPath.substringBefore(":") + ":" + relativePath.substringBeforeLast("/"))
                 else {
-                    directory.mediaArrayList.add(
+                    directory.mediaMutableList.add(
                         Media(
                             isVideo = true,
                             id = id,
@@ -363,7 +361,7 @@ class DefaultMediaRepository @Inject constructor(
             it.close()
         }
 
-        if (directory.mediaArrayList.size > 0) directoryMutableList.add(directory)
+        if (directory.mediaMutableList.size > 0) directoryMutableList.add(directory)
         subDirectoryLastPathMutableSet.forEach {
             addDirectory(
                 directoryMutableList = directoryMutableList,
@@ -395,9 +393,9 @@ class DefaultMediaRepository @Inject constructor(
 
     private fun sortMediaList(directoryMutableList: MutableList<Directory>) {
         when (sharedPreferences.getInt(Config.KEY_CONTENT_SORT_ORDER, 0)) {
-            SORT_POSITION_BY_NAME -> for (directory in directoryMutableList) directory.mediaArrayList.sortBy { it.name }
-            SORT_POSITION_BY_NEWEST -> for (directory in directoryMutableList) directory.mediaArrayList.sortByDescending { it.date }
-            SORT_POSITION_BY_OLDEST -> for (directory in directoryMutableList) directory.mediaArrayList.sortBy { it.date }
+            SORT_POSITION_BY_NAME -> for (directory in directoryMutableList) directory.mediaMutableList.sortBy { it.name }
+            SORT_POSITION_BY_NEWEST -> for (directory in directoryMutableList) directory.mediaMutableList.sortByDescending { it.date }
+            SORT_POSITION_BY_OLDEST -> for (directory in directoryMutableList) directory.mediaMutableList.sortBy { it.date }
         }
     }
 }

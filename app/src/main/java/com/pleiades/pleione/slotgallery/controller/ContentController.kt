@@ -97,20 +97,17 @@ class ContentController(private val context: Context) {
             val relativePath = imageCursor.getString(6)
             val uri = Uri.withAppendedPath(imageUri, id.toString())
 
-            // update directory date
-            directory.date = date.coerceAtLeast(directory.date)
-
             // case allow sub directory
             if (allowSubDirectory) {
                 if (relativePath == directoryRelativePath) {
-                    directory.mediaArrayList.add(Media(false, id, name, size, width, height, date, relativePath, uri, 0L))
+                    directory.mediaMutableList.add(Media(false, id, name, size, width, height, date, relativePath, uri, 0L))
                 } else {
                     // case sub directory
                     subDirectoryLastPathHashSet.add(directoryOverview.lastPath.substringBefore(":") + ":" + relativePath.substringBeforeLast("/"))
                 }
             } else {
                 // add image
-                directory.mediaArrayList.add(Media(false, id, name, size, width, height, date, relativePath, uri, 0L))
+                directory.mediaMutableList.add(Media(false, id, name, size, width, height, date, relativePath, uri, 0L))
             }
         }
 
@@ -147,21 +144,18 @@ class ContentController(private val context: Context) {
             val uri = Uri.withAppendedPath(videoUri, id.toString())
             val duration = if (videoCursor.getString(7) == null) 0L else videoCursor.getString(7).toLong()
 
-            // update directory date
-            directory.date = date.coerceAtLeast(directory.date)
-
             // case allow sub directory
             if (allowSubDirectory) {
                 if (relativePath == directoryRelativePath) {
                     // add image
-                    directory.mediaArrayList.add(Media(true, id, name, size, width, height, date, relativePath, uri, duration))
+                    directory.mediaMutableList.add(Media(true, id, name, size, width, height, date, relativePath, uri, duration))
                 } else {
                     // case sub directory
                     subDirectoryLastPathHashSet.add(directoryOverview.lastPath.substringBefore(":") + ":" + relativePath.substringBeforeLast("/"))
                 }
             } else {
                 // add image
-                directory.mediaArrayList.add(Media(true, id, name, size, width, height, date, relativePath, uri, duration))
+                directory.mediaMutableList.add(Media(true, id, name, size, width, height, date, relativePath, uri, duration))
             }
         }
 
@@ -169,7 +163,7 @@ class ContentController(private val context: Context) {
         videoCursor.close()
 
         // case contents exist
-        if (directory.mediaArrayList.size > 0) {
+        if (directory.mediaMutableList.size > 0) {
             // add directory
             directoryArrayList.add(directory)
         }
@@ -203,17 +197,17 @@ class ContentController(private val context: Context) {
 
     fun sortContentArrayList() {
         when (prefs.getInt(KEY_CONTENT_SORT_ORDER, 0)) {
-            SORT_POSITION_BY_NAME -> for (directory in directoryArrayList) directory.mediaArrayList.sortBy { it.name }
-            SORT_POSITION_BY_NEWEST -> for (directory in directoryArrayList) directory.mediaArrayList.sortByDescending { it.date }
-            SORT_POSITION_BY_OLDEST -> for (directory in directoryArrayList) directory.mediaArrayList.sortBy { it.date }
+            SORT_POSITION_BY_NAME -> for (directory in directoryArrayList) directory.mediaMutableList.sortBy { it.name }
+            SORT_POSITION_BY_NEWEST -> for (directory in directoryArrayList) directory.mediaMutableList.sortByDescending { it.date }
+            SORT_POSITION_BY_OLDEST -> for (directory in directoryArrayList) directory.mediaMutableList.sortBy { it.date }
         }
     }
 
     fun sortContentArrayList(directoryPosition: Int) {
         when (prefs.getInt(KEY_CONTENT_SORT_ORDER, 0)) {
-            SORT_POSITION_BY_NAME -> directoryArrayList[directoryPosition].mediaArrayList.sortBy { it.name }
-            SORT_POSITION_BY_NEWEST -> directoryArrayList[directoryPosition].mediaArrayList.sortByDescending { it.date }
-            SORT_POSITION_BY_OLDEST -> directoryArrayList[directoryPosition].mediaArrayList.sortBy { it.date }
+            SORT_POSITION_BY_NAME -> directoryArrayList[directoryPosition].mediaMutableList.sortBy { it.name }
+            SORT_POSITION_BY_NEWEST -> directoryArrayList[directoryPosition].mediaMutableList.sortByDescending { it.date }
+            SORT_POSITION_BY_OLDEST -> directoryArrayList[directoryPosition].mediaMutableList.sortBy { it.date }
         }
     }
 
@@ -225,7 +219,7 @@ class ContentController(private val context: Context) {
         // set progressbar attributes
         var max = 0
         for (fromDirectoryPosition in fromDirectoryPositionHashSet)
-            max += directoryArrayList[fromDirectoryPosition].mediaArrayList.size
+            max += directoryArrayList[fromDirectoryPosition].mediaMutableList.size
         progressDialogFragment.progressBar.max = max
 
         // initialize to directory document file
@@ -256,7 +250,7 @@ class ContentController(private val context: Context) {
 
             // copy contents
             val fromDirectory = directoryArrayList[fromDirectoryPosition]
-            for (content in fromDirectory.mediaArrayList) {
+            for (content in fromDirectory.mediaMutableList) {
                 // case is canceled
                 if (progressDialogFragment.isCanceled)
                     break
@@ -332,9 +326,7 @@ class ContentController(private val context: Context) {
             val date = imageCursor.getString(2).toLong()
             val relativePath = imageCursor.getString(3)
             val uri = Uri.withAppendedPath(imageUri, id.toString())
-
-            toDirectory.date = date.coerceAtLeast(toDirectory.date)
-            toDirectory.mediaArrayList.add(Media(false, id, name, "-", 0, 0, date, relativePath, uri, 0L))
+            toDirectory.mediaMutableList.add(Media(false, id, name, "-", 0, 0, date, relativePath, uri, 0L))
         }
         imageCursor.close()
 
@@ -354,9 +346,7 @@ class ContentController(private val context: Context) {
             val date = videoCursor.getString(2).toLong()
             val relativePath = videoCursor.getString(3)
             val uri = Uri.withAppendedPath(videoUri, id.toString())
-
-            toDirectory.date = date.coerceAtLeast(toDirectory.date)
-            toDirectory.mediaArrayList.add(Media(true, id, name, "-", 0, 0, date, relativePath, uri, 0L))
+            toDirectory.mediaMutableList.add(Media(true, id, name, "-", 0, 0, date, relativePath, uri, 0L))
         }
         videoCursor.close()
 
@@ -408,7 +398,7 @@ class ContentController(private val context: Context) {
                 break
 
             // initialize content
-            val content = fromDirectory.mediaArrayList[contentPosition]
+            val content = fromDirectory.mediaMutableList[contentPosition]
 
             // initialize to name
             val preName = content.name.substringBeforeLast(".")
@@ -480,9 +470,7 @@ class ContentController(private val context: Context) {
             val date = imageCursor.getString(2).toLong()
             val relativePath = imageCursor.getString(3)
             val uri = Uri.withAppendedPath(imageUri, id.toString())
-
-            toDirectory.date = date.coerceAtLeast(toDirectory.date)
-            toDirectory.mediaArrayList.add(Media(false, id, name, "-", 0, 0, date, relativePath, uri, 0L))
+            toDirectory.mediaMutableList.add(Media(false, id, name, "-", 0, 0, date, relativePath, uri, 0L))
         }
         imageCursor.close()
 
@@ -502,9 +490,7 @@ class ContentController(private val context: Context) {
             val date = videoCursor.getString(2).toLong()
             val relativePath = videoCursor.getString(3)
             val uri = Uri.withAppendedPath(videoUri, id.toString())
-
-            toDirectory.date = date.coerceAtLeast(toDirectory.date)
-            toDirectory.mediaArrayList.add(Media(true, id, name, "-", 0, 0, date, relativePath, uri, 0L))
+            toDirectory.mediaMutableList.add(Media(true, id, name, "-", 0, 0, date, relativePath, uri, 0L))
         }
         videoCursor.close()
 
@@ -543,9 +529,7 @@ class ContentController(private val context: Context) {
             val date = imageCursor.getString(2).toLong()
             val relativePath = imageCursor.getString(3)
             val uri = Uri.withAppendedPath(imageUri, id.toString())
-
-            directory.date = date.coerceAtLeast(directory.date)
-            directory.mediaArrayList.add(Media(false, id, name, "-", 0, 0, date, relativePath, uri, 0L))
+            directory.mediaMutableList.add(Media(false, id, name, "-", 0, 0, date, relativePath, uri, 0L))
         }
         imageCursor.close()
 
