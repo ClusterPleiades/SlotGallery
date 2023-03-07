@@ -6,6 +6,16 @@ import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.content.res.Resources
 import com.pleiades.pleione.slotgallery.Config.Companion.PREFS
+import com.pleiades.pleione.slotgallery.domain.repository.MediaRepository
+import com.pleiades.pleione.slotgallery.domain.repository.SlotRepository
+import com.pleiades.pleione.slotgallery.domain.repository.WindowRepository
+import com.pleiades.pleione.slotgallery.domain.use_case.media.CopyDirectoryUseCase
+import com.pleiades.pleione.slotgallery.domain.use_case.media.CopyMediaUseCase
+import com.pleiades.pleione.slotgallery.domain.use_case.media.GetDirectoryListUseCase
+import com.pleiades.pleione.slotgallery.domain.use_case.media.bundle.MediaUseCaseBundle
+import com.pleiades.pleione.slotgallery.domain.use_case.slot.*
+import com.pleiades.pleione.slotgallery.domain.use_case.slot.bundle.SlotUseCaseBundle
+import com.pleiades.pleione.slotgallery.domain.use_case.window.GetWidthUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -35,4 +45,29 @@ object AppModule {
     @Provides
     @Singleton
     fun provideContentResolver(@ApplicationContext context: Context): ContentResolver = context.contentResolver
+
+    @Provides
+    @Singleton
+    fun provideMediaUseCaseBundle(repository: MediaRepository): MediaUseCaseBundle =
+        MediaUseCaseBundle(
+            getDirectoryListUseCase = GetDirectoryListUseCase(repository),
+            copyDirectoryUseCase = CopyDirectoryUseCase(repository),
+            copyMediaUseCase = CopyMediaUseCase(repository)
+        )
+
+    @Provides
+    @Singleton
+    fun provideSlotUseCaseBundle(repository: SlotRepository): SlotUseCaseBundle =
+        SlotUseCaseBundle(
+            putSlotListUseCase = PutSlotListUseCase(repository),
+            getSlotListUseCase = GetSlotListUseCase(repository),
+            putSelectedSlotPositionUseCase = PutSelectedSlotPositionUseCase(repository),
+            getSelectedSlotPositionUseCase = GetSelectedSlotPositionUseCase(repository),
+            putSelectedSlotUseCase = PutSelectedSlotUseCase(repository),
+            getSelectedSlotUseCase = GetSelectedSlotUseCase(repository)
+        )
+
+    @Provides
+    @Singleton
+    fun provideGetWidthUseCase(repository: WindowRepository) = GetWidthUseCase(repository)
 }
