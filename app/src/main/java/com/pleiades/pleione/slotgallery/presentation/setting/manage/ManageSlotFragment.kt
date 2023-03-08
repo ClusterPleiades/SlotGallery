@@ -19,10 +19,12 @@ import com.pleiades.pleione.slotgallery.databinding.FragmentManageBinding
 import com.pleiades.pleione.slotgallery.databinding.ItemEditBinding
 import com.pleiades.pleione.slotgallery.domain.model.Slot
 import com.pleiades.pleione.slotgallery.presentation.setting.SettingViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.selects.select
 import java.util.*
 
+@AndroidEntryPoint
 class ManageSlotFragment : Fragment() {
     private var _binding: FragmentManageBinding? = null
     private val binding get() = _binding!!

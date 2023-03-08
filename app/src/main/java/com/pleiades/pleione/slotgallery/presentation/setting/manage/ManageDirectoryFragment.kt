@@ -20,8 +20,10 @@ import com.pleiades.pleione.slotgallery.databinding.FragmentManageBinding
 import com.pleiades.pleione.slotgallery.databinding.ItemEditBinding
 import com.pleiades.pleione.slotgallery.domain.model.DirectoryOverview
 import com.pleiades.pleione.slotgallery.presentation.setting.SettingViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class ManageDirectoryFragment : Fragment() {
     private var _binding: FragmentManageBinding? = null
     private val binding get() = _binding!!

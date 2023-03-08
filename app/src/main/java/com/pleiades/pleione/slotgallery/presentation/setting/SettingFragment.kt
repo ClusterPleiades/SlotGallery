@@ -18,7 +18,9 @@ import com.pleiades.pleione.slotgallery.databinding.FragmentSettingBinding
 import com.pleiades.pleione.slotgallery.databinding.ItemSettingBinding
 import com.pleiades.pleione.slotgallery.presentation.setting.manage.ManageDirectoryFragment
 import com.pleiades.pleione.slotgallery.presentation.setting.manage.ManageSlotFragment
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SettingFragment : Fragment() {
     private var _binding: FragmentSettingBinding? = null
     private val binding get() = _binding!!
