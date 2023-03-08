@@ -97,6 +97,7 @@ class ManageSlotFragment : Fragment() {
                     activityViewModel.selectSlot(bindingAdapterPosition)
                     notifyItemChanged(bindingAdapterPosition)
                     it.requestFocus()
+                    binding.edit.clearFocus()
                 }
                 binding.edit.setOnFocusChangeListener { _: View, isFocused: Boolean ->
                     binding.save.isVisible = isFocused
