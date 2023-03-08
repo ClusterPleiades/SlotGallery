@@ -34,9 +34,16 @@ class SettingViewModel @Inject constructor(
 
     fun addDirectoryOverView(directoryOverview: DirectoryOverview) {
         val selectedSlotPosition = state.value.selectedSlotPosition
-        val slotMutableList = mutableListOf<Slot>().apply {
-            addAll(state.value.slotList)
-            get(selectedSlotPosition).directoryOverviewMutableList.add(directoryOverview)
+        val directoryOverviewMutableList = state.value.slotList[selectedSlotPosition].directoryOverviewMutableList.toMutableList().apply {
+            add(directoryOverview)
+        }
+        val slotMutableList = state.value.slotList.toMutableList().apply {
+            set(
+                index = selectedSlotPosition,
+                element = get(selectedSlotPosition).copy(
+                    directoryOverviewMutableList = directoryOverviewMutableList
+                )
+            )
         }
 
         slotUseCaseBundle.putSlotListUseCase(slotMutableList)
@@ -47,9 +54,16 @@ class SettingViewModel @Inject constructor(
 
     fun removeDirectoryOverView(position: Int) {
         val selectedSlotPosition = state.value.selectedSlotPosition
-        val slotMutableList = mutableListOf<Slot>().apply {
-            addAll(state.value.slotList)
-            get(selectedSlotPosition).directoryOverviewMutableList.removeAt(position)
+        val directoryOverviewMutableList = state.value.slotList[selectedSlotPosition].directoryOverviewMutableList.toMutableList().apply {
+            removeAt(position)
+        }
+        val slotMutableList = state.value.slotList.toMutableList().apply {
+            set(
+                index = selectedSlotPosition,
+                element = get(selectedSlotPosition).copy(
+                    directoryOverviewMutableList = directoryOverviewMutableList
+                )
+            )
         }
 
         slotUseCaseBundle.putSlotListUseCase(slotMutableList)
@@ -59,20 +73,29 @@ class SettingViewModel @Inject constructor(
     }
 
     fun toggleDirectoryOverViewVisibility(position: Int) {
-//        val selectedSlotPosition = state.value.selectedSlotPosition
-//        val directoryOverViewMutableList = mutableListOf<DirectoryOverview>().apply {
-//            addAll(state.value.slotList[selectedSlotPosition].directoryOverviewMutableList)
-//            get(position).isVisible = !get(position).isVisible
-//        }
-//        val slotMutableList = mutableListOf<Slot>().apply {
-//            addAll(state.value.slotList)
-//            get(selectedSlotPosition).directoryOverviewMutableList = directoryOverViewMutableList
-//        }
-//
-//        slotUseCaseBundle.putSlotListUseCase(slotMutableList)
-//        _state.value = state.value.copy(
-//            slotList = slotMutableList
-//        )
+        val selectedSlotPosition = state.value.selectedSlotPosition
+        val overview = state.value.slotList[selectedSlotPosition].directoryOverviewMutableList[position]
+        val directoryOverviewMutableList = state.value.slotList[selectedSlotPosition].directoryOverviewMutableList.toMutableList().apply {
+            set(
+                index = position,
+                element = get(position).copy(
+                    isVisible = !overview.isVisible
+                )
+            )
+        }
+        val slotMutableList = state.value.slotList.toMutableList().apply {
+            set(
+                index = selectedSlotPosition,
+                element = get(selectedSlotPosition).copy(
+                    directoryOverviewMutableList = directoryOverviewMutableList
+                )
+            )
+        }
+
+        slotUseCaseBundle.putSlotListUseCase(slotMutableList)
+        _state.value = state.value.copy(
+            slotList = slotMutableList
+        )
     }
 
     fun selectSlot(position: Int) {
@@ -112,7 +135,8 @@ class SettingViewModel @Inject constructor(
     fun renameSlot(position: Int, name: String) {
         val slotMutableList = state.value.slotList.toMutableList().apply {
             set(
-                position, get(position).copy(
+                index = position,
+                element = get(position).copy(
                     name = name
                 )
             )

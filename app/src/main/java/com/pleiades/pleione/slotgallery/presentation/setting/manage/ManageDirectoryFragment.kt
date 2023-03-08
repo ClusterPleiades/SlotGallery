@@ -30,7 +30,7 @@ class ManageDirectoryFragment : Fragment() {
     private val activityViewModel: SettingViewModel by activityViewModels()
 
     private val listAdapter: ManageDirectoryListAdapter by lazy { ManageDirectoryListAdapter() }
-    private val addResultLauncher: ActivityResultLauncher<Intent> by lazy {
+    private val addResultLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(StartActivityForResult()) { result: ActivityResult ->
             result.data?.data?.let { uri ->
                 with(requireContext().contentResolver) {
@@ -41,7 +41,6 @@ class ManageDirectoryFragment : Fragment() {
                 }
             }
         }
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentManageBinding.inflate(inflater, container, false)
@@ -116,9 +115,12 @@ class ManageDirectoryFragment : Fragment() {
                 }
                 binding.save.visibility = GONE
                 binding.remove.setOnClickListener {
-                    val position = bindingAdapterPosition
-                    if (position < COUNT_DEFAULT_DIRECTORY) activityViewModel.toggleDirectoryOverViewVisibility(position)
-                    else activityViewModel.removeDirectoryOverView(position)
+                    if (bindingAdapterPosition < COUNT_DEFAULT_DIRECTORY) {
+                        activityViewModel.toggleDirectoryOverViewVisibility(bindingAdapterPosition)
+//                        notifyItemChanged(bindingAdapterPosition)
+                    } else {
+                        activityViewModel.removeDirectoryOverView(bindingAdapterPosition)
+                    }
                 }
             }
         }
