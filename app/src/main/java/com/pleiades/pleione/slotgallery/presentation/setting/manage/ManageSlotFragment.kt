@@ -3,8 +3,6 @@ package com.pleiades.pleione.slotgallery.presentation.setting.manage
 import android.graphics.Color
 import android.os.Bundle
 import android.view.*
-import android.view.View.INVISIBLE
-import android.view.View.VISIBLE
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -13,6 +11,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.*
+import androidx.recyclerview.widget.RecyclerView.NO_POSITION
 import com.pleiades.pleione.slotgallery.Config.Companion.SETTING_POSITION_SLOT
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.databinding.FragmentManageBinding
@@ -21,8 +20,6 @@ import com.pleiades.pleione.slotgallery.domain.model.Slot
 import com.pleiades.pleione.slotgallery.presentation.setting.SettingViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.selects.select
-import java.util.*
 
 @AndroidEntryPoint
 class ManageSlotFragment : Fragment() {
@@ -94,24 +91,24 @@ class ManageSlotFragment : Fragment() {
     ) {
         inner class ViewHolder(val binding: ItemEditBinding) : RecyclerView.ViewHolder(binding.root) {
             init {
-                val position = bindingAdapterPosition
-
                 binding.layout.setOnClickListener {
                     it.requestFocus()
                     binding.edit.clearFocus()
-                    activityViewModel.selectSlot(position)
+                    notifyItemChanged(activityViewModel.state.value.selectedSlotPosition)
+                    activityViewModel.selectSlot(bindingAdapterPosition)
+                    notifyItemChanged(bindingAdapterPosition)
                 }
                 binding.edit.setOnFocusChangeListener { _: View, isFocused: Boolean ->
                     binding.save.isVisible = isFocused
-                    if (!isFocused) binding.edit.setText(activityViewModel.state.value.slotList[position].name)
+                    if (!isFocused) binding.edit.setText(activityViewModel.state.value.slotList[bindingAdapterPosition].name)
                 }
                 binding.save.setOnClickListener {
                     it.isVisible = false
-                    activityViewModel.renameSlot(position, binding.edit.text.toString())
+                    activityViewModel.renameSlot(bindingAdapterPosition, binding.edit.text.toString())
                     binding.edit.clearFocus()
                 }
                 binding.remove.setOnClickListener {
-                    activityViewModel.removeSlot(position)
+                    activityViewModel.removeSlot(bindingAdapterPosition)
                 }
             }
         }
@@ -121,12 +118,12 @@ class ManageSlotFragment : Fragment() {
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val slot = activityViewModel.state.value.slotList[position]
-            val selectedSlot = activityViewModel.getSelectedSlot()
+            val selectedSlotPosition = activityViewModel.state.value.selectedSlotPosition
 
             with(holder.binding) {
                 edit.setText(slot.name)
                 layout.setBackgroundColor(
-                    if (slot == selectedSlot) ContextCompat.getColor(requireContext(), R.color.color_light_gray)
+                    if (position == selectedSlotPosition) ContextCompat.getColor(requireContext(), R.color.color_light_gray)
                     else Color.WHITE
                 )
             }
