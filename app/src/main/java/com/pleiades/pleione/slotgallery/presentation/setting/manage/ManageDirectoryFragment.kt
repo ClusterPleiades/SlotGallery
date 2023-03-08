@@ -7,6 +7,7 @@ import android.view.View.GONE
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -29,7 +30,7 @@ class ManageDirectoryFragment : Fragment() {
     private val binding get() = _binding!!
     private val activityViewModel: SettingViewModel by activityViewModels()
 
-    private val listAdapter: ManageDirectoryListAdapter by lazy { ManageDirectoryListAdapter() }
+    private val listAdapter: ManageDirectoryListAdapter = ManageDirectoryListAdapter()
     private val addResultLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(StartActivityForResult()) { result: ActivityResult ->
             result.data?.data?.let { uri ->

@@ -27,9 +27,9 @@ class ManageSlotFragment : Fragment() {
     private val binding get() = _binding!!
     private val activityViewModel: SettingViewModel by activityViewModels()
 
-    private val listAdapter: ManageSlotListAdapter by lazy { ManageSlotListAdapter() }
+    private val listAdapter: ManageSlotListAdapter = ManageSlotListAdapter()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentManageBinding.inflate(inflater, container, false)
         return binding.root
     }

@@ -67,6 +67,11 @@ class MessageDialogFragment(private val type: Int) : androidx.fragment.app.Dialo
             }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     override fun onStart() {
         super.onStart()
 
@@ -79,10 +84,5 @@ class MessageDialogFragment(private val type: Int) : androidx.fragment.app.Dialo
     override fun onCancel(dialog: DialogInterface) {
         super.onCancel(dialog)
         dismiss()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }
