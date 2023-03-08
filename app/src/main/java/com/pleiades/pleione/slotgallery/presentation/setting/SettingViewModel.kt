@@ -7,6 +7,7 @@ import com.pleiades.pleione.slotgallery.domain.use_case.slot.bundle.SlotUseCaseB
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.selects.select
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,32 +25,54 @@ class SettingViewModel @Inject constructor(
     }
 
     fun getSelectedSlot(): Slot? {
-        val slotList = state.value.slotList
         val selectedSlotPosition = state.value.selectedSlotPosition
+        val slotList = state.value.slotList
 
         return if (slotList.isEmpty()) null
         else slotList[selectedSlotPosition]
     }
 
     fun addDirectoryOverView(directoryOverview: DirectoryOverview) {
-        getSelectedSlot()?.let {
-            it.directoryOverviewMutableList.add(directoryOverview)
-            _state.value = state.value.copy()
+        val selectedSlotPosition = state.value.selectedSlotPosition
+        val slotMutableList = mutableListOf<Slot>().apply {
+            addAll(state.value.slotList)
+            get(selectedSlotPosition).directoryOverviewMutableList.add(directoryOverview)
         }
+
+        slotUseCaseBundle.putSlotListUseCase(slotMutableList)
+        _state.value = state.value.copy(
+            slotList = slotMutableList
+        )
     }
 
     fun removeDirectoryOverView(position: Int) {
-        getSelectedSlot()?.let {
-            it.directoryOverviewMutableList.removeAt(position)
-            _state.value = state.value.copy()
+        val selectedSlotPosition = state.value.selectedSlotPosition
+        val slotMutableList = mutableListOf<Slot>().apply {
+            addAll(state.value.slotList)
+            get(selectedSlotPosition).directoryOverviewMutableList.removeAt(position)
         }
+
+        slotUseCaseBundle.putSlotListUseCase(slotMutableList)
+        _state.value = state.value.copy(
+            slotList = slotMutableList
+        )
     }
 
     fun toggleDirectoryOverViewVisibility(position: Int) {
-        getSelectedSlot()?.let {
-            with(it.directoryOverviewMutableList[position]) { isVisible = !isVisible }
-            _state.value = state.value.copy()
-        }
+//        val selectedSlotPosition = state.value.selectedSlotPosition
+//        val directoryOverViewMutableList = mutableListOf<DirectoryOverview>().apply {
+//            addAll(state.value.slotList[selectedSlotPosition].directoryOverviewMutableList)
+//            get(position).isVisible = !get(position).isVisible
+//        }
+//        val slotMutableList = mutableListOf<Slot>().apply {
+//            addAll(state.value.slotList)
+//            get(selectedSlotPosition).directoryOverviewMutableList = directoryOverViewMutableList
+//        }
+//
+//        slotUseCaseBundle.putSlotListUseCase(slotMutableList)
+//        _state.value = state.value.copy(
+//            slotList = slotMutableList
+//        )
     }
 
     fun selectSlot(position: Int) {
@@ -60,42 +83,44 @@ class SettingViewModel @Inject constructor(
     }
 
     fun addSlot(name: String) {
-        val slotList = mutableListOf<Slot>().apply {
-            addAll(state.value.slotList)
+        val slotMutableList = state.value.slotList.toMutableList().apply {
             add(Slot(name))
         }
-        slotUseCaseBundle.putSlotListUseCase(slotList)
+
+        slotUseCaseBundle.putSlotListUseCase(slotMutableList)
         _state.value = state.value.copy(
-            slotList = slotList
+            slotList = slotMutableList
         )
     }
 
     fun removeSlot(position: Int) {
-        val slotList = mutableListOf<Slot>().apply {
-            addAll(state.value.slotList)
-        }
-        slotList.removeAt(position)
-        slotUseCaseBundle.putSlotListUseCase(slotList)
-
         var selectedSlotPosition = state.value.selectedSlotPosition
         if ((position < selectedSlotPosition) || (position == selectedSlotPosition && position > 0)) selectedSlotPosition--
-        slotUseCaseBundle.putSelectedSlotPositionUseCase(selectedSlotPosition)
 
+        val slotMutableList = state.value.slotList.toMutableList().apply {
+            removeAt(position)
+        }
+
+        slotUseCaseBundle.putSelectedSlotPositionUseCase(selectedSlotPosition)
+        slotUseCaseBundle.putSlotListUseCase(slotMutableList)
         _state.value = state.value.copy(
             selectedSlotPosition = selectedSlotPosition,
-            slotList = slotList
+            slotList = slotMutableList
         )
     }
 
     fun renameSlot(position: Int, name: String) {
-        val slotList = mutableListOf<Slot>().apply {
-            addAll(state.value.slotList)
-        }.also {
-            it[position].name = name
+        val slotMutableList = state.value.slotList.toMutableList().apply {
+            set(
+                position, get(position).copy(
+                    name = name
+                )
+            )
         }
-        slotUseCaseBundle.putSlotListUseCase(slotList)
+
+        slotUseCaseBundle.putSlotListUseCase(slotMutableList)
         _state.value = state.value.copy(
-            slotList = slotList
+            slotList = slotMutableList
         )
     }
 }

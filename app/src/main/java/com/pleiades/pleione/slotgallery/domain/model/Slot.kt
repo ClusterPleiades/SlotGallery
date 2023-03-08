@@ -5,7 +5,8 @@ import com.pleiades.pleione.slotgallery.Config.Companion.PATH_DOWNLOAD
 import com.pleiades.pleione.slotgallery.Config.Companion.PATH_SCREENSHOTS
 import com.pleiades.pleione.slotgallery.Config.Companion.PATH_SNAPSEED
 
-data class Slot(var name: String) {
+data class Slot(
+    val name: String,
     val directoryOverviewMutableList: MutableList<DirectoryOverview> =
         mutableListOf(
             DirectoryOverview(
@@ -25,4 +26,4 @@ data class Slot(var name: String) {
                 isVisible = true
             )
         )
-}
+)
