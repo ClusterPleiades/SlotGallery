@@ -67,6 +67,7 @@ class ManageDirectoryFragment : Fragment() {
             addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
             layoutManager = LinearLayoutManager(requireContext())
             adapter = listAdapter
+            itemAnimator = null
         }
 
         // setting state
@@ -117,7 +118,6 @@ class ManageDirectoryFragment : Fragment() {
                 binding.remove.setOnClickListener {
                     if (bindingAdapterPosition < COUNT_DEFAULT_DIRECTORY) {
                         activityViewModel.toggleDirectoryOverViewVisibility(bindingAdapterPosition)
-//                        notifyItemChanged(bindingAdapterPosition)
                     } else {
                         activityViewModel.removeDirectoryOverView(bindingAdapterPosition)
                     }

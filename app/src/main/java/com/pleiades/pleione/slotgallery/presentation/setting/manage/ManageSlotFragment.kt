@@ -54,6 +54,7 @@ class ManageSlotFragment : Fragment() {
             addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
             layoutManager = LinearLayoutManager(requireContext())
             adapter = listAdapter
+            itemAnimator = null
         }
 
         // setting state
