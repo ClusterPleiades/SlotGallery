@@ -12,6 +12,7 @@ import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.databinding.ActivityMainBinding
 import com.pleiades.pleione.slotgallery.presentation.dialog.message.MessageDialogFragment
 import com.pleiades.pleione.slotgallery.presentation.main.directory.DirectoryFragment
+import com.pleiades.pleione.slotgallery.ui.main.ContentFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -52,6 +53,14 @@ class MainActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             if (!activityViewModel.isFragmentAdded) addFragment()
+        }
+    }
+
+    override fun onBackPressed() {
+        val fragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
+
+        if (fragment is DirectoryFragment) {
+            if (!fragment.onBackPressed()) super.onBackPressed()
         }
     }
 

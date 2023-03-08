@@ -1,6 +1,7 @@
 package com.pleiades.pleione.slotgallery.presentation.main
 
 import androidx.lifecycle.ViewModel
+import com.pleiades.pleione.slotgallery.domain.model.Slot
 import com.pleiades.pleione.slotgallery.domain.use_case.media.bundle.MediaUseCaseBundle
 import com.pleiades.pleione.slotgallery.domain.use_case.slot.bundle.SlotUseCaseBundle
 import com.pleiades.pleione.slotgallery.domain.use_case.window.GetWidthUseCase
@@ -24,6 +25,8 @@ class MainViewModel @Inject constructor(
     init {
         loadDirectoryList()
     }
+
+    fun isSlotListEmpty() = slotUseCaseBundle.getSlotListUseCase().isEmpty()
 
     fun loadDirectoryList() {
         val slotList = slotUseCaseBundle.getSlotListUseCase()
