@@ -93,11 +93,10 @@ class ManageSlotFragment : Fragment() {
         inner class ViewHolder(val binding: ItemEditBinding) : RecyclerView.ViewHolder(binding.root) {
             init {
                 binding.layout.setOnClickListener {
-                    it.requestFocus()
-                    binding.edit.clearFocus()
                     notifyItemChanged(activityViewModel.state.value.selectedSlotPosition)
                     activityViewModel.selectSlot(bindingAdapterPosition)
                     notifyItemChanged(bindingAdapterPosition)
+                    it.requestFocus()
                 }
                 binding.edit.setOnFocusChangeListener { _: View, isFocused: Boolean ->
                     binding.save.isVisible = isFocused
