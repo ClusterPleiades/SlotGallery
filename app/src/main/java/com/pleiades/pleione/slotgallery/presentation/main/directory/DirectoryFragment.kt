@@ -1,5 +1,6 @@
 package com.pleiades.pleione.slotgallery.presentation.main.directory
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
@@ -22,6 +23,7 @@ import com.pleiades.pleione.slotgallery.databinding.FragmentMainBinding
 import com.pleiades.pleione.slotgallery.databinding.ItemThumbnailBinding
 import com.pleiades.pleione.slotgallery.domain.model.Directory
 import com.pleiades.pleione.slotgallery.presentation.main.MainViewModel
+import com.pleiades.pleione.slotgallery.presentation.setting.SettingActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -89,6 +91,18 @@ class DirectoryFragment : Fragment() {
             inflater.inflate(R.menu.menu_directory, menu)
             (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            // TODO
+            R.id.setting -> {
+                val intent = Intent(context, SettingActivity::class.java)
+                startActivity(intent)
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     inner class DirectoryListAdapter : ListAdapter<Directory, DirectoryListAdapter.ViewHolder>(
