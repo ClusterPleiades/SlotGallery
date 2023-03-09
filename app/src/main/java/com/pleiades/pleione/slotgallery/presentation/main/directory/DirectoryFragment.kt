@@ -7,6 +7,7 @@ import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -19,14 +20,19 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.michaelflisar.dragselectrecyclerview.DragSelectTouchListener
+import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_SORT_DIRECTORY
+import com.pleiades.pleione.slotgallery.Config.Companion.KEY_DIRECTORY_SORT_ORDER
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_ALL
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_IMAGE
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_VIDEO
+import com.pleiades.pleione.slotgallery.Config.Companion.REQUEST_KEY_COPY
 import com.pleiades.pleione.slotgallery.Config.Companion.SPAN_COUNT_DIRECTORY
 import com.pleiades.pleione.slotgallery.R
+import com.pleiades.pleione.slotgallery.controller.ContentController
 import com.pleiades.pleione.slotgallery.databinding.FragmentMainBinding
 import com.pleiades.pleione.slotgallery.databinding.ItemThumbnailBinding
 import com.pleiades.pleione.slotgallery.domain.model.Directory
+import com.pleiades.pleione.slotgallery.presentation.dialog.list.ListDialogFragment
 import com.pleiades.pleione.slotgallery.presentation.main.MainViewModel
 import com.pleiades.pleione.slotgallery.presentation.setting.SettingActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -74,6 +80,23 @@ class DirectoryFragment : Fragment() {
             adapter = listAdapter
             itemAnimator = null
             addOnItemTouchListener(dragSelectTouchListener)
+        }
+
+        // fragment result listener
+        requireActivity().supportFragmentManager.setFragmentResultListener(
+            KEY_DIRECTORY_SORT_ORDER,
+            viewLifecycleOwner
+        ) { key: String, _: Bundle ->
+            if (key == KEY_DIRECTORY_SORT_ORDER) {
+                activityViewModel.loadDirectoryList()
+            }
+        }
+        requireActivity().supportFragmentManager.setFragmentResultListener(
+            REQUEST_KEY_COPY,
+            viewLifecycleOwner
+        ) { _: String, _: Bundle ->
+            fragmentViewModel.stopSelect()
+            activityViewModel.loadDirectoryList()
         }
 
         // main state
@@ -128,11 +151,11 @@ class DirectoryFragment : Fragment() {
                 return true
             }
             R.id.sort -> {
-                // TODO
-//                ListDialogFragment(DIALOG_TYPE_SORT_DIRECTORY).show(
-//                    (context as FragmentActivity).supportFragmentManager,
-//                    DIALOG_TYPE_SORT_DIRECTORY.toString()
-//                )
+                ListDialogFragment(DIALOG_TYPE_SORT_DIRECTORY)
+                    .show(
+                        requireActivity().supportFragmentManager,
+                        DIALOG_TYPE_SORT_DIRECTORY.toString()
+                    )
                 return true
             }
             R.id.setting -> {
