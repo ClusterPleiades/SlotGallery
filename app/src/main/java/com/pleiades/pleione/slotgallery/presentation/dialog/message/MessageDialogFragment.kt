@@ -18,7 +18,6 @@ import com.pleiades.pleione.slotgallery.Config.Companion.REQUEST_CODE_PERMISSION
 import com.pleiades.pleione.slotgallery.Config.Companion.REQUEST_CODE_PERMISSION_STORAGE
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.databinding.FragmentDialogDefaultBinding
-import com.pleiades.pleione.slotgallery.presentation.dialog.DialogViewModel
 import com.pleiades.pleione.slotgallery.presentation.dialog.setLayoutSize
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -26,7 +25,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class MessageDialogFragment(private val type: Int) : androidx.fragment.app.DialogFragment() {
     private var _binding: FragmentDialogDefaultBinding? = null
     private val binding get() = _binding!!
-    private val fragmentViewModel: DialogViewModel by viewModels()
+    private val fragmentViewModel: MessageDialogViewModel by viewModels()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // binding
