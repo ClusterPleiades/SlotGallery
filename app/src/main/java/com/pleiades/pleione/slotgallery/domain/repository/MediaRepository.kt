@@ -9,7 +9,9 @@ interface MediaRepository {
 
     suspend fun copyDirectory(
         fromDirectoryList: List<Directory>,
-        toDirectory: Directory
+        toDirectory: Directory,
+        setMaxProgress: (Int) -> Unit,
+        progress: () -> Unit
     )
 
     suspend fun copyMedia(
