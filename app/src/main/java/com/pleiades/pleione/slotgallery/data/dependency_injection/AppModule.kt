@@ -8,6 +8,7 @@ import android.content.res.Resources
 import com.pleiades.pleione.slotgallery.Config.Companion.PREFS
 import com.pleiades.pleione.slotgallery.domain.repository.MediaRepository
 import com.pleiades.pleione.slotgallery.domain.repository.SlotRepository
+import com.pleiades.pleione.slotgallery.domain.repository.UtilRepository
 import com.pleiades.pleione.slotgallery.domain.repository.WindowRepository
 import com.pleiades.pleione.slotgallery.domain.use_case.media.CopyDirectoryUseCase
 import com.pleiades.pleione.slotgallery.domain.use_case.media.CopyMediaUseCase
@@ -15,6 +16,11 @@ import com.pleiades.pleione.slotgallery.domain.use_case.media.GetDirectoryListUs
 import com.pleiades.pleione.slotgallery.domain.use_case.media.bundle.MediaUseCaseBundle
 import com.pleiades.pleione.slotgallery.domain.use_case.slot.*
 import com.pleiades.pleione.slotgallery.domain.use_case.slot.bundle.SlotUseCaseBundle
+import com.pleiades.pleione.slotgallery.domain.use_case.util.GetDirectorySortOrderPositionUseCase
+import com.pleiades.pleione.slotgallery.domain.use_case.util.GetMediaSortOrderPositionUseCase
+import com.pleiades.pleione.slotgallery.domain.use_case.util.PutDirectorySortOrderPositionUseCase
+import com.pleiades.pleione.slotgallery.domain.use_case.util.PutMediaSortOrderPositionUseCase
+import com.pleiades.pleione.slotgallery.domain.use_case.util.bundle.UtilUseCaseBundle
 import com.pleiades.pleione.slotgallery.domain.use_case.window.GetWidthUseCase
 import dagger.Module
 import dagger.Provides
@@ -63,6 +69,16 @@ object AppModule {
             getSlotListUseCase = GetSlotListUseCase(repository),
             putSelectedSlotPositionUseCase = PutSelectedSlotPositionUseCase(repository),
             getSelectedSlotPositionUseCase = GetSelectedSlotPositionUseCase(repository),
+        )
+
+    @Provides
+    @Singleton
+    fun provideUtilUseCaseBundle(repository: UtilRepository): UtilUseCaseBundle =
+        UtilUseCaseBundle(
+            putDirectorySortOrderPositionUseCase = PutDirectorySortOrderPositionUseCase(repository),
+            getDirectorySortOrderPositionUseCase = GetDirectorySortOrderPositionUseCase(repository),
+            putMediaSortOrderPositionUseCase = PutMediaSortOrderPositionUseCase(repository),
+            getMediaSortOrderPositionUseCase = GetMediaSortOrderPositionUseCase(repository)
         )
 
     @Provides
