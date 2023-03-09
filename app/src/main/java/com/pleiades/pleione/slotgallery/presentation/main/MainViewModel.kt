@@ -30,8 +30,10 @@ class MainViewModel @Inject constructor(
 
     fun loadDirectoryList() {
         val slotList = slotUseCaseBundle.getSlotListUseCase()
+
         if (slotList.isNotEmpty()) {
             val selectedSlot = slotList[slotUseCaseBundle.getSelectedSlotPositionUseCase()]
+
             _state.value = state.value.copy(
                 directoryList = mediaUseCaseBundle.getDirectoryListUseCase(selectedSlot)
             )
