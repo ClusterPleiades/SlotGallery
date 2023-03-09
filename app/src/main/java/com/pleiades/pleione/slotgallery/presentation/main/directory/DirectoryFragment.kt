@@ -1,9 +1,15 @@
 package com.pleiades.pleione.slotgallery.presentation.main.directory
 
+import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.*
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts.StartIntentSenderForResult
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -52,6 +58,15 @@ class DirectoryFragment : Fragment() {
                 fragmentViewModel.selectRange(start, end)
             }
             .withMaxScrollDistance(24)
+    private lateinit var copyResultLauncher: ActivityResultLauncher<Intent>
+    private val deleteResultLauncher: ActivityResultLauncher<IntentSenderRequest> =
+        registerForActivityResult(StartIntentSenderForResult()) { result: ActivityResult ->
+            if (result.resultCode == RESULT_OK) {
+                fragmentViewModel.stopSelect()
+                requireActivity().invalidateOptionsMenu()
+                activityViewModel.loadDirectoryList()
+            }
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -96,6 +111,7 @@ class DirectoryFragment : Fragment() {
             viewLifecycleOwner
         ) { _: String, _: Bundle ->
             fragmentViewModel.stopSelect()
+            requireActivity().invalidateOptionsMenu()
             activityViewModel.loadDirectoryList()
         }
 
@@ -176,7 +192,7 @@ class DirectoryFragment : Fragment() {
                 return true
             }
             R.id.delete -> {
-                fragmentViewModel.delete()
+                delete()
                 return true
             }
         }
@@ -214,6 +230,21 @@ class DirectoryFragment : Fragment() {
                 else MIME_TYPE_IMAGE
         }
         startActivity(Intent.createChooser(intent, getString(R.string.action_share)))
+    }
+
+    private fun delete() {
+        val mediaUriArrayList = ArrayList<Uri>()
+
+        for (position in fragmentViewModel.state.value.selectedPositionSet) {
+            val directory = activityViewModel.state.value.directoryList[position]
+
+            mediaUriArrayList.addAll(directory.mediaMutableList.map { it.uri })
+        }
+
+        val pendingIntent = MediaStore.createDeleteRequest(requireContext().contentResolver, mediaUriArrayList)
+        val intentSenderRequest = IntentSenderRequest.Builder(pendingIntent.intentSender).build()
+
+        deleteResultLauncher.launch(intentSenderRequest)
     }
 
     inner class DirectoryListAdapter : ListAdapter<Directory, DirectoryListAdapter.ViewHolder>(

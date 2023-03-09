@@ -75,8 +75,4 @@ class DirectoryViewModel : ViewModel() {
             selectedPositionSet = selectedPositionMutableSet
         )
     }
-
-    fun delete() {
-
-    }
 }
