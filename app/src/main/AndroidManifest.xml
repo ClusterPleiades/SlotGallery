@@ -36,6 +36,12 @@
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:exported="true" />
 
+        <activity
+            android:name=".presentation.choice.ChoiceActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+
         <!--        <activity-->
         <!--            android:name=".ui.media.MediaActivity"-->
         <!--            android:configChanges="orientation|screenSize|keyboardHidden"-->
@@ -64,12 +70,6 @@
         <!--                <data android:scheme="http"/>-->
         <!--            </intent-filter>-->
         <!--        </activity>-->
-
-        <!--        <activity-->
-        <!--            android:name=".ui.choice.ChoiceActivity"-->
-        <!--            android:exported="true"-->
-        <!--            android:screenOrientation="portrait"-->
-        <!--            tools:ignore="LockedOrientationActivity" />-->
     </application>
 
     <queries>
