@@ -38,9 +38,9 @@ import com.pleiades.pleione.slotgallery.controller.ContentController
 import com.pleiades.pleione.slotgallery.databinding.ActivityImageBinding
 import com.pleiades.pleione.slotgallery.domain.model.Media
 import com.pleiades.pleione.slotgallery.domain.model.Directory
-import com.pleiades.pleione.slotgallery.ui.choice.ChoiceActivity
+import com.pleiades.pleione.slotgallery.presentation.choice.ChoiceActivity
+import com.pleiades.pleione.slotgallery.presentation.dialog.list.ListDialogFragment
 import com.pleiades.pleione.slotgallery.ui.dialog.ProgressDialogFragment
-import com.pleiades.pleione.slotgallery.ui.dialog.ListDialogFragment
 import com.pleiades.pleione.slotgallery.ui.main.MainActivity
 import kotlinx.coroutines.launch
 

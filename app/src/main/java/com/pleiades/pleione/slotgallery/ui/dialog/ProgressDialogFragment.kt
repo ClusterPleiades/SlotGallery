@@ -12,6 +12,7 @@ import com.pleiades.pleione.slotgallery.Config.Companion.KEY_DIRECTORY_POSITION
 import com.pleiades.pleione.slotgallery.Config.Companion.REQUEST_KEY_COPY
 import com.pleiades.pleione.slotgallery.controller.DeviceController
 import com.pleiades.pleione.slotgallery.databinding.FragmentDialogProgressBinding
+import com.pleiades.pleione.slotgallery.presentation.dialog.setLayoutSize
 
 class ProgressDialogFragment : androidx.fragment.app.DialogFragment() {
     private var _binding: FragmentDialogProgressBinding? = null

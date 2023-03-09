@@ -12,7 +12,6 @@ import com.pleiades.pleione.slotgallery.Config.Companion.PERMISSION_IMAGES_VIDEO
 import com.pleiades.pleione.slotgallery.Config.Companion.PERMISSION_STORAGE
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.databinding.ActivityMainBinding
-import com.pleiades.pleione.slotgallery.ui.dialog.MessageDialogFragment
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
