@@ -25,7 +25,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.pleiades.pleione.slotgallery.Config.Companion.ACTIVITY_CODE_IMAGE
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_INFORMATION
-import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_POSITION_CONTENT
+import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_POSITION_MEDIA
 import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_POSITION_DIRECTORY
 import com.pleiades.pleione.slotgallery.Config.Companion.KEY_DIRECTORY_POSITION
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_IMAGE
@@ -84,7 +84,7 @@ class MediaActivity : AppCompatActivity() {
 
         // get intent extra
         directoryPosition = intent.getIntExtra(INTENT_EXTRA_POSITION_DIRECTORY, 0)
-        val contentPosition = intent.getIntExtra(INTENT_EXTRA_POSITION_CONTENT, 0)
+        val contentPosition = intent.getIntExtra(INTENT_EXTRA_POSITION_MEDIA, 0)
 
         // initialize directory
         directory = ContentController.directoryArrayList[directoryPosition]

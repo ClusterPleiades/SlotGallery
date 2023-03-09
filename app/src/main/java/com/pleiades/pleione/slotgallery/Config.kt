@@ -15,14 +15,14 @@ class Config {
         // dialog
         const val DIALOG_TYPE_PERMISSION = 0
         const val DIALOG_TYPE_SORT_DIRECTORY = 10
-        const val DIALOG_TYPE_SORT_CONTENT = 11
+        const val DIALOG_TYPE_SORT_MEDIA = 11
         const val DIALOG_TYPE_INFORMATION = 12
         const val DIALOG_WIDTH_PERCENTAGE_DEFAULT = 0.85
         const val DIALOG_WIDTH_PERCENTAGE_RECYCLER = 0.65
 
         // activity
         const val INTENT_EXTRA_POSITION_DIRECTORY = "position_directory"
-        const val INTENT_EXTRA_POSITION_CONTENT = "position_content"
+        const val INTENT_EXTRA_POSITION_MEDIA = "position_media"
         const val INTENT_EXTRA_NAME = "name"
         const val INTENT_EXTRA_URI = "uri"
 
@@ -38,7 +38,7 @@ class Config {
 
         // recycler view
         const val SPAN_COUNT_DIRECTORY = 2
-        const val SPAN_COUNT_CONTENT = 3
+        const val SPAN_COUNT_MEDIA = 3
         const val INFORMATION_POSITION_NAME = 0
         const val INFORMATION_POSITION_DATE = 1
         const val INFORMATION_POSITION_TIME = 2
@@ -62,8 +62,7 @@ class Config {
         const val KEY_SLOT_LIST = "slot_list"
         const val KEY_SELECTED_SLOT_POSITION = "selected_slot"
         const val KEY_DIRECTORY_SORT_ORDER = "directory_sort_order"
-        const val KEY_CONTENT_SORT_ORDER = "content_sort_order"
-        const val KEY_USER_LAST_VERSION_CODE = "last_version_code"
+        const val KEY_MEDIA_SORT_ORDER = "media_sort_order"
         const val SORT_POSITION_BY_NAME = 0
         const val SORT_POSITION_BY_NEWEST = 1
         const val SORT_POSITION_BY_OLDEST = 2

@@ -12,7 +12,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_INFORMATION
-import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_SORT_CONTENT
+import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_SORT_MEDIA
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_SORT_DIRECTORY
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_WIDTH_PERCENTAGE_DEFAULT
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_WIDTH_PERCENTAGE_RECYCLER
@@ -25,7 +25,7 @@ import com.pleiades.pleione.slotgallery.Config.Companion.INFORMATION_POSITION_PA
 import com.pleiades.pleione.slotgallery.Config.Companion.INFORMATION_POSITION_SIZE
 import com.pleiades.pleione.slotgallery.Config.Companion.INFORMATION_POSITION_TIME
 import com.pleiades.pleione.slotgallery.Config.Companion.INFORMATION_POSITION_WIDTH
-import com.pleiades.pleione.slotgallery.Config.Companion.KEY_CONTENT_SORT_ORDER
+import com.pleiades.pleione.slotgallery.Config.Companion.KEY_MEDIA_SORT_ORDER
 import com.pleiades.pleione.slotgallery.Config.Companion.KEY_DIRECTORY_SORT_ORDER
 import com.pleiades.pleione.slotgallery.Config.Companion.PREFS
 import com.pleiades.pleione.slotgallery.R
@@ -53,7 +53,7 @@ class ListDialogFragment(private val type: Int) : androidx.fragment.app.DialogFr
             layoutManager = LinearLayoutManager(requireContext())
             adapter =
                 when (type) {
-                    DIALOG_TYPE_SORT_DIRECTORY, DIALOG_TYPE_SORT_CONTENT -> RadioAdapter()
+                    DIALOG_TYPE_SORT_DIRECTORY, DIALOG_TYPE_SORT_MEDIA -> RadioAdapter()
                     else -> InformationAdapter()
                 }
         }
@@ -134,13 +134,13 @@ class ListDialogFragment(private val type: Int) : androidx.fragment.app.DialogFr
                                 Bundle().apply { putInt(KEY_DIRECTORY_SORT_ORDER, bindingAdapterPosition) }
                             )
                         }
-                        DIALOG_TYPE_SORT_CONTENT -> {
-                            editor.putInt(KEY_CONTENT_SORT_ORDER, bindingAdapterPosition)
+                        DIALOG_TYPE_SORT_MEDIA -> {
+                            editor.putInt(KEY_MEDIA_SORT_ORDER, bindingAdapterPosition)
                             editor.apply()
 
                             parentFragmentManager.setFragmentResult(
                                 KEY_DIRECTORY_SORT_ORDER,
-                                Bundle().apply { putInt(KEY_CONTENT_SORT_ORDER, bindingAdapterPosition) }
+                                Bundle().apply { putInt(KEY_MEDIA_SORT_ORDER, bindingAdapterPosition) }
                             )
                         }
                     }
@@ -164,7 +164,7 @@ class ListDialogFragment(private val type: Int) : androidx.fragment.app.DialogFr
                 isChecked =
                     position == when (type) {
                         DIALOG_TYPE_SORT_DIRECTORY -> prefs.getInt(KEY_DIRECTORY_SORT_ORDER, 0)
-                        DIALOG_TYPE_SORT_CONTENT -> prefs.getInt(KEY_CONTENT_SORT_ORDER, 0)
+                        DIALOG_TYPE_SORT_MEDIA -> prefs.getInt(KEY_MEDIA_SORT_ORDER, 0)
                         else -> 0
                     }
             }

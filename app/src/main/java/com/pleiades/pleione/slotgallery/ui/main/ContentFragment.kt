@@ -30,15 +30,15 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.michaelflisar.dragselectrecyclerview.DragSelectTouchListener
 import com.michaelflisar.dragselectrecyclerview.DragSelectTouchListener.OnDragSelectListener
-import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_SORT_CONTENT
-import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_POSITION_CONTENT
+import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_SORT_MEDIA
+import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_POSITION_MEDIA
 import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_POSITION_DIRECTORY
-import com.pleiades.pleione.slotgallery.Config.Companion.KEY_CONTENT_SORT_ORDER
+import com.pleiades.pleione.slotgallery.Config.Companion.KEY_MEDIA_SORT_ORDER
 import com.pleiades.pleione.slotgallery.Config.Companion.KEY_DIRECTORY_POSITION
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_ALL
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_IMAGE
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_VIDEO
-import com.pleiades.pleione.slotgallery.Config.Companion.SPAN_COUNT_CONTENT
+import com.pleiades.pleione.slotgallery.Config.Companion.SPAN_COUNT_MEDIA
 import com.pleiades.pleione.slotgallery.Config.Companion.SPAN_COUNT_DIRECTORY
 import com.pleiades.pleione.slotgallery.Config.Companion.URI_DEFAULT_DIRECTORY
 import com.pleiades.pleione.slotgallery.R
@@ -174,10 +174,10 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
 
         // initialize fragment result listener
         (context as FragmentActivity).supportFragmentManager.setFragmentResultListener(
-            KEY_CONTENT_SORT_ORDER,
+            KEY_MEDIA_SORT_ORDER,
             viewLifecycleOwner
         ) { key: String, _: Bundle ->
-            if (key == KEY_CONTENT_SORT_ORDER) {
+            if (key == KEY_MEDIA_SORT_ORDER) {
                 contentController.sortContentArrayList()
                 recyclerAdapter.notifyItemRangeChanged(0, directory.mediaMutableList.size, false)
             }
@@ -199,7 +199,7 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
 
         // initialize directory recycler view
         binding.list.setHasFixedSize(true)
-        binding.list.layoutManager = GridLayoutManager(context, SPAN_COUNT_CONTENT)
+        binding.list.layoutManager = GridLayoutManager(context, SPAN_COUNT_MEDIA)
 
         // initialize recycler adapter
         recyclerAdapter = DirectoryRecyclerAdapter()
@@ -247,9 +247,9 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
                 return true
             }
             R.id.sort -> {
-                ListDialogFragment(DIALOG_TYPE_SORT_CONTENT).show(
+                ListDialogFragment(DIALOG_TYPE_SORT_MEDIA).show(
                     (context as FragmentActivity).supportFragmentManager,
-                    DIALOG_TYPE_SORT_CONTENT.toString()
+                    DIALOG_TYPE_SORT_MEDIA.toString()
                 )
                 return true
             }
@@ -364,7 +364,7 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
                     } else {
                         val intent = Intent(context, MediaActivity::class.java)
                         intent.putExtra(INTENT_EXTRA_POSITION_DIRECTORY, directoryPosition)
-                        intent.putExtra(INTENT_EXTRA_POSITION_CONTENT, position)
+                        intent.putExtra(INTENT_EXTRA_POSITION_MEDIA, position)
                         imageResultLauncher.launch(intent)
                     }
                 }

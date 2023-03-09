@@ -8,7 +8,7 @@ import android.provider.MediaStore
 import androidx.documentfile.provider.DocumentFile
 import com.pleiades.pleione.slotgallery.Config
 import com.pleiades.pleione.slotgallery.Config.Companion.COUNT_DEFAULT_DIRECTORY
-import com.pleiades.pleione.slotgallery.Config.Companion.KEY_CONTENT_SORT_ORDER
+import com.pleiades.pleione.slotgallery.Config.Companion.KEY_MEDIA_SORT_ORDER
 import com.pleiades.pleione.slotgallery.Config.Companion.KEY_DIRECTORY_SORT_ORDER
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_IMAGE
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_VIDEO
@@ -196,7 +196,7 @@ class ContentController(private val context: Context) {
     }
 
     fun sortContentArrayList() {
-        when (prefs.getInt(KEY_CONTENT_SORT_ORDER, 0)) {
+        when (prefs.getInt(KEY_MEDIA_SORT_ORDER, 0)) {
             SORT_POSITION_BY_NAME -> for (directory in directoryArrayList) directory.mediaMutableList.sortBy { it.name }
             SORT_POSITION_BY_NEWEST -> for (directory in directoryArrayList) directory.mediaMutableList.sortByDescending { it.date }
             SORT_POSITION_BY_OLDEST -> for (directory in directoryArrayList) directory.mediaMutableList.sortBy { it.date }
@@ -204,7 +204,7 @@ class ContentController(private val context: Context) {
     }
 
     fun sortContentArrayList(directoryPosition: Int) {
-        when (prefs.getInt(KEY_CONTENT_SORT_ORDER, 0)) {
+        when (prefs.getInt(KEY_MEDIA_SORT_ORDER, 0)) {
             SORT_POSITION_BY_NAME -> directoryArrayList[directoryPosition].mediaMutableList.sortBy { it.name }
             SORT_POSITION_BY_NEWEST -> directoryArrayList[directoryPosition].mediaMutableList.sortByDescending { it.date }
             SORT_POSITION_BY_OLDEST -> directoryArrayList[directoryPosition].mediaMutableList.sortBy { it.date }
