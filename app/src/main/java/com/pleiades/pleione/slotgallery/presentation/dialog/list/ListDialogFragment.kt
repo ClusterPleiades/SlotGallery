@@ -12,31 +12,18 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_INFORMATION
-import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_SORT_MEDIA
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_SORT_DIRECTORY
+import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_SORT_MEDIA
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_WIDTH_PERCENTAGE_DEFAULT
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_WIDTH_PERCENTAGE_RECYCLER
-import com.pleiades.pleione.slotgallery.Config.Companion.FORMAT_DATE
-import com.pleiades.pleione.slotgallery.Config.Companion.FORMAT_TIME
-import com.pleiades.pleione.slotgallery.Config.Companion.INFORMATION_POSITION_DATE
-import com.pleiades.pleione.slotgallery.Config.Companion.INFORMATION_POSITION_HEIGHT
-import com.pleiades.pleione.slotgallery.Config.Companion.INFORMATION_POSITION_NAME
-import com.pleiades.pleione.slotgallery.Config.Companion.INFORMATION_POSITION_PATH
-import com.pleiades.pleione.slotgallery.Config.Companion.INFORMATION_POSITION_SIZE
-import com.pleiades.pleione.slotgallery.Config.Companion.INFORMATION_POSITION_TIME
-import com.pleiades.pleione.slotgallery.Config.Companion.INFORMATION_POSITION_WIDTH
-import com.pleiades.pleione.slotgallery.Config.Companion.KEY_MEDIA_SORT_ORDER
 import com.pleiades.pleione.slotgallery.Config.Companion.KEY_DIRECTORY_SORT_ORDER
+import com.pleiades.pleione.slotgallery.Config.Companion.KEY_MEDIA_SORT_ORDER
 import com.pleiades.pleione.slotgallery.R
-import com.pleiades.pleione.slotgallery.controller.DeviceController
 import com.pleiades.pleione.slotgallery.databinding.FragmentDialogListBinding
 import com.pleiades.pleione.slotgallery.databinding.ItemDialogInformationBinding
 import com.pleiades.pleione.slotgallery.databinding.ItemDialogRadioBinding
 import com.pleiades.pleione.slotgallery.presentation.dialog.setLayoutSize
-import com.pleiades.pleione.slotgallery.ui.media.MediaActivity
 import dagger.hilt.android.AndroidEntryPoint
-import java.text.SimpleDateFormat
-import java.util.*
 
 @AndroidEntryPoint
 class ListDialogFragment(private val type: Int) : androidx.fragment.app.DialogFragment() {
@@ -78,7 +65,7 @@ class ListDialogFragment(private val type: Int) : androidx.fragment.app.DialogFr
             else DIALOG_WIDTH_PERCENTAGE_RECYCLER
 
         dialog?.window?.setLayoutSize(
-            width = (DeviceController.getWidthMax(requireContext()) * widthMultiplier),
+            width = fragmentViewModel.width * widthMultiplier,
             height = ViewGroup.LayoutParams.WRAP_CONTENT
         )
     }
@@ -105,18 +92,18 @@ class ListDialogFragment(private val type: Int) : androidx.fragment.app.DialogFr
                 title.text = resources.getStringArray(R.array.information)[position]
 
                 // content
-                val media = (activity as MediaActivity).getCurrentContent()
-                content.text =
-                    when (position) {
-                        INFORMATION_POSITION_NAME -> media.name
-                        INFORMATION_POSITION_DATE -> SimpleDateFormat(FORMAT_DATE, Locale.getDefault()).format(media.date * 1000)
-                        INFORMATION_POSITION_TIME -> SimpleDateFormat(FORMAT_TIME, Locale.getDefault()).format(media.date * 1000)
-                        INFORMATION_POSITION_SIZE -> media.size
-                        INFORMATION_POSITION_WIDTH -> media.width.toString()
-                        INFORMATION_POSITION_HEIGHT -> media.height.toString()
-                        INFORMATION_POSITION_PATH -> media.relativePath + media.name
-                        else -> null
-                    }
+//                val media = (activity as MediaActivity).getCurrentContent()
+//                content.text =
+//                    when (position) {
+//                        INFORMATION_POSITION_NAME -> media.name
+//                        INFORMATION_POSITION_DATE -> SimpleDateFormat(FORMAT_DATE, Locale.getDefault()).format(media.date * 1000)
+//                        INFORMATION_POSITION_TIME -> SimpleDateFormat(FORMAT_TIME, Locale.getDefault()).format(media.date * 1000)
+//                        INFORMATION_POSITION_SIZE -> media.size
+//                        INFORMATION_POSITION_WIDTH -> media.width.toString()
+//                        INFORMATION_POSITION_HEIGHT -> media.height.toString()
+//                        INFORMATION_POSITION_PATH -> media.relativePath + media.name
+//                        else -> null
+//                    }
             }
         }
 
