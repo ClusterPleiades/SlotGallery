@@ -41,7 +41,8 @@ class MainViewModel @Inject constructor(
             val selectedSlot = slotList[slotUseCaseBundle.getSelectedSlotPositionUseCase()]
 
             _state.value = state.value.copy(
-                directoryList = mediaUseCaseBundle.getDirectoryListUseCase(selectedSlot).toList()
+                directoryList = mediaUseCaseBundle.getDirectoryListUseCase(selectedSlot),
+                loadTime = System.currentTimeMillis()
             )
         }
     }
