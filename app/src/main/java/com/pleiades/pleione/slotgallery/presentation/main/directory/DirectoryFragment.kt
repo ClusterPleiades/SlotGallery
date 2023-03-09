@@ -6,14 +6,15 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.*
+import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.StartIntentSenderForResult
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -26,21 +27,25 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.michaelflisar.dragselectrecyclerview.DragSelectTouchListener
+import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_COPY_DIRECTORY
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_SORT_DIRECTORY
+import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_POSITION_DIRECTORY
 import com.pleiades.pleione.slotgallery.Config.Companion.KEY_DIRECTORY_SORT_ORDER
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_ALL
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_IMAGE
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_VIDEO
-import com.pleiades.pleione.slotgallery.Config.Companion.REQUEST_KEY_COPY
+import com.pleiades.pleione.slotgallery.Config.Companion.KEY_COPY
 import com.pleiades.pleione.slotgallery.Config.Companion.SPAN_COUNT_DIRECTORY
+import com.pleiades.pleione.slotgallery.Config.Companion.URI_DEFAULT_DIRECTORY
 import com.pleiades.pleione.slotgallery.R
-import com.pleiades.pleione.slotgallery.controller.ContentController
 import com.pleiades.pleione.slotgallery.databinding.FragmentMainBinding
 import com.pleiades.pleione.slotgallery.databinding.ItemThumbnailBinding
 import com.pleiades.pleione.slotgallery.domain.model.Directory
 import com.pleiades.pleione.slotgallery.presentation.dialog.list.ListDialogFragment
 import com.pleiades.pleione.slotgallery.presentation.main.MainViewModel
 import com.pleiades.pleione.slotgallery.presentation.setting.SettingActivity
+import com.pleiades.pleione.slotgallery.presentation.choice.ChoiceActivity
+import com.pleiades.pleione.slotgallery.presentation.dialog.progress.ProgressDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -54,11 +59,32 @@ class DirectoryFragment : Fragment() {
     private val listAdapter: DirectoryListAdapter = DirectoryListAdapter()
     private val dragSelectTouchListener =
         DragSelectTouchListener()
-            .withSelectListener { start: Int, end: Int, isSelected: Boolean ->
+            .withSelectListener { start: Int, end: Int, _: Boolean ->
                 fragmentViewModel.selectRange(start, end)
             }
             .withMaxScrollDistance(24)
-    private lateinit var copyResultLauncher: ActivityResultLauncher<Intent>
+    private val copyResultLauncher: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            if (result.resultCode == RESULT_OK) {
+                result.data?.let { intent ->
+                    val toDirectoryPosition = intent.getIntExtra(INTENT_EXTRA_POSITION_DIRECTORY, 0)
+                    val toDirectory = activityViewModel.state.value.directoryList[toDirectoryPosition]
+                    val fromDirectoryPositionSet = fragmentViewModel.state.value.selectedPositionSet
+                    val fromDirectoryList =
+                        activityViewModel.state.value.directoryList
+                            .withIndex()
+                            .filter { fromDirectoryPositionSet.contains(it.index) }
+                            .map { it.value }
+
+                    if (toDirectory.directoryOverview.uri == URI_DEFAULT_DIRECTORY) {
+                        Toast.makeText(context, R.string.message_error_default_directory, Toast.LENGTH_SHORT).show()
+                    } else {
+                        ProgressDialogFragment(DIALOG_TYPE_COPY_DIRECTORY).show(requireActivity().supportFragmentManager, null)
+                        activityViewModel.copyDirectory(fromDirectoryList, toDirectory)
+                    }
+                }
+            }
+        }
     private val deleteResultLauncher: ActivityResultLauncher<IntentSenderRequest> =
         registerForActivityResult(StartIntentSenderForResult()) { result: ActivityResult ->
             if (result.resultCode == RESULT_OK) {
@@ -107,7 +133,7 @@ class DirectoryFragment : Fragment() {
             }
         }
         requireActivity().supportFragmentManager.setFragmentResultListener(
-            REQUEST_KEY_COPY,
+            KEY_COPY,
             viewLifecycleOwner
         ) { _: String, _: Bundle ->
             fragmentViewModel.stopSelect()
@@ -187,8 +213,7 @@ class DirectoryFragment : Fragment() {
                 return true
             }
             R.id.copy -> {
-                // TODO
-//                copyResultLauncher.launch(Intent(requireContext(), ChoiceActivity::class.java))
+                copyResultLauncher.launch(Intent(requireContext(), ChoiceActivity::class.java))
                 return true
             }
             R.id.delete -> {

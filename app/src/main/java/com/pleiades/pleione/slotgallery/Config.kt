@@ -1,12 +1,15 @@
 package com.pleiades.pleione.slotgallery
 
 import android.Manifest
+import android.os.Build
+import androidx.annotation.RequiresApi
 
 class Config {
     companion object {
         // permission
-        val PERMISSION_STORAGE = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+        @RequiresApi(Build.VERSION_CODES.TIRAMISU)
         val PERMISSION_IMAGES_VIDEOS = arrayOf(Manifest.permission.READ_MEDIA_IMAGES, Manifest.permission.READ_MEDIA_VIDEO)
+        val PERMISSION_STORAGE = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
 
         // request code
         const val REQUEST_CODE_PERMISSION_STORAGE = 1000
@@ -17,6 +20,7 @@ class Config {
         const val DIALOG_TYPE_SORT_DIRECTORY = 10
         const val DIALOG_TYPE_SORT_MEDIA = 11
         const val DIALOG_TYPE_INFORMATION = 12
+        const val DIALOG_TYPE_COPY_DIRECTORY = 13
         const val DIALOG_WIDTH_PERCENTAGE_DEFAULT = 0.85
         const val DIALOG_WIDTH_PERCENTAGE_RECYCLER = 0.65
 
@@ -29,7 +33,7 @@ class Config {
         // fragment
         const val KEY_STACK = "stack"
         const val KEY_DIRECTORY_POSITION = "position_directory"
-        const val REQUEST_KEY_COPY = "copy"
+        const val KEY_COPY = "copy"
         const val ACTIVITY_CODE_MAIN = 0
         const val ACTIVITY_CODE_SETTING = 1
         const val ACTIVITY_CODE_IMAGE = 2
@@ -63,9 +67,9 @@ class Config {
         const val KEY_SELECTED_SLOT_POSITION = "selected_slot"
         const val KEY_DIRECTORY_SORT_ORDER = "directory_sort_order"
         const val KEY_MEDIA_SORT_ORDER = "media_sort_order"
-        const val SORT_POSITION_BY_NAME = 0
-        const val SORT_POSITION_BY_NEWEST = 1
-        const val SORT_POSITION_BY_OLDEST = 2
+        const val VALUE_SORT_POSITION_BY_NAME = 0
+        const val VALUE_SORT_POSITION_BY_NEWEST = 1
+        const val VALUE_SORT_POSITION_BY_OLDEST = 2
 
         // others
         const val MIME_TYPE_IMAGE = "image/*"

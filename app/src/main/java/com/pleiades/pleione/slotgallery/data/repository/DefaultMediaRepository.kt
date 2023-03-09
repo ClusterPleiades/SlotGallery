@@ -11,9 +11,9 @@ import com.pleiades.pleione.slotgallery.Config.Companion.KEY_MEDIA_SORT_ORDER
 import com.pleiades.pleione.slotgallery.Config.Companion.KEY_DIRECTORY_SORT_ORDER
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_IMAGE
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_VIDEO
-import com.pleiades.pleione.slotgallery.Config.Companion.SORT_POSITION_BY_NAME
-import com.pleiades.pleione.slotgallery.Config.Companion.SORT_POSITION_BY_NEWEST
-import com.pleiades.pleione.slotgallery.Config.Companion.SORT_POSITION_BY_OLDEST
+import com.pleiades.pleione.slotgallery.Config.Companion.VALUE_SORT_POSITION_BY_NAME
+import com.pleiades.pleione.slotgallery.Config.Companion.VALUE_SORT_POSITION_BY_NEWEST
+import com.pleiades.pleione.slotgallery.Config.Companion.VALUE_SORT_POSITION_BY_OLDEST
 import com.pleiades.pleione.slotgallery.Config.Companion.URI_DEFAULT_DIRECTORY
 import com.pleiades.pleione.slotgallery.domain.model.Directory
 import com.pleiades.pleione.slotgallery.domain.model.DirectoryOverview
@@ -388,17 +388,17 @@ class DefaultMediaRepository @Inject constructor(
 
     private fun sortDirectoryList(directoryMutableList: MutableList<Directory>) {
         when (sharedPreferences.getInt(KEY_DIRECTORY_SORT_ORDER, 0)) {
-            SORT_POSITION_BY_NAME -> directoryMutableList.sortBy { it.name }
-            SORT_POSITION_BY_NEWEST -> directoryMutableList.sortByDescending { it.date }
-            SORT_POSITION_BY_OLDEST -> directoryMutableList.sortBy { it.date }
+            VALUE_SORT_POSITION_BY_NAME -> directoryMutableList.sortBy { it.name }
+            VALUE_SORT_POSITION_BY_NEWEST -> directoryMutableList.sortByDescending { it.date }
+            VALUE_SORT_POSITION_BY_OLDEST -> directoryMutableList.sortBy { it.date }
         }
     }
 
     private fun sortMediaList(directoryMutableList: MutableList<Directory>) {
         when (sharedPreferences.getInt(KEY_MEDIA_SORT_ORDER, 0)) {
-            SORT_POSITION_BY_NAME -> for (directory in directoryMutableList) directory.mediaMutableList.sortBy { it.name }
-            SORT_POSITION_BY_NEWEST -> for (directory in directoryMutableList) directory.mediaMutableList.sortByDescending { it.date }
-            SORT_POSITION_BY_OLDEST -> for (directory in directoryMutableList) directory.mediaMutableList.sortBy { it.date }
+            VALUE_SORT_POSITION_BY_NAME -> for (directory in directoryMutableList) directory.mediaMutableList.sortBy { it.name }
+            VALUE_SORT_POSITION_BY_NEWEST -> for (directory in directoryMutableList) directory.mediaMutableList.sortByDescending { it.date }
+            VALUE_SORT_POSITION_BY_OLDEST -> for (directory in directoryMutableList) directory.mediaMutableList.sortBy { it.date }
         }
     }
 }

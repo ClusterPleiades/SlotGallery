@@ -13,14 +13,14 @@ import com.pleiades.pleione.slotgallery.Config.Companion.KEY_DIRECTORY_SORT_ORDE
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_IMAGE
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_VIDEO
 import com.pleiades.pleione.slotgallery.Config.Companion.PATH_SNAPSEED
-import com.pleiades.pleione.slotgallery.Config.Companion.SORT_POSITION_BY_NAME
-import com.pleiades.pleione.slotgallery.Config.Companion.SORT_POSITION_BY_NEWEST
-import com.pleiades.pleione.slotgallery.Config.Companion.SORT_POSITION_BY_OLDEST
+import com.pleiades.pleione.slotgallery.Config.Companion.VALUE_SORT_POSITION_BY_NAME
+import com.pleiades.pleione.slotgallery.Config.Companion.VALUE_SORT_POSITION_BY_NEWEST
+import com.pleiades.pleione.slotgallery.Config.Companion.VALUE_SORT_POSITION_BY_OLDEST
 import com.pleiades.pleione.slotgallery.Config.Companion.URI_DEFAULT_DIRECTORY
 import com.pleiades.pleione.slotgallery.domain.model.Media
 import com.pleiades.pleione.slotgallery.domain.model.Directory
 import com.pleiades.pleione.slotgallery.domain.model.DirectoryOverview
-import com.pleiades.pleione.slotgallery.ui.dialog.ProgressDialogFragment
+import com.pleiades.pleione.slotgallery.presentation.dialog.progress.ProgressDialogFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.BufferedInputStream
@@ -189,25 +189,25 @@ class ContentController(private val context: Context) {
 
     fun sortDirectoryArrayList() {
         when (prefs.getInt(KEY_DIRECTORY_SORT_ORDER, 0)) {
-            SORT_POSITION_BY_NAME -> directoryArrayList.sortBy { it.name }
-            SORT_POSITION_BY_NEWEST -> directoryArrayList.sortByDescending { it.date }
-            SORT_POSITION_BY_OLDEST -> directoryArrayList.sortBy { it.date }
+            VALUE_SORT_POSITION_BY_NAME -> directoryArrayList.sortBy { it.name }
+            VALUE_SORT_POSITION_BY_NEWEST -> directoryArrayList.sortByDescending { it.date }
+            VALUE_SORT_POSITION_BY_OLDEST -> directoryArrayList.sortBy { it.date }
         }
     }
 
     fun sortContentArrayList() {
         when (prefs.getInt(KEY_MEDIA_SORT_ORDER, 0)) {
-            SORT_POSITION_BY_NAME -> for (directory in directoryArrayList) directory.mediaMutableList.sortBy { it.name }
-            SORT_POSITION_BY_NEWEST -> for (directory in directoryArrayList) directory.mediaMutableList.sortByDescending { it.date }
-            SORT_POSITION_BY_OLDEST -> for (directory in directoryArrayList) directory.mediaMutableList.sortBy { it.date }
+            VALUE_SORT_POSITION_BY_NAME -> for (directory in directoryArrayList) directory.mediaMutableList.sortBy { it.name }
+            VALUE_SORT_POSITION_BY_NEWEST -> for (directory in directoryArrayList) directory.mediaMutableList.sortByDescending { it.date }
+            VALUE_SORT_POSITION_BY_OLDEST -> for (directory in directoryArrayList) directory.mediaMutableList.sortBy { it.date }
         }
     }
 
     fun sortContentArrayList(directoryPosition: Int) {
         when (prefs.getInt(KEY_MEDIA_SORT_ORDER, 0)) {
-            SORT_POSITION_BY_NAME -> directoryArrayList[directoryPosition].mediaMutableList.sortBy { it.name }
-            SORT_POSITION_BY_NEWEST -> directoryArrayList[directoryPosition].mediaMutableList.sortByDescending { it.date }
-            SORT_POSITION_BY_OLDEST -> directoryArrayList[directoryPosition].mediaMutableList.sortBy { it.date }
+            VALUE_SORT_POSITION_BY_NAME -> directoryArrayList[directoryPosition].mediaMutableList.sortBy { it.name }
+            VALUE_SORT_POSITION_BY_NEWEST -> directoryArrayList[directoryPosition].mediaMutableList.sortByDescending { it.date }
+            VALUE_SORT_POSITION_BY_OLDEST -> directoryArrayList[directoryPosition].mediaMutableList.sortBy { it.date }
         }
     }
 
@@ -220,7 +220,7 @@ class ContentController(private val context: Context) {
         var max = 0
         for (fromDirectoryPosition in fromDirectoryPositionHashSet)
             max += directoryArrayList[fromDirectoryPosition].mediaMutableList.size
-        progressDialogFragment.progressBar.max = max
+//        progressDialogFragment.progressBar.max = max
 
         // initialize to directory document file
         var toDirectory = directoryArrayList[toDirectoryPosition]
@@ -245,15 +245,15 @@ class ContentController(private val context: Context) {
         // copy directories
         for (fromDirectoryPosition in fromDirectoryPositionHashSet) {
             // case is canceled
-            if (progressDialogFragment.isCanceled)
-                break
+//            if (progressDialogFragment.isCanceled)
+//                break
 
             // copy contents
             val fromDirectory = directoryArrayList[fromDirectoryPosition]
             for (content in fromDirectory.mediaMutableList) {
                 // case is canceled
-                if (progressDialogFragment.isCanceled)
-                    break
+//                if (progressDialogFragment.isCanceled)
+//                    break
 
                 // initialize to name
                 val preName = content.name.substringBeforeLast(".")
@@ -300,7 +300,7 @@ class ContentController(private val context: Context) {
                     } catch (ioException: IOException) {
                         ioException.printStackTrace()
                     } finally {
-                        progressDialogFragment.progressBar.progress++
+//                        progressDialogFragment.progressBar.progress++
                     }
                 }
             }
@@ -355,7 +355,7 @@ class ContentController(private val context: Context) {
         sortContentArrayList(toDirectoryPosition)
 
         // set progress dialog fragment result
-        progressDialogFragment.setFragmentResult()
+//        progressDialogFragment.setFragmentResult()
 
         // on complete
         progressDialogFragment.dismiss()
@@ -368,7 +368,7 @@ class ContentController(private val context: Context) {
         progressDialogFragment: ProgressDialogFragment
     ) {
         // set progressbar attributes
-        progressDialogFragment.progressBar.max = contentPositionSet.size
+//        progressDialogFragment.progressBar.max = contentPositionSet.size
 
         // initialize to directory document file
         var toDirectory = directoryArrayList[toDirectoryPosition]
@@ -394,8 +394,8 @@ class ContentController(private val context: Context) {
         val fromDirectory = directoryArrayList[fromDirectoryPosition]
         for (contentPosition in contentPositionSet) {
             // case is canceled
-            if (progressDialogFragment.isCanceled)
-                break
+//            if (progressDialogFragment.isCanceled)
+//                break
 
             // initialize content
             val content = fromDirectory.mediaMutableList[contentPosition]
@@ -445,7 +445,7 @@ class ContentController(private val context: Context) {
                 } catch (ioException: IOException) {
                     ioException.printStackTrace()
                 } finally {
-                    progressDialogFragment.progressBar.progress++
+//                    progressDialogFragment.progressBar.progress++
                 }
             }
         }
@@ -502,7 +502,7 @@ class ContentController(private val context: Context) {
         sortDirectoryArrayList()
 
         // set progress dialog fragment result
-        progressDialogFragment.setFragmentResult(directoryArrayList.indexOf(fromDirectory))
+//        progressDialogFragment.setFragmentResult(directoryArrayList.indexOf(fromDirectory))
 
         // on complete
         progressDialogFragment.dismiss()
