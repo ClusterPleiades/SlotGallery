@@ -59,9 +59,12 @@ class DefaultMediaRepository @Inject constructor(
 
     override suspend fun copyDirectory(
         fromDirectoryList: List<Directory>,
-        toDirectory: Directory
+        toDirectory: Directory,
+        setMaxProgress: (Int) -> Unit,
+        progress: () -> Unit
     ) {
-        // TODO set progressbar attributes
+        val maxProgress = fromDirectoryList.map { it.mediaMutableList.size }.sum()
+        setMaxProgress(maxProgress)
 
         val toDirectoryPath = toDirectory.directoryOverview
         val toDirectoryRootUri = Uri.parse(toDirectoryPath.uri)
@@ -83,8 +86,6 @@ class DefaultMediaRepository @Inject constructor(
 
         for (fromDirectory in fromDirectoryList) {
             for (media in fromDirectory.mediaMutableList) {
-                // TODO break if progress dialog canceled
-
                 val preName = media.name.substringBeforeLast(".")
                 val postName = media.name.substringAfterLast(".")
                 val isValidFormat = preName != postName
@@ -130,16 +131,12 @@ class DefaultMediaRepository @Inject constructor(
                         )
                     } catch (ioException: IOException) {
                         ioException.printStackTrace()
+                    } finally {
+                        progress()
                     }
                 }
-
-                // TODO improve progress
             }
         }
-
-        // TODO
-//        progressDialogFragment.setFragmentResult()
-//        progressDialogFragment.dismiss()
     }
 
     override suspend fun copyMedia(
