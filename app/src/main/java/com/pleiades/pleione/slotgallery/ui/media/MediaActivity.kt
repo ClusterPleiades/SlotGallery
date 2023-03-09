@@ -23,7 +23,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.pleiades.pleione.slotgallery.Config.Companion.ACTIVITY_CODE_IMAGE
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_INFORMATION
 import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_POSITION_MEDIA
 import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_POSITION_DIRECTORY
@@ -41,7 +40,6 @@ import com.pleiades.pleione.slotgallery.domain.model.Directory
 import com.pleiades.pleione.slotgallery.presentation.choice.ChoiceActivity
 import com.pleiades.pleione.slotgallery.presentation.dialog.list.ListDialogFragment
 import com.pleiades.pleione.slotgallery.ui.dialog.ProgressDialogFragment
-import com.pleiades.pleione.slotgallery.ui.main.MainActivity
 import kotlinx.coroutines.launch
 
 class MediaActivity : AppCompatActivity() {
@@ -242,7 +240,7 @@ class MediaActivity : AppCompatActivity() {
 
     override fun onResume() {
         // set last resumed activity code
-        MainActivity.lastResumedActivityCode = ACTIVITY_CODE_IMAGE
+//        MainActivity.lastResumedActivityCode = ACTIVITY_CODE_IMAGE
 
         super.onResume()
     }

@@ -14,10 +14,8 @@ import androidx.core.view.WindowInsetsControllerCompat
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
-import com.pleiades.pleione.slotgallery.Config.Companion.ACTIVITY_CODE_VIDEO
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.databinding.ActivityVideoBinding
-import com.pleiades.pleione.slotgallery.ui.main.MainActivity
 
 
 class ExternalVideoActivity : AppCompatActivity() {
@@ -101,7 +99,7 @@ class ExternalVideoActivity : AppCompatActivity() {
 
     override fun onResume() {
         // set last resumed activity code
-        MainActivity.lastResumedActivityCode = ACTIVITY_CODE_VIDEO
+//        MainActivity.lastResumedActivityCode = ACTIVITY_CODE_VIDEO
 
         super.onResume()
     }
