@@ -150,7 +150,7 @@ class DirectoryFragment : Fragment() {
                         binding.message.isVisible = true
                         binding.list.isVisible = false
                     } else {
-                        listAdapter.submitList(state.directoryList)
+                        listAdapter.notifyItemRangeChanged(0, listAdapter.itemCount)
                         binding.message.isVisible = false
                         binding.list.isVisible = true
                     }
