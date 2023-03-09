@@ -1,12 +1,12 @@
 package com.pleiades.pleione.slotgallery.presentation.main.directory
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -19,8 +19,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.michaelflisar.dragselectrecyclerview.DragSelectTouchListener
-import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_SORT_DIRECTORY
-import com.pleiades.pleione.slotgallery.Config.Companion.KEY_STACK
+import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_ALL
+import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_IMAGE
+import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_VIDEO
 import com.pleiades.pleione.slotgallery.Config.Companion.SPAN_COUNT_DIRECTORY
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.databinding.FragmentMainBinding
@@ -28,9 +29,6 @@ import com.pleiades.pleione.slotgallery.databinding.ItemThumbnailBinding
 import com.pleiades.pleione.slotgallery.domain.model.Directory
 import com.pleiades.pleione.slotgallery.presentation.main.MainViewModel
 import com.pleiades.pleione.slotgallery.presentation.setting.SettingActivity
-import com.pleiades.pleione.slotgallery.ui.choice.ChoiceActivity
-import com.pleiades.pleione.slotgallery.ui.dialog.ListDialogFragment
-import com.pleiades.pleione.slotgallery.ui.main.ContentFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -171,8 +169,28 @@ class DirectoryFragment : Fragment() {
         return false
     }
 
-    fun share() {
-        // TODO
+    private fun share() {
+        val mediaUriArrayList = ArrayList<Uri>()
+        var isContainVideo = false
+        var isContainImage = false
+
+        for (position in fragmentViewModel.state.value.selectedPositionSet) {
+            val directory = activityViewModel.state.value.directoryList[position]
+
+            directory.mediaMutableList.find { it.isVideo }?.run { isContainVideo = true }
+            directory.mediaMutableList.find { !it.isVideo }?.run { isContainImage = true }
+            mediaUriArrayList.addAll(directory.mediaMutableList.map { it.uri })
+        }
+
+        val intent = Intent().apply {
+            action = Intent.ACTION_SEND_MULTIPLE
+            putParcelableArrayListExtra(Intent.EXTRA_STREAM, mediaUriArrayList)
+            type =
+                if (isContainVideo && isContainImage) MIME_TYPE_ALL
+                else if (isContainVideo) MIME_TYPE_VIDEO
+                else MIME_TYPE_IMAGE
+        }
+        startActivity(Intent.createChooser(intent, getString(R.string.action_share)))
     }
 
     inner class DirectoryListAdapter : ListAdapter<Directory, DirectoryListAdapter.ViewHolder>(
