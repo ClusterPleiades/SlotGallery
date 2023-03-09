@@ -33,7 +33,7 @@ class Config {
         // fragment
         const val KEY_STACK = "stack"
         const val KEY_DIRECTORY_POSITION = "position_directory"
-        const val KEY_COPY = "copy"
+        const val KEY_COPY_COMPLETE = "copy_complete"
         const val ACTIVITY_CODE_MAIN = 0
         const val ACTIVITY_CODE_SETTING = 1
         const val ACTIVITY_CODE_IMAGE = 2

@@ -30,22 +30,22 @@ import com.michaelflisar.dragselectrecyclerview.DragSelectTouchListener
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_COPY_DIRECTORY
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_SORT_DIRECTORY
 import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_POSITION_DIRECTORY
+import com.pleiades.pleione.slotgallery.Config.Companion.KEY_COPY_COMPLETE
 import com.pleiades.pleione.slotgallery.Config.Companion.KEY_DIRECTORY_SORT_ORDER
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_ALL
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_IMAGE
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_VIDEO
-import com.pleiades.pleione.slotgallery.Config.Companion.KEY_COPY
 import com.pleiades.pleione.slotgallery.Config.Companion.SPAN_COUNT_DIRECTORY
 import com.pleiades.pleione.slotgallery.Config.Companion.URI_DEFAULT_DIRECTORY
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.databinding.FragmentMainBinding
 import com.pleiades.pleione.slotgallery.databinding.ItemThumbnailBinding
 import com.pleiades.pleione.slotgallery.domain.model.Directory
+import com.pleiades.pleione.slotgallery.presentation.choice.ChoiceActivity
 import com.pleiades.pleione.slotgallery.presentation.dialog.list.ListDialogFragment
+import com.pleiades.pleione.slotgallery.presentation.dialog.progress.ProgressDialogFragment
 import com.pleiades.pleione.slotgallery.presentation.main.MainViewModel
 import com.pleiades.pleione.slotgallery.presentation.setting.SettingActivity
-import com.pleiades.pleione.slotgallery.presentation.choice.ChoiceActivity
-import com.pleiades.pleione.slotgallery.presentation.dialog.progress.ProgressDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -133,7 +133,7 @@ class DirectoryFragment : Fragment() {
             }
         }
         requireActivity().supportFragmentManager.setFragmentResultListener(
-            KEY_COPY,
+            KEY_COPY_COMPLETE,
             viewLifecycleOwner
         ) { _: String, _: Bundle ->
             fragmentViewModel.stopSelect()
