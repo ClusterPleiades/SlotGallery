@@ -30,6 +30,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.michaelflisar.dragselectrecyclerview.DragSelectTouchListener
 import com.michaelflisar.dragselectrecyclerview.DragSelectTouchListener.OnDragSelectListener
+import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_COPY_DIRECTORY
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_SORT_MEDIA
 import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_POSITION_MEDIA
 import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_POSITION_DIRECTORY
@@ -49,8 +50,8 @@ import com.pleiades.pleione.slotgallery.databinding.FragmentMainBinding
 import com.pleiades.pleione.slotgallery.domain.model.Directory
 import com.pleiades.pleione.slotgallery.presentation.choice.ChoiceActivity
 import com.pleiades.pleione.slotgallery.presentation.dialog.list.ListDialogFragment
+import com.pleiades.pleione.slotgallery.presentation.dialog.progress.ProgressDialogFragment
 import com.pleiades.pleione.slotgallery.ui.media.MediaActivity
-import com.pleiades.pleione.slotgallery.ui.dialog.ProgressDialogFragment
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
@@ -115,7 +116,7 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
                     }
                     else -> {
                         // show progress dialog fragment
-                        val progressDialogFragment = ProgressDialogFragment()
+                        val progressDialogFragment = ProgressDialogFragment(DIALOG_TYPE_COPY_DIRECTORY)
                         progressDialogFragment.show((context as FragmentActivity).supportFragmentManager, null)
 
                         // copy contents
