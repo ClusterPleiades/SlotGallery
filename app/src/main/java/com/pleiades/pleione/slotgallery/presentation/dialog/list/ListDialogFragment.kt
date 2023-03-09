@@ -57,6 +57,11 @@ class ListDialogFragment(private val type: Int) : androidx.fragment.app.DialogFr
             }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     override fun onStart() {
         super.onStart()
 
