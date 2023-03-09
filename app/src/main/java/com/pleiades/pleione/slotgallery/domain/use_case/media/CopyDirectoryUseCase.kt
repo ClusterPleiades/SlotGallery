@@ -5,10 +5,10 @@ import com.pleiades.pleione.slotgallery.domain.repository.MediaRepository
 
 class CopyDirectoryUseCase(private val repository: MediaRepository) {
     suspend operator fun invoke(
-        fromDirectorySet: Set<Directory>,
+        fromDirectoryList: List<Directory>,
         toDirectory: Directory
     ) = repository.copyDirectory(
-        fromDirectorySet = fromDirectorySet,
+        fromDirectoryList = fromDirectoryList,
         toDirectory = toDirectory
     )
 }

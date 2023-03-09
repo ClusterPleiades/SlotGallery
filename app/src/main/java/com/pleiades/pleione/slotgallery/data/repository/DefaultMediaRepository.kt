@@ -58,7 +58,7 @@ class DefaultMediaRepository @Inject constructor(
     }
 
     override suspend fun copyDirectory(
-        fromDirectorySet: Set<Directory>,
+        fromDirectoryList: List<Directory>,
         toDirectory: Directory
     ) {
         // TODO set progressbar attributes
@@ -81,7 +81,7 @@ class DefaultMediaRepository @Inject constructor(
             documentFile.name?.let { toDirectoryFileNameMutableSet.add(it) }
         }
 
-        for (fromDirectory in fromDirectorySet) {
+        for (fromDirectory in fromDirectoryList) {
             for (media in fromDirectory.mediaMutableList) {
                 // TODO break if progress dialog canceled
 

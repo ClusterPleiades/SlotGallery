@@ -8,7 +8,7 @@ interface MediaRepository {
     fun getDirectoryList(selectedSlot: Slot): List<Directory>
 
     suspend fun copyDirectory(
-        fromDirectorySet: Set<Directory>,
+        fromDirectoryList: List<Directory>,
         toDirectory: Directory
     )
 
