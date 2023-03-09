@@ -42,8 +42,8 @@ import com.pleiades.pleione.slotgallery.databinding.FragmentMainBinding
 import com.pleiades.pleione.slotgallery.databinding.ItemThumbnailBinding
 import com.pleiades.pleione.slotgallery.domain.model.Directory
 import com.pleiades.pleione.slotgallery.presentation.choice.ChoiceActivity
-import com.pleiades.pleione.slotgallery.presentation.dialog.list.ListDialogFragment
-import com.pleiades.pleione.slotgallery.presentation.dialog.progress.ProgressDialogFragment
+import com.pleiades.pleione.slotgallery.presentation.main.dialog.list.ListDialogFragment
+import com.pleiades.pleione.slotgallery.presentation.main.dialog.progress.ProgressDialogFragment
 import com.pleiades.pleione.slotgallery.presentation.main.MainViewModel
 import com.pleiades.pleione.slotgallery.presentation.setting.SettingActivity
 import dagger.hilt.android.AndroidEntryPoint

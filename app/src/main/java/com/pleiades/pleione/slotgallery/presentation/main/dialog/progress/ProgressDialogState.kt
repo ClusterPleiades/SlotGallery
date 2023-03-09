@@ -1,4 +1,4 @@
-package com.pleiades.pleione.slotgallery.presentation.dialog.progress
+package com.pleiades.pleione.slotgallery.presentation.main.dialog.progress
 
 import kotlinx.coroutines.Job
 

@@ -6,7 +6,7 @@ import com.pleiades.pleione.slotgallery.domain.model.Directory
 import com.pleiades.pleione.slotgallery.domain.use_case.media.bundle.MediaUseCaseBundle
 import com.pleiades.pleione.slotgallery.domain.use_case.slot.bundle.SlotUseCaseBundle
 import com.pleiades.pleione.slotgallery.domain.use_case.window.GetWidthUseCase
-import com.pleiades.pleione.slotgallery.presentation.dialog.progress.ProgressDialogState
+import com.pleiades.pleione.slotgallery.presentation.main.dialog.progress.ProgressDialogState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

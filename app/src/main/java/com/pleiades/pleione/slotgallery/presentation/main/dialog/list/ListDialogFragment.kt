@@ -1,4 +1,4 @@
-package com.pleiades.pleione.slotgallery.presentation.dialog.list
+package com.pleiades.pleione.slotgallery.presentation.main.dialog.list
 
 import android.app.Dialog
 import android.content.DialogInterface

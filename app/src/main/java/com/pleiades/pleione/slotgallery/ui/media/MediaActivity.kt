@@ -39,8 +39,8 @@ import com.pleiades.pleione.slotgallery.databinding.ActivityImageBinding
 import com.pleiades.pleione.slotgallery.domain.model.Media
 import com.pleiades.pleione.slotgallery.domain.model.Directory
 import com.pleiades.pleione.slotgallery.presentation.choice.ChoiceActivity
-import com.pleiades.pleione.slotgallery.presentation.dialog.list.ListDialogFragment
-import com.pleiades.pleione.slotgallery.presentation.dialog.progress.ProgressDialogFragment
+import com.pleiades.pleione.slotgallery.presentation.main.dialog.list.ListDialogFragment
+import com.pleiades.pleione.slotgallery.presentation.main.dialog.progress.ProgressDialogFragment
 import kotlinx.coroutines.launch
 
 class MediaActivity : AppCompatActivity() {
