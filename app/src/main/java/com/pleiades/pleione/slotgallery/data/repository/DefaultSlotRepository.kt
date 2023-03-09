@@ -23,7 +23,7 @@ class DefaultSlotRepository @Inject constructor(
 
     override fun getSlotList(): List<Slot> {
         sharedPreferences.getString(KEY_SLOT_LIST, null)?.let {
-            return Gson().fromJson(it, object : TypeToken<LinkedList<Slot>>() {}.type)
+            return Gson().fromJson(it, object : TypeToken<List<Slot>>() {}.type)
         } ?: return emptyList()
     }
 
