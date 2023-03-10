@@ -249,15 +249,20 @@ class DirectoryInsideFragment : Fragment() {
     }
 
     private fun share() {
-        val mediaUriArrayList = ArrayList<Uri>()
+        val directory = fragmentViewModel.directory ?: return
         var isContainVideo = false
         var isContainImage = false
-        val directory = fragmentViewModel.directory ?: return
+        val selectedMediaList =
+            directory
+                .mediaMutableList
+                .withIndex()
+                .filter { fragmentViewModel.state.value.selectedPositionSet.contains(it.index) }
+                .map { it.value }
 
-        directory.mediaMutableList.find { it.isVideo }?.run { isContainVideo = true }
-        directory.mediaMutableList.find { !it.isVideo }?.run { isContainImage = true }
-        mediaUriArrayList.addAll(directory.mediaMutableList.map { it.uri })
+        selectedMediaList.find { it.isVideo }?.run { isContainVideo = true }
+        selectedMediaList.find { !it.isVideo }?.run { isContainImage = true }
 
+        val mediaUriArrayList = ArrayList<Uri>(selectedMediaList.map { it.uri })
         val intent = Intent().apply {
             action = Intent.ACTION_SEND_MULTIPLE
             putParcelableArrayListExtra(Intent.EXTRA_STREAM, mediaUriArrayList)
@@ -274,9 +279,14 @@ class DirectoryInsideFragment : Fragment() {
     }
 
     private fun delete() {
-        val mediaUriArrayList = ArrayList<Uri>()
         val directory = fragmentViewModel.directory ?: return
-        mediaUriArrayList.addAll(directory.mediaMutableList.map { it.uri })
+        val mediaUriArrayList = ArrayList<Uri>(
+            directory
+                .mediaMutableList
+                .withIndex()
+                .filter { fragmentViewModel.state.value.selectedPositionSet.contains(it.index) }
+                .map { it.value.uri }
+        )
 
         val pendingIntent = MediaStore.createDeleteRequest(requireContext().contentResolver, mediaUriArrayList)
         val intentSenderRequest = IntentSenderRequest.Builder(pendingIntent.intentSender).build()
