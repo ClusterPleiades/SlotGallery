@@ -27,8 +27,7 @@ class Config {
         // activity
         const val INTENT_EXTRA_POSITION_DIRECTORY = "position_directory"
         const val INTENT_EXTRA_POSITION_MEDIA = "position_media"
-        const val INTENT_EXTRA_DIRECTORY_OVERVIEW_URI = "directory_overview_uri"
-        const val INTENT_EXTRA_DIRECTORY_OVERVIEW_LAST_PATH = "directory_overview_last_path"
+        const val INTENT_EXTRA_DIRECTORY_OVERVIEW = "directory_overview"
         const val INTENT_EXTRA_NAME = "name"
         const val INTENT_EXTRA_URI = "uri"
 
@@ -36,6 +35,7 @@ class Config {
         const val KEY_STACK = "stack"
         const val KEY_DIRECTORY_POSITION = "position_directory"
         const val KEY_COPY_COMPLETE = "copy_complete"
+        const val KEY_DIRECTORY_OVERVIEW = "directory_overview"
         const val ACTIVITY_CODE_MAIN = 0
         const val ACTIVITY_CODE_SETTING = 1
         const val ACTIVITY_CODE_IMAGE = 2

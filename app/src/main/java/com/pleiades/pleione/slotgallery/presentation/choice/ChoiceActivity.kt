@@ -16,9 +16,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_DIRECTORY_OVERVIEW_LAST_PATH
-import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_DIRECTORY_OVERVIEW_URI
-import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_POSITION_DIRECTORY
+import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_DIRECTORY_OVERVIEW
 import com.pleiades.pleione.slotgallery.Config.Companion.SPAN_COUNT_DIRECTORY
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.databinding.ActivityChoiceBinding
@@ -92,10 +90,7 @@ class ChoiceActivity : AppCompatActivity() {
                 itemView.setOnClickListener {
                     val directoryOverview = activityViewModel.state.value.directoryList[bindingAdapterPosition].directoryOverview
 
-                    with(intent) {
-                        putExtra(INTENT_EXTRA_DIRECTORY_OVERVIEW_URI, directoryOverview.uri)
-                        putExtra(INTENT_EXTRA_DIRECTORY_OVERVIEW_LAST_PATH, directoryOverview.lastPath)
-                    }
+                    intent.putExtra(INTENT_EXTRA_DIRECTORY_OVERVIEW, directoryOverview)
                     setResult(RESULT_OK, intent)
                     finish()
                 }

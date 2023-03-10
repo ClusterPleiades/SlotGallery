@@ -35,9 +35,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.michaelflisar.dragselectrecyclerview.DragSelectTouchListener
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_COPY_DIRECTORY
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_SORT_DIRECTORY
-import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_DIRECTORY_OVERVIEW_LAST_PATH
-import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_DIRECTORY_OVERVIEW_URI
-import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_POSITION_DIRECTORY
+import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_DIRECTORY_OVERVIEW
 import com.pleiades.pleione.slotgallery.Config.Companion.KEY_COPY_COMPLETE
 import com.pleiades.pleione.slotgallery.Config.Companion.KEY_DIRECTORY_SORT_ORDER
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_ALL
@@ -49,10 +47,11 @@ import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.databinding.FragmentMainBinding
 import com.pleiades.pleione.slotgallery.databinding.ItemThumbnailBinding
 import com.pleiades.pleione.slotgallery.domain.model.Directory
+import com.pleiades.pleione.slotgallery.domain.model.DirectoryOverview
 import com.pleiades.pleione.slotgallery.presentation.choice.ChoiceActivity
+import com.pleiades.pleione.slotgallery.presentation.main.MainViewModel
 import com.pleiades.pleione.slotgallery.presentation.main.dialog.list.ListDialogFragment
 import com.pleiades.pleione.slotgallery.presentation.main.dialog.progress.ProgressDialogFragment
-import com.pleiades.pleione.slotgallery.presentation.main.MainViewModel
 import com.pleiades.pleione.slotgallery.presentation.setting.SettingActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -75,11 +74,10 @@ class DirectoryFragment : Fragment() {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
             if (result.resultCode == RESULT_OK) {
                 result.data?.let { intent ->
-                    val toDirectoryOverviewUri = intent.getStringExtra(INTENT_EXTRA_DIRECTORY_OVERVIEW_URI)
-                    val toDirectoryOverviewLastPath = intent.getStringExtra(INTENT_EXTRA_DIRECTORY_OVERVIEW_LAST_PATH)
+                    val toDirectoryOverview = intent.getParcelableExtra(INTENT_EXTRA_DIRECTORY_OVERVIEW, DirectoryOverview::class.java)
                     val toDirectory = activityViewModel.state.value.directoryList.find {
-                        it.directoryOverview.uri == toDirectoryOverviewUri && it.directoryOverview.lastPath == toDirectoryOverviewLastPath
-                    }
+                        it.directoryOverview == toDirectoryOverview
+                    } ?: return@registerForActivityResult
                     val fromDirectoryPositionSet = fragmentViewModel.state.value.selectedPositionSet
                     val fromDirectoryList =
                         activityViewModel.state.value.directoryList
@@ -87,13 +85,11 @@ class DirectoryFragment : Fragment() {
                             .filter { fromDirectoryPositionSet.contains(it.index) }
                             .map { it.value }
 
-                    toDirectory?.let {
-                        if (it.directoryOverview.uri == URI_DEFAULT_DIRECTORY) {
-                            Toast.makeText(context, R.string.message_error_default_directory, Toast.LENGTH_SHORT).show()
-                        } else {
-                            ProgressDialogFragment(DIALOG_TYPE_COPY_DIRECTORY).show(requireActivity().supportFragmentManager, null)
-                            activityViewModel.copyDirectory(fromDirectoryList, it)
-                        }
+                    if (toDirectory.directoryOverview.uri == URI_DEFAULT_DIRECTORY) {
+                        Toast.makeText(context, R.string.message_error_default_directory, Toast.LENGTH_SHORT).show()
+                    } else {
+                        ProgressDialogFragment(DIALOG_TYPE_COPY_DIRECTORY).show(requireActivity().supportFragmentManager, null)
+                        activityViewModel.copyDirectory(fromDirectoryList, toDirectory)
                     }
                 }
             }
@@ -314,6 +310,7 @@ class DirectoryFragment : Fragment() {
 //                            .replace(R.id.fragment_container, ContentFragment(bindingAdapterPosition))
 //                            .addToBackStack(KEY_STACK)
 //                            .commit()
+                        // put parcelable arg
                     }
                 }
                 itemView.setOnLongClickListener {
