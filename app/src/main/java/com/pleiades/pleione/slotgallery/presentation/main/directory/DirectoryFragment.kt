@@ -150,7 +150,7 @@ class DirectoryFragment : Fragment() {
         // main state
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                activityViewModel.state.collect { state ->
+                activityViewModel.state.collect {
                     if (activityViewModel.isSlotListEmpty()) {
                         binding.message.setText(R.string.message_error_no_slot)
                         binding.message.isVisible = true
