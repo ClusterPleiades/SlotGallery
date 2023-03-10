@@ -37,11 +37,11 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.michaelflisar.dragselectrecyclerview.DragSelectTouchListener
 import com.pleiades.pleione.slotgallery.Config
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_COPY_DIRECTORY
-import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_SORT_MEDIA
-import com.pleiades.pleione.slotgallery.Config.Companion.KEY_SORT_ORDER_DIRECTORY
+import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_SORT_DIRECTORY_INSIDE
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_ALL
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_IMAGE
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_VIDEO
+import com.pleiades.pleione.slotgallery.Config.Companion.REQUEST_RESULT_KEY_SORT_ORDER_DIRECTORY_INSIDE
 import com.pleiades.pleione.slotgallery.Config.Companion.SPAN_COUNT_MEDIA
 import com.pleiades.pleione.slotgallery.Config.Companion.URI_DEFAULT_DIRECTORY
 import com.pleiades.pleione.slotgallery.R
@@ -145,13 +145,13 @@ class DirectoryInsideFragment : Fragment() {
 
         // fragment result listener
         requireActivity().supportFragmentManager.setFragmentResultListener(
-            KEY_SORT_ORDER_DIRECTORY,
+            REQUEST_RESULT_KEY_SORT_ORDER_DIRECTORY_INSIDE,
             viewLifecycleOwner
         ) { _: String, _: Bundle ->
             activityViewModel.loadDirectoryList()
         }
         requireActivity().supportFragmentManager.setFragmentResultListener(
-            Config.KEY_COPY_COMPLETE,
+            Config.REQUEST_RESULT_KEY_COPY_COMPLETE,
             viewLifecycleOwner
         ) { _: String, _: Bundle ->
             fragmentViewModel.stopSelect()
@@ -212,10 +212,10 @@ class DirectoryInsideFragment : Fragment() {
                 return true
             }
             R.id.sort -> {
-                ListDialogFragment(DIALOG_TYPE_SORT_MEDIA)
+                ListDialogFragment(DIALOG_TYPE_SORT_DIRECTORY_INSIDE)
                     .show(
                         requireActivity().supportFragmentManager,
-                        DIALOG_TYPE_SORT_MEDIA.toString()
+                        DIALOG_TYPE_SORT_DIRECTORY_INSIDE.toString()
                     )
                 return true
             }

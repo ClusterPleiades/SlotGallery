@@ -35,15 +35,13 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.michaelflisar.dragselectrecyclerview.DragSelectTouchListener
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_COPY_DIRECTORY
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_SORT_DIRECTORY
-import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_SORT_MEDIA
 import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_DIRECTORY_OVERVIEW
-import com.pleiades.pleione.slotgallery.Config.Companion.KEY_COPY_COMPLETE
-import com.pleiades.pleione.slotgallery.Config.Companion.KEY_DIRECTORY_OVERVIEW
-import com.pleiades.pleione.slotgallery.Config.Companion.KEY_SORT_ORDER_DIRECTORY
-import com.pleiades.pleione.slotgallery.Config.Companion.KEY_STACK
+import com.pleiades.pleione.slotgallery.Config.Companion.REQUEST_RESULT_KEY_COPY_COMPLETE
+import com.pleiades.pleione.slotgallery.Config.Companion.REQUEST_RESULT_KEY_DIRECTORY_OVERVIEW
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_ALL
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_IMAGE
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_VIDEO
+import com.pleiades.pleione.slotgallery.Config.Companion.REQUEST_RESULT_KEY_SORT_ORDER_DIRECTORY
 import com.pleiades.pleione.slotgallery.Config.Companion.SPAN_COUNT_DIRECTORY
 import com.pleiades.pleione.slotgallery.Config.Companion.URI_DEFAULT_DIRECTORY
 import com.pleiades.pleione.slotgallery.R
@@ -138,13 +136,13 @@ class DirectoryFragment : Fragment() {
 
         // fragment result listener
         requireActivity().supportFragmentManager.setFragmentResultListener(
-            KEY_SORT_ORDER_DIRECTORY,
+            REQUEST_RESULT_KEY_SORT_ORDER_DIRECTORY,
             viewLifecycleOwner
         ) { _: String, _: Bundle ->
             activityViewModel.loadDirectoryList()
         }
         requireActivity().supportFragmentManager.setFragmentResultListener(
-            KEY_COPY_COMPLETE,
+            REQUEST_RESULT_KEY_COPY_COMPLETE,
             viewLifecycleOwner
         ) { _: String, _: Bundle ->
             fragmentViewModel.stopSelect()
@@ -308,7 +306,7 @@ class DirectoryFragment : Fragment() {
                     } else {
                         val bundle = Bundle().apply {
                             putParcelable(
-                                KEY_DIRECTORY_OVERVIEW,
+                                REQUEST_RESULT_KEY_DIRECTORY_OVERVIEW,
                                 activityViewModel.state.value.directoryList[bindingAdapterPosition].directoryOverview
                             )
                         }
@@ -322,7 +320,7 @@ class DirectoryFragment : Fragment() {
                                     arguments = bundle
                                 }
                             )
-                            .addToBackStack(KEY_STACK)
+                            .addToBackStack(null)
                             .commit()
                     }
                 }

@@ -1,13 +1,11 @@
 package com.pleiades.pleione.slotgallery.presentation.main
 
 import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_PERMISSION
 import com.pleiades.pleione.slotgallery.Config.Companion.PERMISSION_IMAGES_VIDEOS
-import com.pleiades.pleione.slotgallery.Config.Companion.PERMISSION_STORAGE
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.databinding.ActivityMainBinding
 import com.pleiades.pleione.slotgallery.presentation.main.dialog.message.MessageDialogFragment

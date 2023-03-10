@@ -3,7 +3,7 @@ package com.pleiades.pleione.slotgallery.presentation.main.directory.inside
 import android.os.Parcelable
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import com.pleiades.pleione.slotgallery.Config.Companion.KEY_DIRECTORY_OVERVIEW
+import com.pleiades.pleione.slotgallery.Config.Companion.REQUEST_RESULT_KEY_DIRECTORY_OVERVIEW
 import com.pleiades.pleione.slotgallery.domain.model.Directory
 import com.pleiades.pleione.slotgallery.domain.model.DirectoryOverview
 import com.pleiades.pleione.slotgallery.presentation.main.directory.DirectoryState
@@ -19,7 +19,7 @@ class DirectoryInsideViewModel @Inject constructor(
     private val _state = MutableStateFlow(DirectoryState())
     val state = _state.asStateFlow()
 
-    val directoryOverview = savedStateHandle.get<Parcelable>(KEY_DIRECTORY_OVERVIEW) as DirectoryOverview
+    val directoryOverview = savedStateHandle.get<Parcelable>(REQUEST_RESULT_KEY_DIRECTORY_OVERVIEW) as DirectoryOverview
     var isSelecting: Boolean = false
     var directory: Directory? = null
 

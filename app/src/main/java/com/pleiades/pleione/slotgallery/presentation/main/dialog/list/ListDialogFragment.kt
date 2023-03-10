@@ -13,10 +13,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_INFORMATION
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_SORT_DIRECTORY
-import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_SORT_MEDIA
+import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_SORT_DIRECTORY_INSIDE
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_WIDTH_PERCENTAGE_DEFAULT
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_WIDTH_PERCENTAGE_RECYCLER
-import com.pleiades.pleione.slotgallery.Config.Companion.KEY_SORT_ORDER_DIRECTORY
+import com.pleiades.pleione.slotgallery.Config.Companion.REQUEST_RESULT_KEY_SORT_ORDER_DIRECTORY
+import com.pleiades.pleione.slotgallery.Config.Companion.REQUEST_RESULT_KEY_SORT_ORDER_DIRECTORY_INSIDE
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.databinding.FragmentDialogListBinding
 import com.pleiades.pleione.slotgallery.databinding.ItemDialogInformationBinding
@@ -40,7 +41,7 @@ class ListDialogFragment(private val type: Int) : androidx.fragment.app.DialogFr
             layoutManager = LinearLayoutManager(requireContext())
             adapter =
                 when (type) {
-                    DIALOG_TYPE_SORT_DIRECTORY, DIALOG_TYPE_SORT_MEDIA -> RadioAdapter()
+                    DIALOG_TYPE_SORT_DIRECTORY, DIALOG_TYPE_SORT_DIRECTORY_INSIDE -> RadioAdapter()
                     else -> InformationAdapter()
                 }
         }
@@ -125,15 +126,15 @@ class ListDialogFragment(private val type: Int) : androidx.fragment.app.DialogFr
                         DIALOG_TYPE_SORT_DIRECTORY -> {
                             fragmentViewModel.putDirectorySortOrderPosition(bindingAdapterPosition)
                             parentFragmentManager.setFragmentResult(
-                                KEY_SORT_ORDER_DIRECTORY,
-                                Bundle().apply { putInt(KEY_SORT_ORDER_DIRECTORY, bindingAdapterPosition) }
+                                REQUEST_RESULT_KEY_SORT_ORDER_DIRECTORY,
+                                Bundle().apply { putInt(REQUEST_RESULT_KEY_SORT_ORDER_DIRECTORY, bindingAdapterPosition) }
                             )
                         }
-                        DIALOG_TYPE_SORT_MEDIA -> {
+                        DIALOG_TYPE_SORT_DIRECTORY_INSIDE -> {
                             fragmentViewModel.putMediaSortOrderPosition(bindingAdapterPosition)
                             parentFragmentManager.setFragmentResult(
-                                KEY_SORT_ORDER_DIRECTORY,
-                                Bundle().apply { putInt(KEY_SORT_ORDER_DIRECTORY, bindingAdapterPosition) }
+                                REQUEST_RESULT_KEY_SORT_ORDER_DIRECTORY_INSIDE,
+                                Bundle().apply { putInt(REQUEST_RESULT_KEY_SORT_ORDER_DIRECTORY_INSIDE, bindingAdapterPosition) }
                             )
                         }
                     }
@@ -157,10 +158,10 @@ class ListDialogFragment(private val type: Int) : androidx.fragment.app.DialogFr
                     text = resources.getStringArray(R.array.sort)[position]
                     isChecked =
                         position == when (type) {
-                            DIALOG_TYPE_SORT_DIRECTORY -> fragmentViewModel.getDirectorySortOrderPosition()
-                            DIALOG_TYPE_SORT_MEDIA -> fragmentViewModel.getMediaSortOrderPosition()
-                            else -> 0
-                        }
+                        DIALOG_TYPE_SORT_DIRECTORY -> fragmentViewModel.getDirectorySortOrderPosition()
+                        DIALOG_TYPE_SORT_DIRECTORY_INSIDE -> fragmentViewModel.getMediaSortOrderPosition()
+                        else -> 0
+                    }
                 }
             }
         }

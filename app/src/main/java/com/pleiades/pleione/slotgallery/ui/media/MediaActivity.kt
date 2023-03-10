@@ -29,7 +29,7 @@ import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_COPY_DIRECT
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_INFORMATION
 import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_POSITION_MEDIA
 import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_POSITION_DIRECTORY
-import com.pleiades.pleione.slotgallery.Config.Companion.KEY_DIRECTORY_POSITION
+import com.pleiades.pleione.slotgallery.Config.Companion.REQUEST_RESULT_KEY_DIRECTORY_POSITION
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_IMAGE
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_VIDEO
 import com.pleiades.pleione.slotgallery.Config.Companion.PACKAGE_NAME_EDIT
@@ -220,9 +220,9 @@ class MediaActivity : AppCompatActivity() {
         }
 
         // initialize fragment result listener
-        supportFragmentManager.setFragmentResultListener(KEY_DIRECTORY_POSITION, this) { key: String, bundle: Bundle ->
-            if (key == KEY_DIRECTORY_POSITION) {
-                directoryPosition = bundle.getInt(KEY_DIRECTORY_POSITION)
+        supportFragmentManager.setFragmentResultListener(REQUEST_RESULT_KEY_DIRECTORY_POSITION, this) { key: String, bundle: Bundle ->
+            if (key == REQUEST_RESULT_KEY_DIRECTORY_POSITION) {
+                directoryPosition = bundle.getInt(REQUEST_RESULT_KEY_DIRECTORY_POSITION)
             }
         }
 

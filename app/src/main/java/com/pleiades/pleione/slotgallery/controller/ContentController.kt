@@ -7,15 +7,13 @@ import android.net.Uri
 import android.provider.MediaStore
 import androidx.documentfile.provider.DocumentFile
 import com.pleiades.pleione.slotgallery.Config
-import com.pleiades.pleione.slotgallery.Config.Companion.COUNT_DEFAULT_DIRECTORY
-import com.pleiades.pleione.slotgallery.Config.Companion.KEY_MEDIA_SORT_ORDER
-import com.pleiades.pleione.slotgallery.Config.Companion.KEY_DIRECTORY_SORT_ORDER
+import com.pleiades.pleione.slotgallery.Config.Companion.PREFS_KEY_SORT_ORDER_DIRECTORY
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_IMAGE
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_VIDEO
 import com.pleiades.pleione.slotgallery.Config.Companion.PATH_SNAPSEED
-import com.pleiades.pleione.slotgallery.Config.Companion.VALUE_SORT_POSITION_BY_NAME
-import com.pleiades.pleione.slotgallery.Config.Companion.VALUE_SORT_POSITION_BY_NEWEST
-import com.pleiades.pleione.slotgallery.Config.Companion.VALUE_SORT_POSITION_BY_OLDEST
+import com.pleiades.pleione.slotgallery.Config.Companion.PREFS_VALUE_SORT_POSITION_BY_NAME
+import com.pleiades.pleione.slotgallery.Config.Companion.PREFS_VALUE_SORT_POSITION_BY_NEWEST
+import com.pleiades.pleione.slotgallery.Config.Companion.PREFS_VALUE_SORT_POSITION_BY_OLDEST
 import com.pleiades.pleione.slotgallery.Config.Companion.URI_DEFAULT_DIRECTORY
 import com.pleiades.pleione.slotgallery.domain.model.Media
 import com.pleiades.pleione.slotgallery.domain.model.Directory
@@ -39,29 +37,29 @@ class ContentController(private val context: Context) {
 
     fun initializeContents() {
         // clear directory array list
-        directoryArrayList.clear()
-
-        // initialize selected slot
-        val selectedSlot = SlotController(context).getSelectedSlot()
-
-        for (i in selectedSlot!!.directoryOverviewMutableList.indices) {
-            val directoryPath = selectedSlot.directoryOverviewMutableList[i]
-            if (i < COUNT_DEFAULT_DIRECTORY) {
-                if (selectedSlot.directoryOverviewMutableList[i].isVisible) {
-                    // add default directory
-                    addDirectory(false, directoryPath)
-                }
-            } else {
-                // add user directory
-                addDirectory(true, directoryPath)
-            }
-        }
-
-        // sort directory array list
-        sortDirectoryArrayList()
-
-        // sort content array list
-        sortContentArrayList()
+//        directoryArrayList.clear()
+//
+//        // initialize selected slot
+//        val selectedSlot = SlotController(context).getSelectedSlot()
+//
+//        for (i in selectedSlot!!.directoryOverviewMutableList.indices) {
+//            val directoryPath = selectedSlot.directoryOverviewMutableList[i]
+//            if (i < COUNT_DEFAULT_DIRECTORY) {
+//                if (selectedSlot.directoryOverviewMutableList[i].isVisible) {
+//                    // add default directory
+//                    addDirectory(false, directoryPath)
+//                }
+//            } else {
+//                // add user directory
+//                addDirectory(true, directoryPath)
+//            }
+//        }
+//
+//        // sort directory array list
+//        sortDirectoryArrayList()
+//
+//        // sort content array list
+//        sortContentArrayList()
     }
 
     private fun addDirectory(allowSubDirectory: Boolean, directoryOverview: DirectoryOverview) {
@@ -188,27 +186,27 @@ class ContentController(private val context: Context) {
     }
 
     fun sortDirectoryArrayList() {
-        when (prefs.getInt(KEY_DIRECTORY_SORT_ORDER, 0)) {
-            VALUE_SORT_POSITION_BY_NAME -> directoryArrayList.sortBy { it.name }
-            VALUE_SORT_POSITION_BY_NEWEST -> directoryArrayList.sortByDescending { it.date }
-            VALUE_SORT_POSITION_BY_OLDEST -> directoryArrayList.sortBy { it.date }
+        when (prefs.getInt(PREFS_KEY_SORT_ORDER_DIRECTORY, 0)) {
+            PREFS_VALUE_SORT_POSITION_BY_NAME -> directoryArrayList.sortBy { it.name }
+            PREFS_VALUE_SORT_POSITION_BY_NEWEST -> directoryArrayList.sortByDescending { it.date }
+            PREFS_VALUE_SORT_POSITION_BY_OLDEST -> directoryArrayList.sortBy { it.date }
         }
     }
 
     fun sortContentArrayList() {
-        when (prefs.getInt(KEY_MEDIA_SORT_ORDER, 0)) {
-            VALUE_SORT_POSITION_BY_NAME -> for (directory in directoryArrayList) directory.mediaMutableList.sortBy { it.name }
-            VALUE_SORT_POSITION_BY_NEWEST -> for (directory in directoryArrayList) directory.mediaMutableList.sortByDescending { it.date }
-            VALUE_SORT_POSITION_BY_OLDEST -> for (directory in directoryArrayList) directory.mediaMutableList.sortBy { it.date }
-        }
+//        when (prefs.getInt(KEY_MEDIA_SORT_ORDER, 0)) {
+//            VALUE_SORT_POSITION_BY_NAME -> for (directory in directoryArrayList) directory.mediaMutableList.sortBy { it.name }
+//            VALUE_SORT_POSITION_BY_NEWEST -> for (directory in directoryArrayList) directory.mediaMutableList.sortByDescending { it.date }
+//            VALUE_SORT_POSITION_BY_OLDEST -> for (directory in directoryArrayList) directory.mediaMutableList.sortBy { it.date }
+//        }
     }
 
     fun sortContentArrayList(directoryPosition: Int) {
-        when (prefs.getInt(KEY_MEDIA_SORT_ORDER, 0)) {
-            VALUE_SORT_POSITION_BY_NAME -> directoryArrayList[directoryPosition].mediaMutableList.sortBy { it.name }
-            VALUE_SORT_POSITION_BY_NEWEST -> directoryArrayList[directoryPosition].mediaMutableList.sortByDescending { it.date }
-            VALUE_SORT_POSITION_BY_OLDEST -> directoryArrayList[directoryPosition].mediaMutableList.sortBy { it.date }
-        }
+//        when (prefs.getInt(KEY_MEDIA_SORT_ORDER, 0)) {
+//            VALUE_SORT_POSITION_BY_NAME -> directoryArrayList[directoryPosition].mediaMutableList.sortBy { it.name }
+//            VALUE_SORT_POSITION_BY_NEWEST -> directoryArrayList[directoryPosition].mediaMutableList.sortByDescending { it.date }
+//            VALUE_SORT_POSITION_BY_OLDEST -> directoryArrayList[directoryPosition].mediaMutableList.sortBy { it.date }
+//        }
     }
 
     suspend fun copyDirectories(

@@ -15,9 +15,9 @@ class Config {
         // dialog
         const val DIALOG_TYPE_PERMISSION = 0
         const val DIALOG_TYPE_SORT_DIRECTORY = 10
-        const val DIALOG_TYPE_SORT_MEDIA = 11
+        const val DIALOG_TYPE_SORT_DIRECTORY_INSIDE = 11
         const val DIALOG_TYPE_INFORMATION = 12
-        const val DIALOG_TYPE_COPY_DIRECTORY = 13
+        const val DIALOG_TYPE_COPY_DIRECTORY = 20
         const val DIALOG_WIDTH_PERCENTAGE_DEFAULT = 0.85
         const val DIALOG_WIDTH_PERCENTAGE_RECYCLER = 0.65
 
@@ -29,17 +29,13 @@ class Config {
         const val INTENT_EXTRA_URI = "uri"
 
         // fragment
-        const val KEY_STACK = "stack"
-        const val KEY_DIRECTORY_POSITION = "position_directory"
-        const val KEY_COPY_COMPLETE = "copy_complete"
-        const val KEY_DIRECTORY_OVERVIEW = "directory_overview"
-        const val ACTIVITY_CODE_MAIN = 0
-        const val ACTIVITY_CODE_SETTING = 1
-        const val ACTIVITY_CODE_IMAGE = 2
-        const val ACTIVITY_CODE_VIDEO = 3
-        const val ACTIVITY_CODE_CHOICE = 4
+        const val REQUEST_RESULT_KEY_DIRECTORY_POSITION = "directory_position"
+        const val REQUEST_RESULT_KEY_DIRECTORY_OVERVIEW = "directory_overview"
+        const val REQUEST_RESULT_KEY_COPY_COMPLETE = "copy_complete"
+        const val REQUEST_RESULT_KEY_SORT_ORDER_DIRECTORY = "sort_order_directory"
+        const val REQUEST_RESULT_KEY_SORT_ORDER_DIRECTORY_INSIDE = "sort_order_directory"
 
-        // recycler view
+        // list
         const val SPAN_COUNT_DIRECTORY = 2
         const val SPAN_COUNT_MEDIA = 3
         const val INFORMATION_POSITION_NAME = 0
@@ -62,13 +58,13 @@ class Config {
 
         // prefs
         const val PREFS = "prefs"
-        const val KEY_SLOT_LIST = "slot_list"
-        const val KEY_SELECTED_SLOT_POSITION = "selected_slot"
-        const val KEY_SORT_ORDER_DIRECTORY = "sort_order_directory"
-        const val KEY_SORT_ORDER_DIRECTORY_INSIDE = "sort_order_directory_inside"
-        const val VALUE_SORT_POSITION_BY_NAME = 0
-        const val VALUE_SORT_POSITION_BY_NEWEST = 1
-        const val VALUE_SORT_POSITION_BY_OLDEST = 2
+        const val PREFS_KEY_SLOT_LIST = "slot_list"
+        const val PREFS_KEY_SELECTED_SLOT_POSITION = "selected_slot_position"
+        const val PREFS_KEY_SORT_ORDER_DIRECTORY = "sort_order_directory"
+        const val PREFS_KEY_SORT_ORDER_DIRECTORY_INSIDE = "sort_order_directory_inside"
+        const val PREFS_VALUE_SORT_POSITION_BY_NAME = 0
+        const val PREFS_VALUE_SORT_POSITION_BY_NEWEST = 1
+        const val PREFS_VALUE_SORT_POSITION_BY_OLDEST = 2
 
         // others
         const val MIME_TYPE_IMAGE = "image/*"
@@ -77,10 +73,8 @@ class Config {
         const val FORMAT_DATE = "yyyy-MM-dd"
         const val FORMAT_TIME = "HH:mm"
         const val NAME_DUMMY = "empty.png"
-
         const val PACKAGE_NAME_EDIT = "com.niksoftware.snapseed"
         const val STORE_URL_EDIT = "https://play.google.com/store/apps/details?id=com.niksoftware.snapseed"
-
         const val URI_DEFAULT_DIRECTORY = "default_uri"
     }
 }

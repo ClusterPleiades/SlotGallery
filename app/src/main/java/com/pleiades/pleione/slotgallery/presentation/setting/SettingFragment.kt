@@ -10,7 +10,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.pleiades.pleione.slotgallery.Config.Companion.KEY_STACK
 import com.pleiades.pleione.slotgallery.Config.Companion.SETTING_POSITION_DIRECTORY
 import com.pleiades.pleione.slotgallery.Config.Companion.SETTING_POSITION_SLOT
 import com.pleiades.pleione.slotgallery.R
@@ -65,7 +64,7 @@ class SettingFragment : Fragment() {
                                 .supportFragmentManager
                                 .beginTransaction()
                                 .replace(R.id.fragment_container, ManageSlotFragment())
-                                .addToBackStack(KEY_STACK)
+                                .addToBackStack(null)
                                 .commit()
                         }
                         SETTING_POSITION_DIRECTORY -> {
@@ -76,7 +75,7 @@ class SettingFragment : Fragment() {
                                     .supportFragmentManager
                                     .beginTransaction()
                                     .replace(R.id.fragment_container, ManageDirectoryFragment())
-                                    .addToBackStack(KEY_STACK)
+                                    .addToBackStack(null)
                                     .commit()
                             }
                         }
