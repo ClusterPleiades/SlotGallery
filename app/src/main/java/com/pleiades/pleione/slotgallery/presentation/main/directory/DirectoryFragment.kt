@@ -33,13 +33,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.michaelflisar.dragselectrecyclerview.DragSelectTouchListener
-import com.pleiades.pleione.slotgallery.Config
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_COPY_DIRECTORY
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_SORT_DIRECTORY
+import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_SORT_MEDIA
 import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_DIRECTORY_OVERVIEW
 import com.pleiades.pleione.slotgallery.Config.Companion.KEY_COPY_COMPLETE
 import com.pleiades.pleione.slotgallery.Config.Companion.KEY_DIRECTORY_OVERVIEW
-import com.pleiades.pleione.slotgallery.Config.Companion.KEY_DIRECTORY_SORT_ORDER
+import com.pleiades.pleione.slotgallery.Config.Companion.KEY_SORT_ORDER_DIRECTORY
 import com.pleiades.pleione.slotgallery.Config.Companion.KEY_STACK
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_ALL
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_IMAGE
@@ -138,12 +138,10 @@ class DirectoryFragment : Fragment() {
 
         // fragment result listener
         requireActivity().supportFragmentManager.setFragmentResultListener(
-            KEY_DIRECTORY_SORT_ORDER,
+            KEY_SORT_ORDER_DIRECTORY,
             viewLifecycleOwner
-        ) { key: String, _: Bundle ->
-            if (key == KEY_DIRECTORY_SORT_ORDER) {
-                activityViewModel.loadDirectoryList()
-            }
+        ) { _: String, _: Bundle ->
+            activityViewModel.loadDirectoryList()
         }
         requireActivity().supportFragmentManager.setFragmentResultListener(
             KEY_COPY_COMPLETE,

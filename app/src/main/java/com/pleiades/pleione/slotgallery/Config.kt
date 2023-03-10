@@ -1,13 +1,10 @@
 package com.pleiades.pleione.slotgallery
 
 import android.Manifest
-import android.os.Build
-import androidx.annotation.RequiresApi
 
 class Config {
     companion object {
         // permission
-        @RequiresApi(Build.VERSION_CODES.TIRAMISU)
         val PERMISSION_IMAGES_VIDEOS = arrayOf(Manifest.permission.READ_MEDIA_IMAGES, Manifest.permission.READ_MEDIA_VIDEO)
         val PERMISSION_STORAGE = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
 
@@ -67,8 +64,8 @@ class Config {
         const val PREFS = "prefs"
         const val KEY_SLOT_LIST = "slot_list"
         const val KEY_SELECTED_SLOT_POSITION = "selected_slot"
-        const val KEY_DIRECTORY_SORT_ORDER = "directory_sort_order"
-        const val KEY_MEDIA_SORT_ORDER = "media_sort_order"
+        const val KEY_SORT_ORDER_DIRECTORY = "sort_order_directory"
+        const val KEY_SORT_ORDER_DIRECTORY_INSIDE = "sort_order_directory_inside"
         const val VALUE_SORT_POSITION_BY_NAME = 0
         const val VALUE_SORT_POSITION_BY_NEWEST = 1
         const val VALUE_SORT_POSITION_BY_OLDEST = 2

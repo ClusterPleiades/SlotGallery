@@ -34,12 +34,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         val isPermissionGranted =
-            if (Build.VERSION.SDK_INT >= 33) {
-                checkSelfPermission(PERMISSION_IMAGES_VIDEOS[0]) == PackageManager.PERMISSION_GRANTED &&
-                    checkSelfPermission(PERMISSION_IMAGES_VIDEOS[1]) == PackageManager.PERMISSION_GRANTED
-            } else {
-                checkSelfPermission(PERMISSION_STORAGE[0]) == PackageManager.PERMISSION_GRANTED
-            }
+            checkSelfPermission(PERMISSION_IMAGES_VIDEOS[0]) == PackageManager.PERMISSION_GRANTED &&
+                checkSelfPermission(PERMISSION_IMAGES_VIDEOS[1]) == PackageManager.PERMISSION_GRANTED
 
         if (isPermissionGranted) {
             if (!activityViewModel.isFragmentAdded) addFragment()

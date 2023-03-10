@@ -7,8 +7,8 @@ import android.media.MediaScannerConnection
 import android.net.Uri
 import android.provider.MediaStore
 import androidx.documentfile.provider.DocumentFile
-import com.pleiades.pleione.slotgallery.Config.Companion.KEY_MEDIA_SORT_ORDER
-import com.pleiades.pleione.slotgallery.Config.Companion.KEY_DIRECTORY_SORT_ORDER
+import com.pleiades.pleione.slotgallery.Config.Companion.KEY_SORT_ORDER_DIRECTORY
+import com.pleiades.pleione.slotgallery.Config.Companion.KEY_SORT_ORDER_DIRECTORY_INSIDE
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_IMAGE
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_VIDEO
 import com.pleiades.pleione.slotgallery.Config.Companion.VALUE_SORT_POSITION_BY_NAME
@@ -430,7 +430,7 @@ class DefaultMediaRepository @Inject constructor(
     }
 
     private fun sortDirectoryList(directoryMutableList: MutableList<Directory>) {
-        when (sharedPreferences.getInt(KEY_DIRECTORY_SORT_ORDER, 0)) {
+        when (sharedPreferences.getInt(KEY_SORT_ORDER_DIRECTORY, 0)) {
             VALUE_SORT_POSITION_BY_NAME -> directoryMutableList.sortBy { it.name }
             VALUE_SORT_POSITION_BY_NEWEST -> directoryMutableList.sortByDescending { it.date }
             VALUE_SORT_POSITION_BY_OLDEST -> directoryMutableList.sortBy { it.date }
@@ -438,7 +438,7 @@ class DefaultMediaRepository @Inject constructor(
     }
 
     private fun sortMediaList(directoryMutableList: MutableList<Directory>) {
-        when (sharedPreferences.getInt(KEY_MEDIA_SORT_ORDER, 0)) {
+        when (sharedPreferences.getInt(KEY_SORT_ORDER_DIRECTORY_INSIDE, 0)) {
             VALUE_SORT_POSITION_BY_NAME -> for (directory in directoryMutableList) directory.mediaMutableList.sortBy { it.name }
             VALUE_SORT_POSITION_BY_NEWEST -> for (directory in directoryMutableList) directory.mediaMutableList.sortByDescending { it.date }
             VALUE_SORT_POSITION_BY_OLDEST -> for (directory in directoryMutableList) directory.mediaMutableList.sortBy { it.date }
