@@ -27,6 +27,8 @@ class Config {
         // activity
         const val INTENT_EXTRA_POSITION_DIRECTORY = "position_directory"
         const val INTENT_EXTRA_POSITION_MEDIA = "position_media"
+        const val INTENT_EXTRA_DIRECTORY_OVERVIEW_URI = "directory_overview_uri"
+        const val INTENT_EXTRA_DIRECTORY_OVERVIEW_LAST_PATH = "directory_overview_last_path"
         const val INTENT_EXTRA_NAME = "name"
         const val INTENT_EXTRA_URI = "uri"
 

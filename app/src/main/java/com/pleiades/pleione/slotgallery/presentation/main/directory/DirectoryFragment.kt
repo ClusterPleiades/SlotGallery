@@ -35,6 +35,8 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.michaelflisar.dragselectrecyclerview.DragSelectTouchListener
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_COPY_DIRECTORY
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_SORT_DIRECTORY
+import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_DIRECTORY_OVERVIEW_LAST_PATH
+import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_DIRECTORY_OVERVIEW_URI
 import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_POSITION_DIRECTORY
 import com.pleiades.pleione.slotgallery.Config.Companion.KEY_COPY_COMPLETE
 import com.pleiades.pleione.slotgallery.Config.Companion.KEY_DIRECTORY_SORT_ORDER
@@ -73,8 +75,11 @@ class DirectoryFragment : Fragment() {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
             if (result.resultCode == RESULT_OK) {
                 result.data?.let { intent ->
-                    val toDirectoryPosition = intent.getIntExtra(INTENT_EXTRA_POSITION_DIRECTORY, 0)
-                    val toDirectory = activityViewModel.state.value.directoryList[toDirectoryPosition]
+                    val toDirectoryOverviewUri = intent.getStringExtra(INTENT_EXTRA_DIRECTORY_OVERVIEW_URI)
+                    val toDirectoryOverviewLastPath = intent.getStringExtra(INTENT_EXTRA_DIRECTORY_OVERVIEW_LAST_PATH)
+                    val toDirectory = activityViewModel.state.value.directoryList.find {
+                        it.directoryOverview.uri == toDirectoryOverviewUri && it.directoryOverview.lastPath == toDirectoryOverviewLastPath
+                    }
                     val fromDirectoryPositionSet = fragmentViewModel.state.value.selectedPositionSet
                     val fromDirectoryList =
                         activityViewModel.state.value.directoryList
@@ -82,11 +87,13 @@ class DirectoryFragment : Fragment() {
                             .filter { fromDirectoryPositionSet.contains(it.index) }
                             .map { it.value }
 
-                    if (toDirectory.directoryOverview.uri == URI_DEFAULT_DIRECTORY) {
-                        Toast.makeText(context, R.string.message_error_default_directory, Toast.LENGTH_SHORT).show()
-                    } else {
-                        ProgressDialogFragment(DIALOG_TYPE_COPY_DIRECTORY).show(requireActivity().supportFragmentManager, null)
-                        activityViewModel.copyDirectory(fromDirectoryList, toDirectory)
+                    toDirectory?.let {
+                        if (it.directoryOverview.uri == URI_DEFAULT_DIRECTORY) {
+                            Toast.makeText(context, R.string.message_error_default_directory, Toast.LENGTH_SHORT).show()
+                        } else {
+                            ProgressDialogFragment(DIALOG_TYPE_COPY_DIRECTORY).show(requireActivity().supportFragmentManager, null)
+                            activityViewModel.copyDirectory(fromDirectoryList, it)
+                        }
                     }
                 }
             }
