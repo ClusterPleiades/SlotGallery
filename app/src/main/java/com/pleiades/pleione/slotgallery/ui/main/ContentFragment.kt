@@ -55,7 +55,6 @@ import com.pleiades.pleione.slotgallery.ui.media.MediaActivity
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
-
 class ContentFragment(private var directoryPosition: Int) : Fragment() {
     companion object {
         fun newInstance(directoryPosition: Int): ContentFragment {
@@ -347,8 +346,9 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
                 itemView.setOnClickListener {
                     // initialize position
                     val position = bindingAdapterPosition
-                    if (position == RecyclerView.NO_POSITION)
+                    if (position == RecyclerView.NO_POSITION) {
                         return@setOnClickListener
+                    }
 
                     if (isSelecting) {
                         // toggle selected
@@ -372,8 +372,9 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
                 itemView.setOnLongClickListener { view: View ->
                     // initialize position
                     val position = bindingAdapterPosition
-                    if (position == RecyclerView.NO_POSITION)
+                    if (position == RecyclerView.NO_POSITION) {
                         return@setOnLongClickListener false
+                    }
 
                     // perform haptic feedback
                     view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
@@ -429,7 +430,6 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
                 holder.timeTextView.visibility = GONE
                 holder.thumbnailImageView.clearColorFilter()
             }
-
         }
 
         override fun getItemCount(): Int {
@@ -441,16 +441,22 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
         }
 
         fun setSelected(position: Int, isSelected: Boolean) {
-            if (isSelected) selectedHashSet.add(position)
-            else selectedHashSet.remove(position)
+            if (isSelected) {
+                selectedHashSet.add(position)
+            } else {
+                selectedHashSet.remove(position)
+            }
             notifyItemChanged(position, false)
             activity!!.title = selectedHashSet.size.toString() + "/" + itemCount
         }
 
         fun setRangeSelected(startPosition: Int, endPosition: Int, isSelected: Boolean) {
             for (position in startPosition..endPosition) {
-                if (isSelected) selectedHashSet.add(position)
-                else selectedHashSet.remove(position)
+                if (isSelected) {
+                    selectedHashSet.add(position)
+                } else {
+                    selectedHashSet.remove(position)
+                }
                 notifyItemChanged(position, false)
             }
             activity!!.title = selectedHashSet.size.toString() + "/" + itemCount
@@ -459,15 +465,19 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
         fun setSelectedAll(isSelected: Boolean) {
             if (isSelected) {
                 for (i in 0 until itemCount) selectedHashSet.add(i)
-            } else
+            } else {
                 selectedHashSet.clear()
+            }
             notifyItemRangeChanged(0, itemCount, false)
             activity!!.title = selectedHashSet.size.toString() + "/" + itemCount
         }
 
         fun toggleSelected(position: Int) {
-            if (selectedHashSet.contains(position)) selectedHashSet.remove(position)
-            else selectedHashSet.add(position)
+            if (selectedHashSet.contains(position)) {
+                selectedHashSet.remove(position)
+            } else {
+                selectedHashSet.add(position)
+            }
             notifyItemChanged(position, false)
             activity!!.title = selectedHashSet.size.toString() + "/" + itemCount
         }
@@ -485,8 +495,11 @@ class ContentFragment(private var directoryPosition: Int) : Fragment() {
                 val content = directory.mediaMutableList[position]
 
                 // set is contain video, image
-                if (content.isVideo) isContainVideo = true
-                else isContainImage = true
+                if (content.isVideo) {
+                    isContainVideo = true
+                } else {
+                    isContainImage = true
+                }
 
                 // add content uri
                 contentUriArrayList.add(content.uri)

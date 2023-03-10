@@ -20,7 +20,7 @@ import com.pleiades.pleione.slotgallery.Config.Companion.URI_DEFAULT_DIRECTORY
 import com.pleiades.pleione.slotgallery.domain.model.Media
 import com.pleiades.pleione.slotgallery.domain.model.Directory
 import com.pleiades.pleione.slotgallery.domain.model.DirectoryOverview
-import com.pleiades.pleione.slotgallery.presentation.dialog.progress.ProgressDialogFragment
+import com.pleiades.pleione.slotgallery.presentation.main.dialog.progress.ProgressDialogFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.BufferedInputStream
@@ -239,8 +239,9 @@ class ContentController(private val context: Context) {
         // initialize to directory file name hash set
         val toDirectoryFileNameHashSet: HashSet<String> = HashSet()
         for (documentFile in toDirectoryDocumentFile.listFiles())
-            if (documentFile.name != null)
+            if (documentFile.name != null) {
                 toDirectoryFileNameHashSet.add(documentFile.name!!)
+            }
 
         // copy directories
         for (fromDirectoryPosition in fromDirectoryPositionHashSet) {
@@ -263,10 +264,11 @@ class ContentController(private val context: Context) {
                 var index = 1
                 while (toDirectoryFileNameHashSet.contains(toName)) {
                     toName =
-                        if (isValidFormat)
+                        if (isValidFormat) {
                             "$preName ($index).$postName"
-                        else
+                        } else {
                             "${content.name} ($index)"
+                        }
                     index++
                 }
                 toDirectoryFileNameHashSet.add(toName)
@@ -387,8 +389,9 @@ class ContentController(private val context: Context) {
         // initialize to directory file name hash set
         val toDirectoryFileNameHashSet: HashSet<String> = HashSet()
         for (documentFile in toDirectoryDocumentFile.listFiles())
-            if (documentFile.name != null)
+            if (documentFile.name != null) {
                 toDirectoryFileNameHashSet.add(documentFile.name!!)
+            }
 
         // copy contents
         val fromDirectory = directoryArrayList[fromDirectoryPosition]
@@ -408,10 +411,11 @@ class ContentController(private val context: Context) {
             var index = 1
             while (toDirectoryFileNameHashSet.contains(toName)) {
                 toName =
-                    if (isValidFormat)
+                    if (isValidFormat) {
                         "$preName ($index).$postName"
-                    else
+                    } else {
                         "${content.name} ($index)"
+                    }
                 index++
             }
             toDirectoryFileNameHashSet.add(toName)

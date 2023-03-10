@@ -3,7 +3,6 @@ package com.pleiades.pleione.slotgallery.data.repository
 import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.pleiades.pleione.slotgallery.Config
 import com.pleiades.pleione.slotgallery.Config.Companion.KEY_SELECTED_SLOT_POSITION
 import com.pleiades.pleione.slotgallery.Config.Companion.KEY_SLOT_LIST
 import com.pleiades.pleione.slotgallery.domain.model.Slot

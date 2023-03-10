@@ -1,8 +1,6 @@
 package com.pleiades.pleione.slotgallery.presentation.setting
 
-import android.content.Intent
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.pleiades.pleione.slotgallery.R

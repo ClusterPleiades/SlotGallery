@@ -250,9 +250,13 @@ class DirectoryFragment : Fragment() {
             action = Intent.ACTION_SEND_MULTIPLE
             putParcelableArrayListExtra(Intent.EXTRA_STREAM, mediaUriArrayList)
             type =
-                if (isContainVideo && isContainImage) MIME_TYPE_ALL
-                else if (isContainVideo) MIME_TYPE_VIDEO
-                else MIME_TYPE_IMAGE
+                if (isContainVideo && isContainImage) {
+                    MIME_TYPE_ALL
+                } else if (isContainVideo) {
+                    MIME_TYPE_VIDEO
+                } else {
+                    MIME_TYPE_IMAGE
+                }
         }
         startActivity(Intent.createChooser(intent, getString(R.string.action_share)))
     }

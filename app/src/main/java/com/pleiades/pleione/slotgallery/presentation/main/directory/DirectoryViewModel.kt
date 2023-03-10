@@ -1,6 +1,5 @@
 package com.pleiades.pleione.slotgallery.presentation.main.directory
 
-import android.text.method.TextKeyListener.clear
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -32,8 +31,11 @@ class DirectoryViewModel : ViewModel() {
     }
 
     fun toggleSelect(position: Int) {
-        if (state.value.selectedPositionSet.contains(position)) unselect(position)
-        else select(position)
+        if (state.value.selectedPositionSet.contains(position)) {
+            unselect(position)
+        } else {
+            select(position)
+        }
     }
 
     private fun select(position: Int) {

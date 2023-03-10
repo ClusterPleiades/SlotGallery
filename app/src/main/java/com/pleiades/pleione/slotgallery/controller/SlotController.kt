@@ -24,9 +24,9 @@ class SlotController(context: Context) {
         val gson = Gson()
         val json: String? = prefs.getString(KEY_SLOT_LIST, null)
 
-        return if (json == null)
+        return if (json == null) {
             LinkedList()
-        else {
+        } else {
             val type = object : TypeToken<LinkedList<Slot>>() {}.type
             gson.fromJson(json, type)
         }

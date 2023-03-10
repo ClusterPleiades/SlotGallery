@@ -10,9 +10,8 @@ import com.pleiades.pleione.slotgallery.Config.Companion.PERMISSION_IMAGES_VIDEO
 import com.pleiades.pleione.slotgallery.Config.Companion.PERMISSION_STORAGE
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.databinding.ActivityMainBinding
-import com.pleiades.pleione.slotgallery.presentation.dialog.message.MessageDialogFragment
+import com.pleiades.pleione.slotgallery.presentation.main.dialog.message.MessageDialogFragment
 import com.pleiades.pleione.slotgallery.presentation.main.directory.DirectoryFragment
-import com.pleiades.pleione.slotgallery.ui.main.ContentFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -34,10 +33,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         val isPermissionGranted =
-            if (Build.VERSION.SDK_INT >= 33)
-                checkSelfPermission(PERMISSION_IMAGES_VIDEOS[0]) == PackageManager.PERMISSION_GRANTED
-                        && checkSelfPermission(PERMISSION_IMAGES_VIDEOS[1]) == PackageManager.PERMISSION_GRANTED
-            else checkSelfPermission(PERMISSION_STORAGE[0]) == PackageManager.PERMISSION_GRANTED
+            if (Build.VERSION.SDK_INT >= 33) {
+                checkSelfPermission(PERMISSION_IMAGES_VIDEOS[0]) == PackageManager.PERMISSION_GRANTED &&
+                    checkSelfPermission(PERMISSION_IMAGES_VIDEOS[1]) == PackageManager.PERMISSION_GRANTED
+            } else {
+                checkSelfPermission(PERMISSION_STORAGE[0]) == PackageManager.PERMISSION_GRANTED
+            }
 
         if (isPermissionGranted) {
             if (!activityViewModel.isFragmentAdded) addFragment()

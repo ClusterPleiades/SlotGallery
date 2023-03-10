@@ -19,7 +19,6 @@ import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_URI
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.databinding.ActivityVideoBinding
 
-
 class VideoActivity : AppCompatActivity() {
     private lateinit var binding: ActivityVideoBinding
 

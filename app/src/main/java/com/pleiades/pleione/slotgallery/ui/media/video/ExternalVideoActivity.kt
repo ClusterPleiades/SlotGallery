@@ -17,7 +17,6 @@ import com.google.android.exoplayer2.Player
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.databinding.ActivityVideoBinding
 
-
 class ExternalVideoActivity : AppCompatActivity() {
     private lateinit var binding: ActivityVideoBinding
 
@@ -93,8 +92,9 @@ class ExternalVideoActivity : AppCompatActivity() {
             // play
             exoPlayer.prepare()
             exoPlayer.play()
-        } else
+        } else {
             finish()
+        }
     }
 
     override fun onResume() {

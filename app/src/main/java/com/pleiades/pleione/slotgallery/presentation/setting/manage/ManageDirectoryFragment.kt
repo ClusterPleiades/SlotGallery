@@ -134,8 +134,11 @@ class ManageDirectoryFragment : Fragment() {
                     edit.setText(it.lastPath)
                     remove.setImageResource(
                         if (position < COUNT_DEFAULT_DIRECTORY) {
-                            if (it.isVisible) R.drawable.icon_visible
-                            else R.drawable.icon_invisible
+                            if (it.isVisible) {
+                                R.drawable.icon_visible
+                            } else {
+                                R.drawable.icon_invisible
+                            }
                         } else {
                             R.drawable.icon_remove
                         }

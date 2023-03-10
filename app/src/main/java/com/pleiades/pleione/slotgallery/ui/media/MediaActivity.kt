@@ -178,10 +178,11 @@ class MediaActivity : AppCompatActivity() {
                         if (toName == content.name) {
                             isDuplicate = true
                             toName =
-                                if (isValidFormat)
+                                if (isValidFormat) {
                                     "$preWishName ($index).$postWishName"
-                                else
+                                } else {
                                     "$wishName ($index)"
+                                }
                             index++
                             break
                         }
@@ -247,10 +248,11 @@ class MediaActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        if (isEditFocused)
+        if (isEditFocused) {
             menuInflater.inflate(R.menu.menu_image_edit, menu)
-        else
+        } else {
             menuInflater.inflate(R.menu.menu_image, menu)
+        }
         return super.onCreateOptionsMenu(menu)
     }
 

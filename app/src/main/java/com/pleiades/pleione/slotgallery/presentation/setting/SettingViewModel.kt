@@ -7,7 +7,6 @@ import com.pleiades.pleione.slotgallery.domain.use_case.slot.bundle.SlotUseCaseB
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.selects.select
 import javax.inject.Inject
 
 @HiltViewModel
@@ -28,8 +27,11 @@ class SettingViewModel @Inject constructor(
         val selectedSlotPosition = state.value.selectedSlotPosition
         val slotList = state.value.slotList
 
-        return if (slotList.isEmpty()) null
-        else slotList[selectedSlotPosition]
+        return if (slotList.isEmpty()) {
+            null
+        } else {
+            slotList[selectedSlotPosition]
+        }
     }
 
     fun addDirectoryOverView(directoryOverview: DirectoryOverview) {

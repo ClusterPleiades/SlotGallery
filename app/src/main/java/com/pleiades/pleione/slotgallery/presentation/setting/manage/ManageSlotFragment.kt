@@ -11,7 +11,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.*
-import androidx.recyclerview.widget.RecyclerView.NO_POSITION
 import com.pleiades.pleione.slotgallery.Config.Companion.SETTING_POSITION_SLOT
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.databinding.FragmentManageBinding
@@ -124,8 +123,11 @@ class ManageSlotFragment : Fragment() {
             with(holder.binding) {
                 edit.setText(slot.name)
                 layout.setBackgroundColor(
-                    if (position == selectedSlotPosition) ContextCompat.getColor(requireContext(), R.color.color_light_gray)
-                    else Color.WHITE
+                    if (position == selectedSlotPosition) {
+                        ContextCompat.getColor(requireContext(), R.color.color_light_gray)
+                    } else {
+                        Color.WHITE
+                    }
                 )
             }
         }

@@ -38,12 +38,13 @@ class DefaultMediaRepository @Inject constructor(
         val directoryMutableList = mutableListOf<Directory>()
         selectedSlot.directoryOverviewMutableList.forEach {
             if (it.uri == URI_DEFAULT_DIRECTORY) {
-                if (it.isVisible)
+                if (it.isVisible) {
                     addDirectory(
                         directoryMutableList = directoryMutableList,
                         isSubDirectoryAllowed = false,
                         directoryOverview = it
                     )
+                }
             } else {
                 addDirectory(
                     directoryMutableList = directoryMutableList,
@@ -76,7 +77,7 @@ class DefaultMediaRepository @Inject constructor(
                 toDirectoryDocumentFile =
                     toDirectoryDocumentFile.findFile(toDirectoryRelativePath)
                         ?: toDirectoryDocumentFile.createDirectory(toDirectoryRelativePath)
-                                ?: return
+                        ?: return
             }
         }
         val toDirectoryFileNameMutableSet = mutableSetOf<String>()
@@ -93,15 +94,21 @@ class DefaultMediaRepository @Inject constructor(
                 var index = 1
                 while (toDirectoryFileNameMutableSet.contains(toName)) {
                     toName =
-                        if (isValidFormat) "$preName ($index).$postName"
-                        else "${media.name} ($index)"
+                        if (isValidFormat) {
+                            "$preName ($index).$postName"
+                        } else {
+                            "${media.name} ($index)"
+                        }
                     index++
                 }
                 toDirectoryFileNameMutableSet.add(toName)
 
                 val mimeType =
-                    if (media.isVideo) MIME_TYPE_VIDEO
-                    else MIME_TYPE_IMAGE
+                    if (media.isVideo) {
+                        MIME_TYPE_VIDEO
+                    } else {
+                        MIME_TYPE_IMAGE
+                    }
                 val mediaDocumentFile = toDirectoryDocumentFile.createFile(mimeType, toName) ?: return
 
                 withContext(Dispatchers.IO) {
@@ -156,7 +163,7 @@ class DefaultMediaRepository @Inject constructor(
                 toDirectoryDocumentFile =
                     toDirectoryDocumentFile.findFile(toDirectoryRelativePath)
                         ?: toDirectoryDocumentFile.createDirectory(toDirectoryRelativePath)
-                                ?: return
+                        ?: return
         }
         val toDirectoryFileNameMutableSet = mutableSetOf<String>()
         for (documentFile in toDirectoryDocumentFile.listFiles()) {
@@ -173,15 +180,21 @@ class DefaultMediaRepository @Inject constructor(
             var index = 1
             while (toDirectoryFileNameMutableSet.contains(toName)) {
                 toName =
-                    if (isValidFormat) "$preName ($index).$postName"
-                    else "${media.name} ($index)"
+                    if (isValidFormat) {
+                        "$preName ($index).$postName"
+                    } else {
+                        "${media.name} ($index)"
+                    }
                 index++
             }
             toDirectoryFileNameMutableSet.add(toName)
 
             val mimeType =
-                if (media.isVideo) MIME_TYPE_VIDEO
-                else MIME_TYPE_IMAGE
+                if (media.isVideo) {
+                    MIME_TYPE_VIDEO
+                } else {
+                    MIME_TYPE_IMAGE
+                }
             val mediaDocumentFile = toDirectoryDocumentFile.createFile(mimeType, toName) ?: return
 
             withContext(Dispatchers.IO) {
@@ -243,11 +256,17 @@ class DefaultMediaRepository @Inject constructor(
             MediaStore.Images.Media.RELATIVE_PATH
         )
         val imageSelection =
-            if (isSubDirectoryAllowed) "${MediaStore.Images.Media.RELATIVE_PATH} LIKE ?"
-            else "${MediaStore.Images.Media.RELATIVE_PATH} = ?"
+            if (isSubDirectoryAllowed) {
+                "${MediaStore.Images.Media.RELATIVE_PATH} LIKE ?"
+            } else {
+                "${MediaStore.Images.Media.RELATIVE_PATH} = ?"
+            }
         val imageSelectionArgs =
-            if (isSubDirectoryAllowed) arrayOf("$directoryRelativePath%")
-            else arrayOf(directoryRelativePath)
+            if (isSubDirectoryAllowed) {
+                arrayOf("$directoryRelativePath%")
+            } else {
+                arrayOf(directoryRelativePath)
+            }
 
         contentResolver.query(
             /* uri = */ imageUri,
@@ -260,21 +279,30 @@ class DefaultMediaRepository @Inject constructor(
                 val id = it.getString(0)
                 val name = it.getString(1)
                 val size =
-                    if (it.getString(2) == null) "-"
-                    else getByteCountSI(it.getString(2))
+                    if (it.getString(2) == null) {
+                        "-"
+                    } else {
+                        getByteCountSI(it.getString(2))
+                    }
                 val width =
-                    if (it.getString(3) == null) 0
-                    else it.getString(3).toInt()
+                    if (it.getString(3) == null) {
+                        0
+                    } else {
+                        it.getString(3).toInt()
+                    }
                 val height =
-                    if (it.getString(4) == null) 0
-                    else it.getString(4).toInt()
+                    if (it.getString(4) == null) {
+                        0
+                    } else {
+                        it.getString(4).toInt()
+                    }
                 val date = it.getString(5).toLong()
                 val relativePath = it.getString(6)
                 val uri = Uri.withAppendedPath(imageUri, id.toString())
 
-                if (isSubDirectoryAllowed && relativePath != directoryRelativePath)
+                if (isSubDirectoryAllowed && relativePath != directoryRelativePath) {
                     subDirectoryLastPathMutableSet.add(directoryOverview.lastPath.substringBefore(":") + ":" + relativePath.substringBeforeLast("/"))
-                else {
+                } else {
                     directory.mediaMutableList.add(
                         Media(
                             isVideo = false,
@@ -307,11 +335,17 @@ class DefaultMediaRepository @Inject constructor(
             MediaStore.Video.Media.DURATION
         )
         val videoSelection =
-            if (isSubDirectoryAllowed) "${MediaStore.Video.Media.RELATIVE_PATH} LIKE ?"
-            else "${MediaStore.Video.Media.RELATIVE_PATH} = ?"
+            if (isSubDirectoryAllowed) {
+                "${MediaStore.Video.Media.RELATIVE_PATH} LIKE ?"
+            } else {
+                "${MediaStore.Video.Media.RELATIVE_PATH} = ?"
+            }
         val videoSelectionArgs =
-            if (isSubDirectoryAllowed) arrayOf("$directoryRelativePath%")
-            else arrayOf(directoryRelativePath)
+            if (isSubDirectoryAllowed) {
+                arrayOf("$directoryRelativePath%")
+            } else {
+                arrayOf(directoryRelativePath)
+            }
 
         contentResolver.query(
             /* uri = */ videoUri,
@@ -324,24 +358,36 @@ class DefaultMediaRepository @Inject constructor(
                 val id = it.getString(0)
                 val name = it.getString(1)
                 val size =
-                    if (it.getString(2) == null) "-"
-                    else getByteCountSI(it.getString(2))
+                    if (it.getString(2) == null) {
+                        "-"
+                    } else {
+                        getByteCountSI(it.getString(2))
+                    }
                 val width =
-                    if (it.getString(3) == null) 0
-                    else it.getString(3).toInt()
+                    if (it.getString(3) == null) {
+                        0
+                    } else {
+                        it.getString(3).toInt()
+                    }
                 val height =
-                    if (it.getString(4) == null) 0
-                    else it.getString(4).toInt()
+                    if (it.getString(4) == null) {
+                        0
+                    } else {
+                        it.getString(4).toInt()
+                    }
                 val date = it.getString(5).toLong()
                 val relativePath = it.getString(6)
                 val uri = Uri.withAppendedPath(videoUri, id.toString())
                 val duration =
-                    if (it.getString(7) == null) 0L
-                    else it.getString(7).toLong()
+                    if (it.getString(7) == null) {
+                        0L
+                    } else {
+                        it.getString(7).toLong()
+                    }
 
-                if (isSubDirectoryAllowed && relativePath != directoryRelativePath)
+                if (isSubDirectoryAllowed && relativePath != directoryRelativePath) {
                     subDirectoryLastPathMutableSet.add(directoryOverview.lastPath.substringBefore(":") + ":" + relativePath.substringBeforeLast("/"))
-                else {
+                } else {
                     directory.mediaMutableList.add(
                         Media(
                             isVideo = true,

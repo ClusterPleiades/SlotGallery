@@ -66,8 +66,11 @@ class ListDialogFragment(private val type: Int) : androidx.fragment.app.DialogFr
         super.onStart()
 
         val widthMultiplier =
-            if (type == DIALOG_TYPE_INFORMATION) DIALOG_WIDTH_PERCENTAGE_DEFAULT
-            else DIALOG_WIDTH_PERCENTAGE_RECYCLER
+            if (type == DIALOG_TYPE_INFORMATION) {
+                DIALOG_WIDTH_PERCENTAGE_DEFAULT
+            } else {
+                DIALOG_WIDTH_PERCENTAGE_RECYCLER
+            }
 
         dialog?.window?.setLayoutSize(
             width = fragmentViewModel.width * widthMultiplier,
@@ -155,10 +158,10 @@ class ListDialogFragment(private val type: Int) : androidx.fragment.app.DialogFr
                     text = resources.getStringArray(R.array.sort)[position]
                     isChecked =
                         position == when (type) {
-                            DIALOG_TYPE_SORT_DIRECTORY -> fragmentViewModel.getDirectorySortOrderPosition()
-                            DIALOG_TYPE_SORT_MEDIA -> fragmentViewModel.getMediaSortOrderPosition()
-                            else -> 0
-                        }
+                        DIALOG_TYPE_SORT_DIRECTORY -> fragmentViewModel.getDirectorySortOrderPosition()
+                        DIALOG_TYPE_SORT_MEDIA -> fragmentViewModel.getMediaSortOrderPosition()
+                        else -> 0
+                    }
                 }
             }
         }
