@@ -1,4 +1,4 @@
-package com.pleiades.pleione.slotgallery.util
+package com.pleiades.pleione.slotgallery.extension
 
 import org.junit.Assert
 

@@ -10,7 +10,7 @@ import com.pleiades.pleione.slotgallery.domain.usecase.util.GetMediaSortOrderPos
 import com.pleiades.pleione.slotgallery.domain.usecase.util.PutDirectorySortOrderPositionUseCase
 import com.pleiades.pleione.slotgallery.domain.usecase.util.PutMediaSortOrderPositionUseCase
 import com.pleiades.pleione.slotgallery.domain.usecase.util.bundle.UtilUseCaseBundle
-import com.pleiades.pleione.slotgallery.util.testAssertEquals
+import com.pleiades.pleione.slotgallery.extension.testAssertEquals
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import org.junit.runner.RunWith

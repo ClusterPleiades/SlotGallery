@@ -5,7 +5,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.pleiades.pleione.slotgallery.data.repository.DefaultWindowRepository
 import com.pleiades.pleione.slotgallery.domain.usecase.window.GetWidthUseCase
-import com.pleiades.pleione.slotgallery.util.testAssertEquals
+import com.pleiades.pleione.slotgallery.extension.testAssertEquals
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import org.junit.runner.RunWith
