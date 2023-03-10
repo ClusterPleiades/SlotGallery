@@ -13,10 +13,10 @@ android {
 
     defaultConfig {
         applicationId "com.pleiades.pleione.slotgallery"
-        minSdk 30
+        minSdk 33
         targetSdk 33
         versionCode 7
-        versionName "30.0.0"
+        versionName "33.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
