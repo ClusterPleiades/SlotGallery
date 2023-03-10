@@ -12,6 +12,7 @@ import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.databinding.ActivityMainBinding
 import com.pleiades.pleione.slotgallery.presentation.main.dialog.message.MessageDialogFragment
 import com.pleiades.pleione.slotgallery.presentation.main.directory.DirectoryFragment
+import com.pleiades.pleione.slotgallery.presentation.main.directory.inside.DirectoryInsideFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -61,6 +62,8 @@ class MainActivity : AppCompatActivity() {
         val fragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
 
         if (fragment is DirectoryFragment) {
+            if (!fragment.onBackPressed()) super.onBackPressed()
+        } else if (fragment is DirectoryInsideFragment) {
             if (!fragment.onBackPressed()) super.onBackPressed()
         }
     }
