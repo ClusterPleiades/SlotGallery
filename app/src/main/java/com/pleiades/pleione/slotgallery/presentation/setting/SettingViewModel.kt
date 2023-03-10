@@ -3,7 +3,7 @@ package com.pleiades.pleione.slotgallery.presentation.setting
 import androidx.lifecycle.ViewModel
 import com.pleiades.pleione.slotgallery.domain.model.DirectoryOverview
 import com.pleiades.pleione.slotgallery.domain.model.Slot
-import com.pleiades.pleione.slotgallery.domain.use_case.slot.bundle.SlotUseCaseBundle
+import com.pleiades.pleione.slotgallery.domain.usecase.slot.bundle.SlotUseCaseBundle
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

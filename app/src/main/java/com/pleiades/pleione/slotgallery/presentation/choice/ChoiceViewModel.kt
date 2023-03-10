@@ -1,9 +1,9 @@
 package com.pleiades.pleione.slotgallery.presentation.choice
 
 import androidx.lifecycle.ViewModel
-import com.pleiades.pleione.slotgallery.domain.use_case.media.bundle.MediaUseCaseBundle
-import com.pleiades.pleione.slotgallery.domain.use_case.slot.bundle.SlotUseCaseBundle
-import com.pleiades.pleione.slotgallery.domain.use_case.window.GetWidthUseCase
+import com.pleiades.pleione.slotgallery.domain.usecase.media.bundle.MediaUseCaseBundle
+import com.pleiades.pleione.slotgallery.domain.usecase.slot.bundle.SlotUseCaseBundle
+import com.pleiades.pleione.slotgallery.domain.usecase.window.GetWidthUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

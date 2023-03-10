@@ -1,4 +1,4 @@
-package com.pleiades.pleione.slotgallery.domain.use_case.media
+package com.pleiades.pleione.slotgallery.domain.usecase.media
 
 import com.pleiades.pleione.slotgallery.domain.model.Directory
 import com.pleiades.pleione.slotgallery.domain.repository.MediaRepository

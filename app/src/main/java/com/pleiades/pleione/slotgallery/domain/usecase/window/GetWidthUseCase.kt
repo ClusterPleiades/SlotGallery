@@ -1,4 +1,4 @@
-package com.pleiades.pleione.slotgallery.domain.use_case.window
+package com.pleiades.pleione.slotgallery.domain.usecase.window
 
 import com.pleiades.pleione.slotgallery.domain.repository.WindowRepository
 

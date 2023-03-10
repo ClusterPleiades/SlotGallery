@@ -1,4 +1,4 @@
-package com.pleiades.pleione.slotgallery.data.dependency_injection
+package com.pleiades.pleione.slotgallery.data.dependencyinjection
 
 import com.pleiades.pleione.slotgallery.data.repository.DefaultMediaRepository
 import com.pleiades.pleione.slotgallery.data.repository.DefaultSlotRepository
