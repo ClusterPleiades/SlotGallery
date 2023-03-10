@@ -23,7 +23,7 @@ class WindowTest {
         val actualWidth = getWidthUseCase()
 
         testAssertEquals(
-            expected = 1080,
+            expected = expectedWidth,
             actual = actualWidth
         )
     }
