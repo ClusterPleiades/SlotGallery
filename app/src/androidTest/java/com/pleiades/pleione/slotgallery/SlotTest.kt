@@ -38,7 +38,7 @@ class SlotTest {
                 Slot("forest"),
                 Slot("jjoo"),
                 Slot("kit"),
-                Slot("kloong"),
+                Slot("kloong")
             )
         slotUseCaseBundle.putSlotListUseCase(expectedSlotList)
         val actualSlotList = slotUseCaseBundle.getSlotListUseCase()
