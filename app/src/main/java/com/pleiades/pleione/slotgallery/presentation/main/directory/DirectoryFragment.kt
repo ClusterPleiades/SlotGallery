@@ -33,11 +33,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.michaelflisar.dragselectrecyclerview.DragSelectTouchListener
+import com.pleiades.pleione.slotgallery.Config
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_COPY_DIRECTORY
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_SORT_DIRECTORY
 import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_DIRECTORY_OVERVIEW
 import com.pleiades.pleione.slotgallery.Config.Companion.KEY_COPY_COMPLETE
+import com.pleiades.pleione.slotgallery.Config.Companion.KEY_DIRECTORY_OVERVIEW
 import com.pleiades.pleione.slotgallery.Config.Companion.KEY_DIRECTORY_SORT_ORDER
+import com.pleiades.pleione.slotgallery.Config.Companion.KEY_STACK
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_ALL
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_IMAGE
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_VIDEO
@@ -52,6 +55,7 @@ import com.pleiades.pleione.slotgallery.presentation.choice.ChoiceActivity
 import com.pleiades.pleione.slotgallery.presentation.main.MainViewModel
 import com.pleiades.pleione.slotgallery.presentation.main.dialog.list.ListDialogFragment
 import com.pleiades.pleione.slotgallery.presentation.main.dialog.progress.ProgressDialogFragment
+import com.pleiades.pleione.slotgallery.presentation.main.directory.inside.DirectoryInsideFragment
 import com.pleiades.pleione.slotgallery.presentation.setting.SettingActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -304,13 +308,24 @@ class DirectoryFragment : Fragment() {
                     if (fragmentViewModel.isSelecting) {
                         fragmentViewModel.toggleSelect(bindingAdapterPosition)
                     } else {
-                        // TODO
-//                        requireActivity().supportFragmentManager
-//                            .beginTransaction()
-//                            .replace(R.id.fragment_container, ContentFragment(bindingAdapterPosition))
-//                            .addToBackStack(KEY_STACK)
-//                            .commit()
-                        // put parcelable arg
+                        val bundle = Bundle().apply {
+                            putParcelable(
+                                KEY_DIRECTORY_OVERVIEW,
+                                activityViewModel.state.value.directoryList[bindingAdapterPosition].directoryOverview
+                            )
+                        }
+
+                        requireActivity()
+                            .supportFragmentManager
+                            .beginTransaction()
+                            .replace(
+                                R.id.fragment_container,
+                                DirectoryInsideFragment().apply {
+                                    arguments = bundle
+                                }
+                            )
+                            .addToBackStack(KEY_STACK)
+                            .commit()
                     }
                 }
                 itemView.setOnLongClickListener {
