@@ -7,7 +7,6 @@ import com.pleiades.pleione.slotgallery.data.repository.DefaultWindowRepository
 import com.pleiades.pleione.slotgallery.domain.usecase.window.GetWidthUseCase
 import com.pleiades.pleione.slotgallery.util.testAssertEquals
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -20,11 +19,12 @@ class WindowTest {
 
     @Test
     fun testGetWidth() = runBlocking {
-        val width = getWidthUseCase()
+        val expectedWidth = 1080 // google pixel 6 portrait
+        val actualWidth = getWidthUseCase()
 
         testAssertEquals(
             expected = 1080,
-            actual = width
+            actual = actualWidth
         )
     }
 }
