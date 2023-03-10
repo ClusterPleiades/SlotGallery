@@ -70,6 +70,7 @@ class ManageSlotFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 activityViewModel.state.collect { state ->
                     listAdapter.submitList(state.slotList)
+                    listAdapter.notifyItemChanged(state.selectedSlotPosition)
                 }
             }
         }
@@ -117,6 +118,7 @@ class ManageSlotFragment : Fragment() {
                     binding.edit.clearFocus()
                 }
                 binding.remove.setOnClickListener {
+                    listAdapter.notifyItemChanged(activityViewModel.state.value.selectedSlotPosition)
                     activityViewModel.removeSlot(bindingAdapterPosition)
                 }
             }
