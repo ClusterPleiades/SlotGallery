@@ -82,4 +82,13 @@ class MainViewModel @Inject constructor(
             job = null
         )
     }
+
+    fun resetProgress() {
+        _progressDialogState.value = progressDialogState.value.copy(
+            false,
+            progress = 0,
+            maxProgress = 0,
+            job = null
+        )
+    }
 }
