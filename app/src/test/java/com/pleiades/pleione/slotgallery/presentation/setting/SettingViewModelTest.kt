@@ -20,7 +20,8 @@ class SettingViewModelTest : StringSpec({
     "슬롯을 선택한다" {
         val repository = TestingSlotRepository(_slotList = listOf(Slot("test slot")))
         val settingViewModel = SettingViewModel(SlotUseCaseBundle(repository))
-        settingViewModel.getSelectedSlot()!!.name shouldBe "test slot"
+
+        settingViewModel.getSelectedSlot() shouldBe Slot("test slot")
     }
 
     "슬롯을 추가한다" {
