@@ -9,6 +9,7 @@ import com.pleiades.pleione.slotgallery.domain.usecase.slot.PutSlotListUseCase
 import com.pleiades.pleione.slotgallery.domain.usecase.slot.bundle.SlotUseCaseBundle
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.nulls.shouldBeNull
+import io.kotest.matchers.shouldBe
 
 class SettingViewModelTest : StringSpec({
     "선택한 슬롯이 없다" {
@@ -25,6 +26,23 @@ class SettingViewModelTest : StringSpec({
             )
         )
         settingViewModel.getSelectedSlot().shouldBeNull()
+    }
+
+    "슬롯을 선택한다" {
+        val settingViewModel = SettingViewModel(
+                SlotUseCaseBundle(
+                        putSlotListUseCase = PutSlotListUseCase(TestingSlotRepository()),
+                        getSlotListUseCase = GetSlotListUseCase(TestingSlotRepository()),
+                        putSelectedSlotPositionUseCase = PutSelectedSlotPositionUseCase(
+                                TestingSlotRepository()
+                        ),
+                        getSelectedSlotPositionUseCase = GetSelectedSlotPositionUseCase(
+                                TestingSlotRepository()
+                        )
+                )
+        )
+        settingViewModel.selectSlot(1)
+        settingViewModel.getSelectedSlot() shouldBe 1
     }
 })
 
