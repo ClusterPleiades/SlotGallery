@@ -1,10 +1,9 @@
 package com.pleiades.pleione.slotgallery.presentation.setting
 
-import org.junit.Test
+import io.kotest.core.spec.style.StringSpec
 
-class SettingViewModelTest {
-    @Test
-    fun test() {
-        TODO("구현해야 함")
+class SettingViewModelTest : StringSpec({
+    "선택한 슬롯이 없다" {
+
     }
-}
+})
