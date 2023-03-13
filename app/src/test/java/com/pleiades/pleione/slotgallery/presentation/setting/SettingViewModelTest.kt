@@ -34,7 +34,7 @@ class TestingSlotRepository : SlotRepository {
     }
 
     override fun getSlotList(): List<Slot> {
-        TODO("Not yet implemented")
+        return emptyList()
     }
 
     override fun putSelectedSlotPosition(position: Int) {
@@ -42,6 +42,6 @@ class TestingSlotRepository : SlotRepository {
     }
 
     override fun getSelectedSlotPosition(): Int {
-        TODO("Not yet implemented")
+        return 0
     }
 }
