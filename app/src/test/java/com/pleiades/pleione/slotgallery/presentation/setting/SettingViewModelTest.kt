@@ -13,39 +13,28 @@ import io.kotest.matchers.shouldBe
 
 class SettingViewModelTest : StringSpec({
     "선택한 슬롯이 없다" {
-        val settingViewModel = SettingViewModel(
-            SlotUseCaseBundle(
-                putSlotListUseCase = PutSlotListUseCase(TestingSlotRepository()),
-                getSlotListUseCase = GetSlotListUseCase(TestingSlotRepository()),
-                putSelectedSlotPositionUseCase = PutSelectedSlotPositionUseCase(
-                    TestingSlotRepository()
-                ),
-                getSelectedSlotPositionUseCase = GetSelectedSlotPositionUseCase(
-                    TestingSlotRepository()
-                )
-            )
-        )
+        val settingViewModel = SettingViewModel(SlotUseCaseBundle(TestingSlotRepository()))
         settingViewModel.getSelectedSlot().shouldBeNull()
     }
 
     "슬롯을 선택한다" {
         val repository = TestingSlotRepository(_slotList = listOf(Slot("test slot")))
-        val settingViewModel = SettingViewModel(
-                SlotUseCaseBundle(
-                        putSlotListUseCase = PutSlotListUseCase(repository),
-                        getSlotListUseCase = GetSlotListUseCase(repository),
-                        putSelectedSlotPositionUseCase = PutSelectedSlotPositionUseCase(
-                                repository
-                        ),
-                        getSelectedSlotPositionUseCase = GetSelectedSlotPositionUseCase(
-                                repository
-                        )
-                )
-        )
-        settingViewModel.selectSlot(0)
+        val settingViewModel = SettingViewModel(SlotUseCaseBundle(repository))
         settingViewModel.getSelectedSlot()!!.name shouldBe "test slot"
     }
 })
+
+private fun SlotUseCaseBundle(repository: TestingSlotRepository) =
+        SlotUseCaseBundle(
+                putSlotListUseCase = PutSlotListUseCase(repository),
+                getSlotListUseCase = GetSlotListUseCase(repository),
+                putSelectedSlotPositionUseCase = PutSelectedSlotPositionUseCase(
+                        repository
+                ),
+                getSelectedSlotPositionUseCase = GetSelectedSlotPositionUseCase(
+                        repository
+                )
+        )
 
 class TestingSlotRepository(var selectedSlot: Int = 0, private val _slotList: List<Slot> = emptyList()) : SlotRepository {
     override fun putSlotList(slotList: List<Slot>) {
