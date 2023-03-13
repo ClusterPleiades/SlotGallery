@@ -16,7 +16,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class UtilTest {
+class DefaultUtilRepositoryTest {
     private val applicationContext = ApplicationProvider.getApplicationContext<Context>()
     private val sharedPreferences = applicationContext.getSharedPreferences("testSharedPreference", MODE_PRIVATE)
     private val editor = sharedPreferences.edit()
