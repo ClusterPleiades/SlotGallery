@@ -11,7 +11,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class WindowTest {
+class DefaultWindowRepositoryTest {
     private val resources = ApplicationProvider.getApplicationContext<Context>().resources
     private val repository = DefaultWindowRepository(resources)
 
