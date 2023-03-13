@@ -100,4 +100,7 @@ dependencies {
 
     // window for dual pane
     implementation "androidx.window:window:1.0.0"
+
+    testImplementation 'io.kotest:kotest-runner-junit5:5.5.2'
+    testImplementation 'org.jetbrains.kotlin:kotlin-reflect'
 }
