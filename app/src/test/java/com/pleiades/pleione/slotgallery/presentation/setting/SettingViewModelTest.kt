@@ -29,37 +29,38 @@ class SettingViewModelTest : StringSpec({
     }
 
     "슬롯을 선택한다" {
+        val repository = TestingSlotRepository(_slotList = listOf(Slot("test slot")))
         val settingViewModel = SettingViewModel(
                 SlotUseCaseBundle(
-                        putSlotListUseCase = PutSlotListUseCase(TestingSlotRepository()),
-                        getSlotListUseCase = GetSlotListUseCase(TestingSlotRepository()),
+                        putSlotListUseCase = PutSlotListUseCase(repository),
+                        getSlotListUseCase = GetSlotListUseCase(repository),
                         putSelectedSlotPositionUseCase = PutSelectedSlotPositionUseCase(
-                                TestingSlotRepository()
+                                repository
                         ),
                         getSelectedSlotPositionUseCase = GetSelectedSlotPositionUseCase(
-                                TestingSlotRepository()
+                                repository
                         )
                 )
         )
-        settingViewModel.selectSlot(1)
-        settingViewModel.getSelectedSlot() shouldBe 1
+        settingViewModel.selectSlot(0)
+        settingViewModel.getSelectedSlot()!!.name shouldBe "test slot"
     }
 })
 
-class TestingSlotRepository : SlotRepository {
+class TestingSlotRepository(var selectedSlot: Int = 0, private val _slotList: List<Slot> = emptyList()) : SlotRepository {
     override fun putSlotList(slotList: List<Slot>) {
         TODO("Not yet implemented")
     }
 
     override fun getSlotList(): List<Slot> {
-        return emptyList()
+        return _slotList
     }
 
     override fun putSelectedSlotPosition(position: Int) {
-        TODO("Not yet implemented")
+        selectedSlot = position
     }
 
     override fun getSelectedSlotPosition(): Int {
-        return 0
+        return selectedSlot
     }
 }
