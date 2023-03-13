@@ -40,6 +40,11 @@ android {
     lint {
         checkReleaseBuilds false
     }
+    testOptions {
+        unitTests.all {
+            useJUnitPlatform()
+        }
+    }
 }
 
 tasks.check {
