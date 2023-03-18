@@ -31,6 +31,8 @@ class Config {
         // fragment
         const val REQUEST_RESULT_KEY_DIRECTORY_POSITION = "directory_position"
         const val REQUEST_RESULT_KEY_DIRECTORY_OVERVIEW = "directory_overview"
+        const val REQUEST_RESULT_MEDIA = "media"
+        const val REQUEST_RESULT_KEY_POSITION = "position"
         const val REQUEST_RESULT_KEY_COPY_COMPLETE = "copy_complete"
         const val REQUEST_RESULT_KEY_SORT_ORDER_DIRECTORY = "sort_order_directory"
         const val REQUEST_RESULT_KEY_SORT_ORDER_DIRECTORY_INSIDE = "sort_order_directory"
