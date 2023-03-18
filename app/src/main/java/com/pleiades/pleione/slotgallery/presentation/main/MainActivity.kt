@@ -11,6 +11,7 @@ import com.pleiades.pleione.slotgallery.databinding.ActivityMainBinding
 import com.pleiades.pleione.slotgallery.presentation.main.dialog.message.MessageDialogFragment
 import com.pleiades.pleione.slotgallery.presentation.main.directory.DirectoryFragment
 import com.pleiades.pleione.slotgallery.presentation.main.directory.inside.DirectoryInsideFragment
+import com.pleiades.pleione.slotgallery.presentation.main.pager.PagerFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -45,7 +46,11 @@ class MainActivity : AppCompatActivity() {
         super.onStart()
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             if (!activityViewModel.isFragmentAdded) addFragment()
@@ -59,6 +64,8 @@ class MainActivity : AppCompatActivity() {
             if (!fragment.onBackPressed()) super.onBackPressed()
         } else if (fragment is DirectoryInsideFragment) {
             if (!fragment.onBackPressed()) super.onBackPressed()
+        } else if (fragment is PagerFragment) {
+            super.onBackPressed()
         }
     }
 
