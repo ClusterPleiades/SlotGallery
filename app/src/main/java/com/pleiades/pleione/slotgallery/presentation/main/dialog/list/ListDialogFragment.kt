@@ -84,12 +84,14 @@ class ListDialogFragment(private val type: Int) : androidx.fragment.app.DialogFr
     }
 
     inner class InformationAdapter : RecyclerView.Adapter<InformationAdapter.ViewHolder>() {
-        inner class ViewHolder(val binding: ItemDialogInformationBinding) : RecyclerView.ViewHolder(binding.root)
+        inner class ViewHolder(val binding: ItemDialogInformationBinding) :
+            RecyclerView.ViewHolder(binding.root)
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
             ViewHolder(
                 ItemDialogInformationBinding.bind(
-                    LayoutInflater.from(parent.context).inflate(R.layout.item_dialog_information, parent, false)
+                    LayoutInflater.from(parent.context)
+                        .inflate(R.layout.item_dialog_information, parent, false)
                 )
             )
 
@@ -127,14 +129,24 @@ class ListDialogFragment(private val type: Int) : androidx.fragment.app.DialogFr
                             fragmentViewModel.putDirectorySortOrderPosition(bindingAdapterPosition)
                             parentFragmentManager.setFragmentResult(
                                 REQUEST_RESULT_KEY_SORT_ORDER_DIRECTORY,
-                                Bundle().apply { putInt(REQUEST_RESULT_KEY_SORT_ORDER_DIRECTORY, bindingAdapterPosition) }
+                                Bundle().apply {
+                                    putInt(
+                                        REQUEST_RESULT_KEY_SORT_ORDER_DIRECTORY,
+                                        bindingAdapterPosition
+                                    )
+                                }
                             )
                         }
                         DIALOG_TYPE_SORT_DIRECTORY_INSIDE -> {
                             fragmentViewModel.putMediaSortOrderPosition(bindingAdapterPosition)
                             parentFragmentManager.setFragmentResult(
                                 REQUEST_RESULT_KEY_SORT_ORDER_DIRECTORY_INSIDE,
-                                Bundle().apply { putInt(REQUEST_RESULT_KEY_SORT_ORDER_DIRECTORY_INSIDE, bindingAdapterPosition) }
+                                Bundle().apply {
+                                    putInt(
+                                        REQUEST_RESULT_KEY_SORT_ORDER_DIRECTORY_INSIDE,
+                                        bindingAdapterPosition
+                                    )
+                                }
                             )
                         }
                     }
@@ -152,17 +164,14 @@ class ListDialogFragment(private val type: Int) : androidx.fragment.app.DialogFr
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            with(holder.binding) {
-                // radio
-                with(radioButton) {
-                    text = resources.getStringArray(R.array.sort)[position]
-                    isChecked =
-                        position == when (type) {
+            with(holder.binding.radioButton) {
+                text = resources.getStringArray(R.array.sort)[position]
+                isChecked =
+                    position == when (type) {
                         DIALOG_TYPE_SORT_DIRECTORY -> fragmentViewModel.getDirectorySortOrderPosition()
                         DIALOG_TYPE_SORT_DIRECTORY_INSIDE -> fragmentViewModel.getMediaSortOrderPosition()
                         else -> 0
                     }
-                }
             }
         }
 

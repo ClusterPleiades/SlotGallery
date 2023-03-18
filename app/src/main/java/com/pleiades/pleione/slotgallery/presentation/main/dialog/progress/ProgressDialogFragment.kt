@@ -71,7 +71,11 @@ class ProgressDialogFragment(private val type: Int) : androidx.fragment.app.Dial
 
                     if (state.progress == state.maxProgress || state.isCanceled) {
                         when (type) {
-                            DIALOG_TYPE_COPY_DIRECTORY -> parentFragmentManager.setFragmentResult(REQUEST_RESULT_KEY_COPY_COMPLETE, Bundle())
+                            DIALOG_TYPE_COPY_DIRECTORY ->
+                                parentFragmentManager.setFragmentResult(
+                                    REQUEST_RESULT_KEY_COPY_COMPLETE,
+                                    Bundle()
+                                )
                         }
                         activityViewModel.resetProgress()
                         dismiss()

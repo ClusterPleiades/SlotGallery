@@ -43,7 +43,10 @@ class ManageDirectoryFragment : Fragment() {
         registerForActivityResult(StartActivityForResult()) { result: ActivityResult ->
             result.data?.data?.let { uri ->
                 with(requireContext().contentResolver) {
-                    takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+                    takePersistableUriPermission(
+                        uri,
+                        Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                    )
                 }
                 uri.lastPathSegment?.let { lastPathSegment ->
                     activityViewModel.addDirectoryOverView(DirectoryOverview(uri.toString(), lastPathSegment))
@@ -51,7 +54,11 @@ class ManageDirectoryFragment : Fragment() {
             }
         }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View {
         _binding = FragmentManageBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -89,7 +96,8 @@ class ManageDirectoryFragment : Fragment() {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) = inflater.inflate(R.menu.menu_manage, menu)
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) =
+        inflater.inflate(R.menu.menu_manage, menu)
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean =
         if (item.itemId == R.id.add) {
@@ -99,19 +107,20 @@ class ManageDirectoryFragment : Fragment() {
             super.onOptionsItemSelected(item)
         }
 
-    inner class ManageDirectoryListAdapter : ListAdapter<DirectoryOverview, ManageDirectoryListAdapter.ViewHolder>(
-        object : DiffUtil.ItemCallback<DirectoryOverview>() {
-            override fun areItemsTheSame(
-                oldItem: DirectoryOverview,
-                newItem: DirectoryOverview
-            ): Boolean = oldItem == newItem
+    inner class ManageDirectoryListAdapter :
+        ListAdapter<DirectoryOverview, ManageDirectoryListAdapter.ViewHolder>(
+            object : DiffUtil.ItemCallback<DirectoryOverview>() {
+                override fun areItemsTheSame(
+                    oldItem: DirectoryOverview,
+                    newItem: DirectoryOverview,
+                ): Boolean = oldItem == newItem
 
-            override fun areContentsTheSame(
-                oldItem: DirectoryOverview,
-                newItem: DirectoryOverview
-            ): Boolean = oldItem == newItem
-        }
-    ) {
+                override fun areContentsTheSame(
+                    oldItem: DirectoryOverview,
+                    newItem: DirectoryOverview,
+                ): Boolean = oldItem == newItem
+            }
+        ) {
         inner class ViewHolder(val binding: ItemEditBinding) : RecyclerView.ViewHolder(binding.root) {
             init {
                 with(binding.layout) {
@@ -135,7 +144,11 @@ class ManageDirectoryFragment : Fragment() {
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
-            ViewHolder(ItemEditBinding.bind(LayoutInflater.from(parent.context).inflate(R.layout.item_edit, parent, false)))
+            ViewHolder(
+                ItemEditBinding.bind(
+                    LayoutInflater.from(parent.context).inflate(R.layout.item_edit, parent, false)
+                )
+            )
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             activityViewModel.getSelectedSlot()?.directoryOverviewMutableList?.get(position)?.let {
@@ -156,6 +169,7 @@ class ManageDirectoryFragment : Fragment() {
             }
         }
 
-        override fun getItemCount() = activityViewModel.getSelectedSlot()?.directoryOverviewMutableList?.size ?: 0
+        override fun getItemCount() =
+            activityViewModel.getSelectedSlot()?.directoryOverviewMutableList?.size ?: 0
     }
 }

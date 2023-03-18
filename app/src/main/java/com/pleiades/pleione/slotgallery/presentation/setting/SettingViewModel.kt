@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingViewModel @Inject constructor(
-    private val slotUseCaseBundle: SlotUseCaseBundle
+    private val slotUseCaseBundle: SlotUseCaseBundle,
 ) : ViewModel() {
     private val _state = MutableStateFlow(SettingState())
     val state = _state.asStateFlow()
@@ -36,9 +36,10 @@ class SettingViewModel @Inject constructor(
 
     fun addDirectoryOverView(directoryOverview: DirectoryOverview) {
         val selectedSlotPosition = state.value.selectedSlotPosition
-        val directoryOverviewMutableList = state.value.slotList[selectedSlotPosition].directoryOverviewMutableList.toMutableList().apply {
-            add(directoryOverview)
-        }
+        val directoryOverviewMutableList =
+            state.value.slotList[selectedSlotPosition].directoryOverviewMutableList.toMutableList().apply {
+                add(directoryOverview)
+            }
         val slotMutableList = state.value.slotList.toMutableList().apply {
             set(
                 index = selectedSlotPosition,
@@ -56,9 +57,10 @@ class SettingViewModel @Inject constructor(
 
     fun removeDirectoryOverView(position: Int) {
         val selectedSlotPosition = state.value.selectedSlotPosition
-        val directoryOverviewMutableList = state.value.slotList[selectedSlotPosition].directoryOverviewMutableList.toMutableList().apply {
-            removeAt(position)
-        }
+        val directoryOverviewMutableList =
+            state.value.slotList[selectedSlotPosition].directoryOverviewMutableList.toMutableList().apply {
+                removeAt(position)
+            }
         val slotMutableList = state.value.slotList.toMutableList().apply {
             set(
                 index = selectedSlotPosition,
@@ -77,14 +79,15 @@ class SettingViewModel @Inject constructor(
     fun toggleDirectoryOverViewVisibility(position: Int) {
         val selectedSlotPosition = state.value.selectedSlotPosition
         val overview = state.value.slotList[selectedSlotPosition].directoryOverviewMutableList[position]
-        val directoryOverviewMutableList = state.value.slotList[selectedSlotPosition].directoryOverviewMutableList.toMutableList().apply {
-            set(
-                index = position,
-                element = get(position).copy(
-                    isVisible = !overview.isVisible
+        val directoryOverviewMutableList =
+            state.value.slotList[selectedSlotPosition].directoryOverviewMutableList.toMutableList().apply {
+                set(
+                    index = position,
+                    element = get(position).copy(
+                        isVisible = !overview.isVisible
+                    )
                 )
-            )
-        }
+            }
         val slotMutableList = state.value.slotList.toMutableList().apply {
             set(
                 index = selectedSlotPosition,

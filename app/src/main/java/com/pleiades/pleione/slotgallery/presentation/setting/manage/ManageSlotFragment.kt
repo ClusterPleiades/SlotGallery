@@ -37,7 +37,11 @@ class ManageSlotFragment : Fragment() {
 
     private val listAdapter: ManageSlotListAdapter = ManageSlotListAdapter()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View {
         _binding = FragmentManageBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -76,7 +80,8 @@ class ManageSlotFragment : Fragment() {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) = inflater.inflate(R.menu.menu_manage, menu)
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) =
+        inflater.inflate(R.menu.menu_manage, menu)
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean =
         if (item.itemId == R.id.add) {
@@ -90,12 +95,12 @@ class ManageSlotFragment : Fragment() {
         object : DiffUtil.ItemCallback<Slot>() {
             override fun areItemsTheSame(
                 oldItem: Slot,
-                newItem: Slot
+                newItem: Slot,
             ): Boolean = oldItem == newItem
 
             override fun areContentsTheSame(
                 oldItem: Slot,
-                newItem: Slot
+                newItem: Slot,
             ): Boolean = oldItem == newItem
         }
     ) {
@@ -125,7 +130,11 @@ class ManageSlotFragment : Fragment() {
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
-            ViewHolder(ItemEditBinding.bind(LayoutInflater.from(parent.context).inflate(R.layout.item_edit, parent, false)))
+            ViewHolder(
+                ItemEditBinding.bind(
+                    LayoutInflater.from(parent.context).inflate(R.layout.item_edit, parent, false)
+                )
+            )
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val slot = activityViewModel.state.value.slotList[position]

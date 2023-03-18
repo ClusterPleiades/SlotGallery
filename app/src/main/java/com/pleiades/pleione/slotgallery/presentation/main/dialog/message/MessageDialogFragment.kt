@@ -44,11 +44,10 @@ class MessageDialogFragment(private val type: Int) : androidx.fragment.app.Dialo
         // positive button
         binding.positiveButton.setOnClickListener {
             if (type == DIALOG_TYPE_PERMISSION) {
-                if (Build.VERSION.SDK_INT >= 33) {
-                    requireActivity().requestPermissions(PERMISSION_IMAGES_VIDEOS, REQUEST_CODE_PERMISSION_IMAGES_VIDEOS)
-                } else {
-                    requireActivity().requestPermissions(PERMISSION_STORAGE, REQUEST_CODE_PERMISSION_STORAGE)
-                }
+                requireActivity().requestPermissions(
+                    PERMISSION_IMAGES_VIDEOS,
+                    REQUEST_CODE_PERMISSION_IMAGES_VIDEOS
+                )
             }
             dismiss()
         }

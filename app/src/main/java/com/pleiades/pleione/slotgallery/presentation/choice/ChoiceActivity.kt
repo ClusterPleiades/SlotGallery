@@ -74,12 +74,12 @@ class ChoiceActivity : AppCompatActivity() {
         object : DiffUtil.ItemCallback<Directory>() {
             override fun areItemsTheSame(
                 oldItem: Directory,
-                newItem: Directory
+                newItem: Directory,
             ): Boolean = oldItem == newItem
 
             override fun areContentsTheSame(
                 oldItem: Directory,
-                newItem: Directory
+                newItem: Directory,
             ): Boolean = oldItem == newItem
         }
     ) {
@@ -88,9 +88,10 @@ class ChoiceActivity : AppCompatActivity() {
                 binding.select.visibility = GONE
 
                 itemView.setOnClickListener {
-                    val directoryOverview = activityViewModel.state.value.directoryList[bindingAdapterPosition].directoryOverview
-
-                    intent.putExtra(INTENT_EXTRA_DIRECTORY_OVERVIEW, directoryOverview)
+                    intent.putExtra(
+                        INTENT_EXTRA_DIRECTORY_OVERVIEW,
+                        activityViewModel.state.value.directoryList[bindingAdapterPosition].directoryOverview
+                    )
                     setResult(RESULT_OK, intent)
                     finish()
                 }
@@ -98,7 +99,11 @@ class ChoiceActivity : AppCompatActivity() {
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
-            ViewHolder(ItemThumbnailBinding.bind(LayoutInflater.from(parent.context).inflate(R.layout.item_thumbnail, parent, false)))
+            ViewHolder(
+                ItemThumbnailBinding.bind(
+                    LayoutInflater.from(parent.context).inflate(R.layout.item_thumbnail, parent, false)
+                )
+            )
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val directory = activityViewModel.state.value.directoryList[position]

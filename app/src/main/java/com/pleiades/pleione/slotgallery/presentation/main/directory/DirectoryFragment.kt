@@ -76,7 +76,10 @@ class DirectoryFragment : Fragment() {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
             if (result.resultCode == RESULT_OK) {
                 result.data?.let { intent ->
-                    val toDirectoryOverview = intent.getParcelableExtra(INTENT_EXTRA_DIRECTORY_OVERVIEW, DirectoryOverview::class.java)
+                    val toDirectoryOverview = intent.getParcelableExtra(
+                        INTENT_EXTRA_DIRECTORY_OVERVIEW,
+                        DirectoryOverview::class.java
+                    )
                     val toDirectory = activityViewModel.state.value.directoryList.find {
                         it.directoryOverview == toDirectoryOverview
                     } ?: return@registerForActivityResult
@@ -88,9 +91,12 @@ class DirectoryFragment : Fragment() {
                             .map { it.value }
 
                     if (toDirectory.directoryOverview.uri == URI_DEFAULT_DIRECTORY) {
-                        Toast.makeText(context, R.string.message_error_default_directory, Toast.LENGTH_SHORT).show()
+                        Toast
+                            .makeText(context, R.string.message_error_default_directory, Toast.LENGTH_SHORT)
+                            .show()
                     } else {
-                        ProgressDialogFragment(DIALOG_TYPE_COPY_DIRECTORY).show(requireActivity().supportFragmentManager, null)
+                        ProgressDialogFragment(DIALOG_TYPE_COPY_DIRECTORY)
+                            .show(requireActivity().supportFragmentManager, null)
                         activityViewModel.copyDirectory(fromDirectoryList, toDirectory)
                     }
                 }
@@ -108,7 +114,7 @@ class DirectoryFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentMainBinding.inflate(inflater, container, false)
         return binding.root
@@ -171,7 +177,8 @@ class DirectoryFragment : Fragment() {
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 fragmentViewModel.state.collect { state ->
-                    requireActivity().title = state.selectedPositionSet.size.toString() + "/" + listAdapter.itemCount
+                    requireActivity().title =
+                        state.selectedPositionSet.size.toString() + "/" + listAdapter.itemCount
                     listAdapter.notifyItemRangeChanged(0, listAdapter.itemCount)
                 }
             }
@@ -279,7 +286,8 @@ class DirectoryFragment : Fragment() {
             mediaUriArrayList.addAll(directory.mediaMutableList.map { it.uri })
         }
 
-        val pendingIntent = MediaStore.createDeleteRequest(requireContext().contentResolver, mediaUriArrayList)
+        val pendingIntent =
+            MediaStore.createDeleteRequest(requireContext().contentResolver, mediaUriArrayList)
         val intentSenderRequest = IntentSenderRequest.Builder(pendingIntent.intentSender).build()
 
         deleteResultLauncher.launch(intentSenderRequest)
@@ -289,12 +297,12 @@ class DirectoryFragment : Fragment() {
         object : DiffUtil.ItemCallback<Directory>() {
             override fun areItemsTheSame(
                 oldItem: Directory,
-                newItem: Directory
+                newItem: Directory,
             ): Boolean = oldItem == newItem
 
             override fun areContentsTheSame(
                 oldItem: Directory,
-                newItem: Directory
+                newItem: Directory,
             ): Boolean = oldItem == newItem
         }
     ) {
@@ -335,7 +343,11 @@ class DirectoryFragment : Fragment() {
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
-            ViewHolder(ItemThumbnailBinding.bind(LayoutInflater.from(parent.context).inflate(R.layout.item_thumbnail, parent, false)))
+            ViewHolder(
+                ItemThumbnailBinding.bind(
+                    LayoutInflater.from(parent.context).inflate(R.layout.item_thumbnail, parent, false)
+                )
+            )
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val directory = activityViewModel.state.value.directoryList[position]

@@ -15,7 +15,6 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.result.IntentSenderRequest
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
@@ -73,7 +72,7 @@ class PagerFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentPagerBinding.inflate(inflater, container, false)
         return binding.root
@@ -287,7 +286,7 @@ class PagerFragment : Fragment() {
 
     inner class ImageFragmentStateAdapter(
         fragmentManager: FragmentManager,
-        lifecycle: Lifecycle
+        lifecycle: Lifecycle,
     ) : FragmentStateAdapter(fragmentManager, lifecycle) {
         override fun createFragment(position: Int): Fragment =
             MediaFragment().apply {

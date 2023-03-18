@@ -28,7 +28,7 @@ class SettingFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentSettingBinding.inflate(inflater, container, false)
         return binding.root
@@ -69,7 +69,9 @@ class SettingFragment : Fragment() {
                         }
                         SETTING_POSITION_DIRECTORY -> {
                             if (activityViewModel.getSelectedSlot() == null) {
-                                Toast.makeText(context, R.string.message_error_no_slot, Toast.LENGTH_SHORT).show()
+                                Toast
+                                    .makeText(context, R.string.message_error_no_slot, Toast.LENGTH_SHORT)
+                                    .show()
                             } else {
                                 requireActivity()
                                     .supportFragmentManager

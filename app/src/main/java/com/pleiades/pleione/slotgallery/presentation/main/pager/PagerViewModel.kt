@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PagerViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     val directoryOverview =
         savedStateHandle.get<Parcelable>(REQUEST_RESULT_KEY_DIRECTORY_OVERVIEW) as DirectoryOverview

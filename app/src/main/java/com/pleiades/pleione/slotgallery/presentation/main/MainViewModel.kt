@@ -17,7 +17,7 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val mediaUseCaseBundle: MediaUseCaseBundle,
     private val slotUseCaseBundle: SlotUseCaseBundle,
-    getWidthUseCase: GetWidthUseCase
+    getWidthUseCase: GetWidthUseCase,
 ) : ViewModel() {
     private val _state = MutableStateFlow(MainState())
     val state = _state.asStateFlow()
