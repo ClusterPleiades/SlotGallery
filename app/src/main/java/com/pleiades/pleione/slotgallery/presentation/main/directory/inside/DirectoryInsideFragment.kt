@@ -41,6 +41,7 @@ import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_SORT_DIRECT
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_ALL
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_IMAGE
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_VIDEO
+import com.pleiades.pleione.slotgallery.Config.Companion.REQUEST_RESULT_KEY_COPY_COMPLETE
 import com.pleiades.pleione.slotgallery.Config.Companion.REQUEST_RESULT_KEY_SORT_ORDER_DIRECTORY_INSIDE
 import com.pleiades.pleione.slotgallery.Config.Companion.SPAN_COUNT_MEDIA
 import com.pleiades.pleione.slotgallery.Config.Companion.URI_DEFAULT_DIRECTORY
@@ -50,6 +51,7 @@ import com.pleiades.pleione.slotgallery.databinding.ItemThumbnailBinding
 import com.pleiades.pleione.slotgallery.domain.model.DirectoryOverview
 import com.pleiades.pleione.slotgallery.domain.model.Media
 import com.pleiades.pleione.slotgallery.presentation.choice.ChoiceActivity
+import com.pleiades.pleione.slotgallery.presentation.main.MainActivity
 import com.pleiades.pleione.slotgallery.presentation.main.MainViewModel
 import com.pleiades.pleione.slotgallery.presentation.main.dialog.list.ListDialogFragment
 import com.pleiades.pleione.slotgallery.presentation.main.dialog.progress.ProgressDialogFragment
@@ -151,21 +153,13 @@ class DirectoryInsideFragment : Fragment() {
             activityViewModel.loadDirectoryList()
         }
         requireActivity().supportFragmentManager.setFragmentResultListener(
-            Config.REQUEST_RESULT_KEY_COPY_COMPLETE,
+            REQUEST_RESULT_KEY_COPY_COMPLETE,
             viewLifecycleOwner
         ) { _: String, _: Bundle ->
             fragmentViewModel.stopSelect()
             requireActivity().invalidateOptionsMenu()
             activityViewModel.loadDirectoryList()
         }
-//        requireActivity().supportFragmentManager.setFragmentResultListener(
-//            KEY_DIRECTORY_POSITION,
-//            viewLifecycleOwner
-//        ) { key: String, bundle: Bundle ->
-//            if (key == KEY_DIRECTORY_POSITION) {
-//                directoryPosition = bundle.getInt(KEY_DIRECTORY_POSITION)
-//            }
-//        }
 
         // main state
         lifecycleScope.launch {
@@ -208,7 +202,7 @@ class DirectoryInsideFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
-                onBackPressed()
+                (requireActivity() as MainActivity).onBackPressed()
                 return true
             }
             R.id.sort -> {
