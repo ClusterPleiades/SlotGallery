@@ -42,6 +42,8 @@ import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_ALL
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_IMAGE
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_VIDEO
 import com.pleiades.pleione.slotgallery.Config.Companion.REQUEST_RESULT_KEY_COPY_COMPLETE
+import com.pleiades.pleione.slotgallery.Config.Companion.REQUEST_RESULT_KEY_DIRECTORY_OVERVIEW
+import com.pleiades.pleione.slotgallery.Config.Companion.REQUEST_RESULT_KEY_POSITION
 import com.pleiades.pleione.slotgallery.Config.Companion.REQUEST_RESULT_KEY_SORT_ORDER_DIRECTORY_INSIDE
 import com.pleiades.pleione.slotgallery.Config.Companion.SPAN_COUNT_MEDIA
 import com.pleiades.pleione.slotgallery.Config.Companion.URI_DEFAULT_DIRECTORY
@@ -55,6 +57,7 @@ import com.pleiades.pleione.slotgallery.presentation.main.MainActivity
 import com.pleiades.pleione.slotgallery.presentation.main.MainViewModel
 import com.pleiades.pleione.slotgallery.presentation.main.dialog.list.ListDialogFragment
 import com.pleiades.pleione.slotgallery.presentation.main.dialog.progress.ProgressDialogFragment
+import com.pleiades.pleione.slotgallery.presentation.main.pager.PagerFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
@@ -84,16 +87,23 @@ class DirectoryInsideFragment : Fragment() {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
             if (result.resultCode == Activity.RESULT_OK) {
                 result.data?.let { intent ->
-                    val toDirectoryOverview = intent.getParcelableExtra(Config.INTENT_EXTRA_DIRECTORY_OVERVIEW, DirectoryOverview::class.java)
+                    val toDirectoryOverview = intent.getParcelableExtra(
+                        Config.INTENT_EXTRA_DIRECTORY_OVERVIEW,
+                        DirectoryOverview::class.java
+                    )
                     val toDirectory = activityViewModel.state.value.directoryList.find {
                         it.directoryOverview == toDirectoryOverview
                     } ?: return@registerForActivityResult
                     val fromDirectory = fragmentViewModel.directory ?: return@registerForActivityResult
 
                     if (toDirectory.directoryOverview.uri == URI_DEFAULT_DIRECTORY) {
-                        Toast.makeText(context, R.string.message_error_default_directory, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, R.string.message_error_default_directory, Toast.LENGTH_SHORT)
+                            .show()
                     } else {
-                        ProgressDialogFragment(DIALOG_TYPE_COPY_DIRECTORY).show(requireActivity().supportFragmentManager, null)
+                        ProgressDialogFragment(DIALOG_TYPE_COPY_DIRECTORY).show(
+                            requireActivity().supportFragmentManager,
+                            null
+                        )
                         activityViewModel.copyDirectory(listOf(fromDirectory), toDirectory)
                     }
                 }
@@ -111,7 +121,7 @@ class DirectoryInsideFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentMainBinding.inflate(inflater, container, false)
         return binding.root
@@ -132,7 +142,7 @@ class DirectoryInsideFragment : Fragment() {
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         // directory
-        fragmentViewModel.directory = activityViewModel.state.value.directoryList.find {
+        fragmentViewModel.directory = activityViewModel.state.value.directoryList.first {
             it.directoryOverview == fragmentViewModel.directoryOverview
         }
 
@@ -165,10 +175,16 @@ class DirectoryInsideFragment : Fragment() {
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 activityViewModel.state.collect {
-                    fragmentViewModel.directory = activityViewModel.state.value.directoryList.find {
+                    val directory = activityViewModel.state.value.directoryList.find {
                         it.directoryOverview == fragmentViewModel.directoryOverview
                     }
-                    listAdapter.notifyItemRangeChanged(0, listAdapter.itemCount)
+
+                    if (directory == null) {
+                        (requireActivity() as MainActivity).onBackPressed()
+                    } else {
+                        fragmentViewModel.directory = directory
+                        listAdapter.notifyItemRangeChanged(0, listAdapter.itemCount)
+                    }
                 }
             }
         }
@@ -177,7 +193,8 @@ class DirectoryInsideFragment : Fragment() {
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 fragmentViewModel.state.collect { state ->
-                    requireActivity().title = state.selectedPositionSet.size.toString() + "/" + listAdapter.itemCount
+                    requireActivity().title =
+                        state.selectedPositionSet.size.toString() + "/" + listAdapter.itemCount
                     listAdapter.notifyItemRangeChanged(0, listAdapter.itemCount)
                 }
             }
@@ -243,7 +260,7 @@ class DirectoryInsideFragment : Fragment() {
     }
 
     private fun share() {
-        val directory = fragmentViewModel.directory ?: return
+        val directory = fragmentViewModel.directory
         var isContainVideo = false
         var isContainImage = false
         val selectedMediaList =
@@ -273,7 +290,7 @@ class DirectoryInsideFragment : Fragment() {
     }
 
     private fun delete() {
-        val directory = fragmentViewModel.directory ?: return
+        val directory = fragmentViewModel.directory
         val mediaUriArrayList = ArrayList<Uri>(
             directory
                 .mediaMutableList
@@ -282,8 +299,10 @@ class DirectoryInsideFragment : Fragment() {
                 .map { it.value.uri }
         )
 
-        val pendingIntent = MediaStore.createDeleteRequest(requireContext().contentResolver, mediaUriArrayList)
-        val intentSenderRequest = IntentSenderRequest.Builder(pendingIntent.intentSender).build()
+        val pendingIntent =
+            MediaStore.createDeleteRequest(requireContext().contentResolver, mediaUriArrayList)
+        val intentSenderRequest =
+            IntentSenderRequest.Builder(pendingIntent.intentSender).build()
 
         deleteResultLauncher.launch(intentSenderRequest)
     }
@@ -292,12 +311,12 @@ class DirectoryInsideFragment : Fragment() {
         object : DiffUtil.ItemCallback<Media>() {
             override fun areItemsTheSame(
                 oldItem: Media,
-                newItem: Media
+                newItem: Media,
             ): Boolean = oldItem == newItem
 
             override fun areContentsTheSame(
                 oldItem: Media,
-                newItem: Media
+                newItem: Media,
             ): Boolean = oldItem == newItem
         }
     ) {
@@ -309,11 +328,28 @@ class DirectoryInsideFragment : Fragment() {
                     if (fragmentViewModel.isSelecting) {
                         fragmentViewModel.toggleSelect(bindingAdapterPosition)
                     } else {
-                        // TODO
-//                        val intent = Intent(context, MediaActivity::class.java)
-//                        intent.putExtra(INTENT_EXTRA_POSITION_DIRECTORY, directoryPosition)
-//                        intent.putExtra(INTENT_EXTRA_POSITION_MEDIA, position)
-//                        imageResultLauncher.launch(intent)
+                        val bundle = Bundle().apply {
+                            putParcelable(
+                                REQUEST_RESULT_KEY_DIRECTORY_OVERVIEW,
+                                fragmentViewModel.directoryOverview
+                            )
+                            putInt(
+                                REQUEST_RESULT_KEY_POSITION,
+                                bindingAdapterPosition
+                            )
+                        }
+
+                        requireActivity()
+                            .supportFragmentManager
+                            .beginTransaction()
+                            .replace(
+                                R.id.fragment_container,
+                                PagerFragment().apply {
+                                    arguments = bundle
+                                }
+                            )
+                            .addToBackStack(null)
+                            .commit()
                     }
                 }
                 itemView.setOnLongClickListener {
@@ -327,10 +363,14 @@ class DirectoryInsideFragment : Fragment() {
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
-            ViewHolder(ItemThumbnailBinding.bind(LayoutInflater.from(parent.context).inflate(R.layout.item_thumbnail, parent, false)))
+            ViewHolder(
+                ItemThumbnailBinding.bind(
+                    LayoutInflater.from(parent.context).inflate(R.layout.item_thumbnail, parent, false)
+                )
+            )
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            val media = fragmentViewModel.directory?.mediaMutableList?.get(position) ?: return
+            val media = fragmentViewModel.directory.mediaMutableList[position]
 
             Glide.with(requireContext())
                 .load(media.uri)
@@ -350,7 +390,12 @@ class DirectoryInsideFragment : Fragment() {
                     val seconds = TimeUnit.MILLISECONDS.toSeconds(media.duration) % 60
                     time.text = String.format("%02d:%02d", minutes, seconds)
 
-                    thumbnail.setColorFilter(ContextCompat.getColor(context!!, R.color.color_transparent_black))
+                    thumbnail.setColorFilter(
+                        ContextCompat.getColor(
+                            context!!,
+                            R.color.color_transparent_black
+                        )
+                    )
                 } else {
                     play.visibility = GONE
                     time.visibility = GONE

@@ -11,9 +11,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DirectoryInsideViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
 ) : DirectoryViewModel() {
     val directoryOverview =
         savedStateHandle.get<Parcelable>(REQUEST_RESULT_KEY_DIRECTORY_OVERVIEW) as DirectoryOverview
-    var directory: Directory? = null
+    lateinit var directory: Directory
 }
