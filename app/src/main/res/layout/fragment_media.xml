@@ -5,12 +5,12 @@
     android:layout_height="match_parent">
 
     <com.github.chrisbanes.photoview.PhotoView
-        android:id="@+id/photo_image"
+        android:id="@+id/photo"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/play_image"
+        android:id="@+id/play"
         android:layout_width="@dimen/icon_size_huge"
         android:layout_height="@dimen/icon_size_huge"
         android:src="@drawable/icon_play"
@@ -21,7 +21,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/time_image"
+        android:id="@+id/time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@android:color/white"
@@ -30,6 +30,6 @@
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/play_image" />
+        app:layout_constraintTop_toBottomOf="@id/play" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
