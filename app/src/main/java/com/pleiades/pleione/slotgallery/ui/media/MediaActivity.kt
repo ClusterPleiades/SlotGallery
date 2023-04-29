@@ -43,6 +43,7 @@ import com.pleiades.pleione.slotgallery.domain.model.Directory
 import com.pleiades.pleione.slotgallery.presentation.choice.ChoiceActivity
 import com.pleiades.pleione.slotgallery.presentation.main.dialog.list.ListDialogFragment
 import com.pleiades.pleione.slotgallery.presentation.main.dialog.progress.ProgressDialogFragment
+import com.pleiades.pleione.slotgallery.presentation.main.pager.media.MediaFragment
 import kotlinx.coroutines.launch
 
 class MediaActivity : AppCompatActivity() {
@@ -234,7 +235,7 @@ class MediaActivity : AppCompatActivity() {
         binding.pagerImage.requestDisallowInterceptTouchEvent(true)
 
         // initialize title edit text
-        titleEditText = findViewById(R.id.title_appbar)
+        titleEditText = findViewById(R.id.title)
         titleEditText.setText(directory.mediaMutableList[contentPosition].name)
         titleEditText.setOnFocusChangeListener { _, b ->
             isEditFocused = b
@@ -251,9 +252,9 @@ class MediaActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         if (isEditFocused) {
-            menuInflater.inflate(R.menu.menu_image_edit, menu)
+            menuInflater.inflate(R.menu.menu_media_rename, menu)
         } else {
-            menuInflater.inflate(R.menu.menu_image, menu)
+            menuInflater.inflate(R.menu.menu_media, menu)
         }
         return super.onCreateOptionsMenu(menu)
     }
@@ -376,7 +377,7 @@ class MediaActivity : AppCompatActivity() {
 
     inner class ImageFragmentStateAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle) : FragmentStateAdapter(fragmentManager, lifecycle) {
         override fun createFragment(position: Int): Fragment {
-            return MediaFragment.newInstance(directoryPosition, position)
+            return MediaFragment()
         }
 
         override fun getItemCount(): Int {

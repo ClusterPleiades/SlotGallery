@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingViewModel @Inject constructor(
-    private val slotUseCaseBundle: SlotUseCaseBundle,
+    private val slotUseCaseBundle: SlotUseCaseBundle
 ) : ViewModel() {
     private val _state = MutableStateFlow(SettingState())
     val state = _state.asStateFlow()

@@ -74,12 +74,12 @@ class ChoiceActivity : AppCompatActivity() {
         object : DiffUtil.ItemCallback<Directory>() {
             override fun areItemsTheSame(
                 oldItem: Directory,
-                newItem: Directory,
+                newItem: Directory
             ): Boolean = oldItem == newItem
 
             override fun areContentsTheSame(
                 oldItem: Directory,
-                newItem: Directory,
+                newItem: Directory
             ): Boolean = oldItem == newItem
         }
     ) {
