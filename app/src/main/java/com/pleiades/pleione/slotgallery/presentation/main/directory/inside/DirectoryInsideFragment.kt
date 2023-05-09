@@ -76,13 +76,7 @@ class DirectoryInsideFragment : Fragment() {
                 fragmentViewModel.selectRange(start, end)
             }
             .withMaxScrollDistance(24)
-    private val imageResultLauncher: ActivityResultLauncher<Intent> =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-            // TODO check
-            if (result.resultCode == Activity.RESULT_OK) {
-//                directoryPosition = result.data!!.getIntExtra(INTENT_EXTRA_POSITION_DIRECTORY, -1)
-            }
-        }
+
     private val copyResultLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
             if (result.resultCode == Activity.RESULT_OK) {
@@ -94,17 +88,20 @@ class DirectoryInsideFragment : Fragment() {
                     val toDirectory = activityViewModel.state.value.directoryList.find {
                         it.directoryOverview == toDirectoryOverview
                     } ?: return@registerForActivityResult
-                    val fromDirectory = fragmentViewModel.directory ?: return@registerForActivityResult
 
                     if (toDirectory.directoryOverview.uri == URI_DEFAULT_DIRECTORY) {
-                        Toast.makeText(context, R.string.message_error_default_directory, Toast.LENGTH_SHORT)
+                        Toast
+                            .makeText(context, R.string.message_error_default_directory, Toast.LENGTH_SHORT)
                             .show()
                     } else {
                         ProgressDialogFragment(DIALOG_TYPE_COPY_DIRECTORY).show(
                             requireActivity().supportFragmentManager,
                             null
                         )
-                        activityViewModel.copyDirectory(listOf(fromDirectory), toDirectory)
+                        activityViewModel.copyMedia(
+                            fragmentViewModel.state.value.selectedPositionSet.map { fragmentViewModel.directory.mediaMutableList[it] },
+                            toDirectory
+                        )
                     }
                 }
             }
@@ -209,10 +206,10 @@ class DirectoryInsideFragment : Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         if (fragmentViewModel.isSelecting) {
-            inflater.inflate(R.menu.menu_content_select, menu)
+            inflater.inflate(R.menu.menu_directory_inside_select, menu)
         } else {
             requireActivity().title = fragmentViewModel.directoryOverview.toString()
-            inflater.inflate(R.menu.menu_content, menu)
+            inflater.inflate(R.menu.menu_directory_inside, menu)
         }
     }
 
@@ -222,6 +219,7 @@ class DirectoryInsideFragment : Fragment() {
                 (requireActivity() as MainActivity).onBackPressed()
                 return true
             }
+
             R.id.sort -> {
                 ListDialogFragment(DIALOG_TYPE_SORT_DIRECTORY_INSIDE)
                     .show(
@@ -230,18 +228,22 @@ class DirectoryInsideFragment : Fragment() {
                     )
                 return true
             }
+
             R.id.select_all -> {
                 fragmentViewModel.selectAll(listAdapter.itemCount)
                 return true
             }
+
             R.id.share -> {
                 share()
                 return true
             }
+
             R.id.copy -> {
                 copyResultLauncher.launch(Intent(requireContext(), ChoiceActivity::class.java))
                 return true
             }
+
             R.id.delete -> {
                 delete()
                 return true

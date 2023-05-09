@@ -13,6 +13,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_COPY_DIRECTORY
+import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_COPY_MEDIA
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_WIDTH_PERCENTAGE_DEFAULT
 import com.pleiades.pleione.slotgallery.Config.Companion.REQUEST_RESULT_KEY_COPY_COMPLETE
 import com.pleiades.pleione.slotgallery.databinding.FragmentDialogProgressBinding
@@ -71,7 +72,7 @@ class ProgressDialogFragment(private val type: Int) : androidx.fragment.app.Dial
 
                     if (state.progress == state.maxProgress || state.isCanceled) {
                         when (type) {
-                            DIALOG_TYPE_COPY_DIRECTORY ->
+                            DIALOG_TYPE_COPY_DIRECTORY, DIALOG_TYPE_COPY_MEDIA ->
                                 parentFragmentManager.setFragmentResult(
                                     REQUEST_RESULT_KEY_COPY_COMPLETE,
                                     Bundle()

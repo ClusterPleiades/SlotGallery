@@ -3,6 +3,7 @@ package com.pleiades.pleione.slotgallery.presentation.main
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pleiades.pleione.slotgallery.domain.model.Directory
+import com.pleiades.pleione.slotgallery.domain.model.Media
 import com.pleiades.pleione.slotgallery.domain.usecase.media.bundle.MediaUseCaseBundle
 import com.pleiades.pleione.slotgallery.domain.usecase.slot.bundle.SlotUseCaseBundle
 import com.pleiades.pleione.slotgallery.domain.usecase.window.GetWidthUseCase
@@ -51,6 +52,21 @@ class MainViewModel @Inject constructor(
         val job = viewModelScope.launch {
             mediaUseCaseBundle.copyDirectoryUseCase(
                 fromDirectoryList,
+                toDirectory,
+                ::setMaxProgress,
+                ::progress
+            )
+        }
+
+        _progressDialogState.value = progressDialogState.value.copy(
+            job = job
+        )
+    }
+
+    fun copyMedia(mediaList: List<Media>, toDirectory: Directory) {
+        val job = viewModelScope.launch {
+            mediaUseCaseBundle.copyMediaUseCase(
+                mediaList,
                 toDirectory,
                 ::setMaxProgress,
                 ::progress
