@@ -99,12 +99,10 @@
 //                when {
 //                    // case same directory
 //                    toDirectoryPosition == directoryPosition -> {
-//                        // show toast
 //                        Toast.makeText(this, R.string.message_error_same_directory, Toast.LENGTH_SHORT).show()
 //                    }
 //                    // case default directory
 //                    ContentController.directoryArrayList[toDirectoryPosition].directoryOverview.uri == URI_DEFAULT_DIRECTORY -> {
-//                        // show toast
 //                        Toast.makeText(this, R.string.message_error_default_directory, Toast.LENGTH_SHORT).show()
 //                    }
 //                    else -> {
@@ -130,7 +128,6 @@
 //                // refresh snapseed
 //                ContentController(this).refreshSnapseed()
 //
-//                // show toast
 //                Toast.makeText(this, R.string.message_snapseed, Toast.LENGTH_SHORT).show()
 //            }
 //        }
@@ -282,7 +279,6 @@
 //            }
 //            R.id.edit -> {
 //                if (currentContent.isVideo) {
-//                    // show toast
 //                    Toast.makeText(this, R.string.message_error_edit_video, Toast.LENGTH_SHORT).show()
 //                } else {
 //                    // case snapseed not installed

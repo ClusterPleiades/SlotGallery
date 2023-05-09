@@ -19,6 +19,9 @@ class PagerViewModel @Inject constructor(
         savedStateHandle.get<Parcelable>(REQUEST_RESULT_KEY_DIRECTORY_OVERVIEW) as DirectoryOverview
     val initialPosition =
         savedStateHandle.get<Int>(REQUEST_RESULT_KEY_POSITION) ?: 0
+    var currentPosition = initialPosition
+    val currentMedia: Media
+        get() = directory.mediaMutableList[currentPosition]
 
     lateinit var directory: Directory
 }
