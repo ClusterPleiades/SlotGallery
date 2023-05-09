@@ -188,7 +188,9 @@ class DirectoryFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        if (!fragmentViewModel.isSelecting) activityViewModel.loadDirectoryList()
+        if (!fragmentViewModel.isSelecting) {
+            activityViewModel.loadDirectoryList()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -208,6 +210,7 @@ class DirectoryFragment : Fragment() {
                 onBackPressed()
                 return true
             }
+
             R.id.sort -> {
                 ListDialogFragment(DIALOG_TYPE_SORT_DIRECTORY)
                     .show(
@@ -216,22 +219,27 @@ class DirectoryFragment : Fragment() {
                     )
                 return true
             }
+
             R.id.setting -> {
                 startActivity(Intent(context, SettingActivity::class.java))
                 return true
             }
+
             R.id.select_all -> {
                 fragmentViewModel.selectAll(listAdapter.itemCount)
                 return true
             }
+
             R.id.share -> {
                 share()
                 return true
             }
+
             R.id.copy -> {
                 copyResultLauncher.launch(Intent(requireContext(), ChoiceActivity::class.java))
                 return true
             }
+
             R.id.delete -> {
                 delete()
                 return true
