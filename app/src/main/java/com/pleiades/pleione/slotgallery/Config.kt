@@ -18,6 +18,7 @@ class Config {
         const val DIALOG_TYPE_SORT_DIRECTORY_INSIDE = 11
         const val DIALOG_TYPE_INFORMATION = 12
         const val DIALOG_TYPE_COPY_DIRECTORY = 20
+        const val DIALOG_TYPE_COPY_MEDIA = 21
         const val DIALOG_WIDTH_PERCENTAGE_DEFAULT = 0.85
         const val DIALOG_WIDTH_PERCENTAGE_RECYCLER = 0.65
 

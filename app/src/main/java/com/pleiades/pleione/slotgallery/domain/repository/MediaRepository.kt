@@ -11,12 +11,13 @@ interface MediaRepository {
         fromDirectoryList: List<Directory>,
         toDirectory: Directory,
         setMaxProgress: (Int) -> Unit,
-        progress: () -> Unit
+        setProgress: () -> Unit
     )
 
     suspend fun copyMedia(
-        fromDirectory: Directory,
+        mediaList: List<Media>,
         toDirectory: Directory,
-        mediaSet: Set<Media>
+        setMaxProgress: (Int) -> Unit,
+        setProgress: () -> Unit
     )
 }

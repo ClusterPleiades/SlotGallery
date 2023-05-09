@@ -13,6 +13,6 @@ class CopyDirectoryUseCase(private val repository: MediaRepository) {
         fromDirectoryList = fromDirectoryList,
         toDirectory = toDirectory,
         setMaxProgress = setMaxProgress,
-        progress = setProgress
+        setProgress = setProgress
     )
 }

@@ -62,9 +62,9 @@ class DefaultMediaRepository @Inject constructor(
         fromDirectoryList: List<Directory>,
         toDirectory: Directory,
         setMaxProgress: (Int) -> Unit,
-        progress: () -> Unit
+        setProgress: () -> Unit
     ) {
-        val maxProgress = fromDirectoryList.map { it.mediaMutableList.size }.sum()
+        val maxProgress = fromDirectoryList.sumOf { it.mediaMutableList.size }
         setMaxProgress(maxProgress)
 
         val toDirectoryPath = toDirectory.directoryOverview
@@ -139,7 +139,7 @@ class DefaultMediaRepository @Inject constructor(
                     } catch (ioException: IOException) {
                         ioException.printStackTrace()
                     } finally {
-                        progress()
+                        setProgress()
                     }
                 }
             }
@@ -147,11 +147,13 @@ class DefaultMediaRepository @Inject constructor(
     }
 
     override suspend fun copyMedia(
-        fromDirectory: Directory,
+        mediaList: List<Media>,
         toDirectory: Directory,
-        mediaSet: Set<Media>
+        setMaxProgress: (Int) -> Unit,
+        setProgress: () -> Unit
     ) {
-        // TODO set progressbar attributes
+        val maxProgress = mediaList.size
+        setMaxProgress(maxProgress)
 
         val toDirectoryPath = toDirectory.directoryOverview
         val toDirectoryRootUri = Uri.parse(toDirectoryPath.uri)
@@ -170,9 +172,7 @@ class DefaultMediaRepository @Inject constructor(
             documentFile.name?.let { toDirectoryFileNameMutableSet.add(it) }
         }
 
-        for (media in fromDirectory.mediaMutableList) {
-            // TODO break if progress dialog canceled
-
+        for (media in mediaList) {
             val preName = media.name.substringBeforeLast(".")
             val postName = media.name.substringAfterLast(".")
             val isValidFormat = preName != postName
@@ -224,15 +224,11 @@ class DefaultMediaRepository @Inject constructor(
                     )
                 } catch (ioException: IOException) {
                     ioException.printStackTrace()
+                } finally {
+                    setProgress()
                 }
             }
-
-            // TODO improve progress
         }
-
-        // TODO
-//        progressDialogFragment.setFragmentResult()
-//        progressDialogFragment.dismiss()
     }
 
     private fun addDirectory(
