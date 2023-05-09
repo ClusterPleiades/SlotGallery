@@ -17,11 +17,8 @@ class PagerViewModel @Inject constructor(
 ) : ViewModel() {
     val directoryOverview =
         savedStateHandle.get<Parcelable>(REQUEST_RESULT_KEY_DIRECTORY_OVERVIEW) as DirectoryOverview
+    val initialPosition =
+        savedStateHandle.get<Int>(REQUEST_RESULT_KEY_POSITION) ?: 0
+
     lateinit var directory: Directory
-
-    var currentPosition = savedStateHandle.get<Int>(REQUEST_RESULT_KEY_POSITION) ?: 0
-    val currentMedia: Media
-        get() = directory.mediaMutableList[currentPosition]
-
-    var isTitleFocused = false
 }
