@@ -11,5 +11,5 @@ data class DirectoryOverview(
     val lastPath: String,
     var isVisible: Boolean = true
 ) : Parcelable {
-    override fun toString(): String = lastPath.substringAfter(Config.PATH_PRIMARY).substringAfterLast("/")
+    override fun toString() = lastPath.substringAfter(Config.PATH_PRIMARY).substringAfterLast("/")
 }

@@ -3,7 +3,7 @@ package com.pleiades.pleione.slotgallery
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.pleiades.pleione.slotgallery.data.repository.DefaultMediaRepository
+import com.pleiades.pleione.slotgallery.data.repository.MediaRepositoryImpl
 import com.pleiades.pleione.slotgallery.domain.model.Directory
 import com.pleiades.pleione.slotgallery.domain.model.DirectoryOverview
 import com.pleiades.pleione.slotgallery.domain.model.Slot
@@ -18,7 +18,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class DefaultMediaRepositoryTest {
+class MediaRepositoryImplTest {
     private val applicationContext = ApplicationProvider.getApplicationContext<Context>()
     private val contentResolver = applicationContext.contentResolver
     private val sharedPreferences =
@@ -26,7 +26,7 @@ class DefaultMediaRepositoryTest {
             /* name = */ "testSharedPreference",
             /* mode = */ Context.MODE_PRIVATE
         )
-    private val repository = DefaultMediaRepository(applicationContext, sharedPreferences, contentResolver)
+    private val repository = MediaRepositoryImpl(applicationContext, sharedPreferences, contentResolver)
     private val mediaUseCaseBundle = MediaUseCaseBundle(
         getDirectoryListUseCase = GetDirectoryListUseCase(repository),
         copyDirectoryUseCase = CopyDirectoryUseCase(repository),

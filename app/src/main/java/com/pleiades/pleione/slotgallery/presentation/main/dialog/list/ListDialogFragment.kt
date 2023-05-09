@@ -109,7 +109,6 @@ class ListDialogFragment(private val type: Int) : androidx.fragment.app.DialogFr
                 )
             )
 
-        // TODO check
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             with(holder.binding) {
                 // title
@@ -152,6 +151,7 @@ class ListDialogFragment(private val type: Int) : androidx.fragment.app.DialogFr
                     when (type) {
                         DIALOG_TYPE_SORT_DIRECTORY -> {
                             fragmentViewModel.putDirectorySortOrderPosition(bindingAdapterPosition)
+
                             parentFragmentManager.setFragmentResult(
                                 REQUEST_RESULT_KEY_SORT_ORDER_DIRECTORY,
                                 Bundle().apply {
@@ -165,6 +165,7 @@ class ListDialogFragment(private val type: Int) : androidx.fragment.app.DialogFr
 
                         DIALOG_TYPE_SORT_DIRECTORY_INSIDE -> {
                             fragmentViewModel.putMediaSortOrderPosition(bindingAdapterPosition)
+
                             parentFragmentManager.setFragmentResult(
                                 REQUEST_RESULT_KEY_SORT_ORDER_DIRECTORY_INSIDE,
                                 Bundle().apply {

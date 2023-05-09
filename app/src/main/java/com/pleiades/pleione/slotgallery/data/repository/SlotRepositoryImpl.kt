@@ -9,15 +9,12 @@ import com.pleiades.pleione.slotgallery.domain.model.Slot
 import com.pleiades.pleione.slotgallery.domain.repository.SlotRepository
 import javax.inject.Inject
 
-class DefaultSlotRepository @Inject constructor(
+class SlotRepositoryImpl @Inject constructor(
     private val sharedPreferences: SharedPreferences,
-    private val editor: SharedPreferences.Editor
+    private val editor: SharedPreferences.Editor,
 ) : SlotRepository {
-    override fun putSlotList(slotList: List<Slot>) {
-        editor
-            .putString(PREFS_KEY_SLOT_LIST, Gson().toJson(slotList))
-            .apply()
-    }
+    override fun putSlotList(slotList: List<Slot>) =
+        editor.putString(PREFS_KEY_SLOT_LIST, Gson().toJson(slotList)).apply()
 
     override fun getSlotList(): List<Slot> {
         sharedPreferences.getString(PREFS_KEY_SLOT_LIST, null)?.let {
@@ -25,11 +22,9 @@ class DefaultSlotRepository @Inject constructor(
         } ?: return emptyList()
     }
 
-    override fun putSelectedSlotPosition(position: Int) {
-        editor
-            .putInt(PREFS_KEY_SELECTED_SLOT_POSITION, position)
-            .apply()
-    }
+    override fun putSelectedSlotPosition(position: Int) =
+        editor.putInt(PREFS_KEY_SELECTED_SLOT_POSITION, position).apply()
 
-    override fun getSelectedSlotPosition() = sharedPreferences.getInt(PREFS_KEY_SELECTED_SLOT_POSITION, 0)
+    override fun getSelectedSlotPosition() =
+        sharedPreferences.getInt(PREFS_KEY_SELECTED_SLOT_POSITION, 0)
 }

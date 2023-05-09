@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.pleiades.pleione.slotgallery.data.repository.DefaultUtilRepository
+import com.pleiades.pleione.slotgallery.data.repository.UtilRepositoryImpl
 import com.pleiades.pleione.slotgallery.domain.usecase.util.GetDirectorySortOrderPositionUseCase
 import com.pleiades.pleione.slotgallery.domain.usecase.util.GetMediaSortOrderPositionUseCase
 import com.pleiades.pleione.slotgallery.domain.usecase.util.PutDirectorySortOrderPositionUseCase
@@ -16,11 +16,11 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class DefaultUtilRepositoryTest {
+class UtilRepositoryImplTest {
     private val applicationContext = ApplicationProvider.getApplicationContext<Context>()
     private val sharedPreferences = applicationContext.getSharedPreferences("testSharedPreference", MODE_PRIVATE)
     private val editor = sharedPreferences.edit()
-    private val repository = DefaultUtilRepository(sharedPreferences, editor)
+    private val repository = UtilRepositoryImpl(sharedPreferences, editor)
 
     private val utilUseCaseBundle =
         UtilUseCaseBundle(
