@@ -6,7 +6,7 @@ import com.pleiades.pleione.slotgallery.domain.repository.MediaRepository
 class RenameMediaUseCase(private val repository: MediaRepository) {
     suspend operator fun invoke(
         media: Media,
-        toName: String,
+        toName: String
     ) = repository.renameMedia(
         media = media,
         toName = toName

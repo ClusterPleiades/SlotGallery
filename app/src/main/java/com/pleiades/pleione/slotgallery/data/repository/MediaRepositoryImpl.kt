@@ -33,7 +33,7 @@ import javax.inject.Inject
 class MediaRepositoryImpl @Inject constructor(
     private val applicationContext: Context,
     private val sharedPreferences: SharedPreferences,
-    private val contentResolver: ContentResolver,
+    private val contentResolver: ContentResolver
 ) : MediaRepository {
     override fun getDirectoryList(selectedSlot: Slot): List<Directory> {
         val directoryMutableList = mutableListOf<Directory>()
@@ -63,7 +63,7 @@ class MediaRepositoryImpl @Inject constructor(
         fromDirectoryList: List<Directory>,
         toDirectory: Directory,
         setMaxProgress: (Int) -> Unit,
-        setProgress: () -> Unit,
+        setProgress: () -> Unit
     ) {
         val maxProgress = fromDirectoryList.sumOf { it.mediaMutableList.size }
         setMaxProgress(maxProgress)
@@ -80,7 +80,7 @@ class MediaRepositoryImpl @Inject constructor(
                 toDirectoryDocumentFile =
                     toDirectoryDocumentFile.findFile(toDirectoryRelativePath)
                         ?: toDirectoryDocumentFile.createDirectory(toDirectoryRelativePath)
-                                ?: return
+                        ?: return
             }
         }
         val toDirectoryFileNameMutableSet = mutableSetOf<String>()
@@ -154,7 +154,7 @@ class MediaRepositoryImpl @Inject constructor(
         mediaList: List<Media>,
         toDirectory: Directory,
         setMaxProgress: (Int) -> Unit,
-        setProgress: () -> Unit,
+        setProgress: () -> Unit
     ) {
         val maxProgress = mediaList.size
         setMaxProgress(maxProgress)
@@ -171,7 +171,7 @@ class MediaRepositoryImpl @Inject constructor(
                 toDirectoryDocumentFile =
                     toDirectoryDocumentFile.findFile(toDirectoryRelativePath)
                         ?: toDirectoryDocumentFile.createDirectory(toDirectoryRelativePath)
-                                ?: return
+                        ?: return
         }
         val toDirectoryFileNameMutableSet = mutableSetOf<String>()
         for (documentFile in toDirectoryDocumentFile.listFiles()) {
@@ -240,7 +240,7 @@ class MediaRepositoryImpl @Inject constructor(
 
     override suspend fun renameMedia(
         media: Media,
-        toName: String,
+        toName: String
     ) {
         // initialize content values
         val values = ContentValues().apply {
@@ -261,7 +261,7 @@ class MediaRepositoryImpl @Inject constructor(
     private fun addDirectory(
         directoryMutableList: MutableList<Directory>,
         isSubDirectoryAllowed: Boolean,
-        directoryOverview: DirectoryOverview,
+        directoryOverview: DirectoryOverview
     ) {
         val directory = Directory(directoryOverview)
         val directoryRelativePath = directoryOverview.lastPath.substringAfter(":") + "/"

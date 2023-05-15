@@ -16,7 +16,7 @@ import javax.inject.Inject
 class EditDialogViewModel @Inject constructor(
     private val mediaUseCaseBundle: MediaUseCaseBundle,
     getWidthUseCase: GetWidthUseCase,
-    savedStateHandle: SavedStateHandle,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     val width = getWidthUseCase()
 

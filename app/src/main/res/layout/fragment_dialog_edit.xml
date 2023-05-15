@@ -52,5 +52,4 @@
             android:text="@string/dialog_confirm"
             android:textColor="@color/color_blue" />
     </androidx.appcompat.widget.LinearLayoutCompat>
-
 </androidx.appcompat.widget.LinearLayoutCompat>

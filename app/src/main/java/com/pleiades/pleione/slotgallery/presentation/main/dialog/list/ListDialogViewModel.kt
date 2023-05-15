@@ -14,7 +14,7 @@ import javax.inject.Inject
 class ListDialogViewModel @Inject constructor(
     private val utilUseCaseBundle: UtilUseCaseBundle,
     getWidthUseCase: GetWidthUseCase,
-    savedStateHandle: SavedStateHandle,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     val width = getWidthUseCase()
 

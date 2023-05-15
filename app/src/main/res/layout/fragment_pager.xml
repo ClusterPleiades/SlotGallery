@@ -9,10 +9,4 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal" />
-
-<!--    <include-->
-<!--        android:id="@+id/appbar"-->
-<!--        layout="@layout/layout_appbar_edit"-->
-<!--        app:layout_constraintTop_toTopOf="parent" />-->
-
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -17,5 +17,4 @@
         android:id="@+id/appbar_video"
         layout="@layout/layout_appbar_dark"
         app:layout_constraintTop_toTopOf="parent" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

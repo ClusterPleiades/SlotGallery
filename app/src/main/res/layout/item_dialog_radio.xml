@@ -4,14 +4,13 @@
     android:layout_height="wrap_content"
     android:paddingStart="@dimen/margin_large"
     android:paddingTop="@dimen/margin_tiny"
-    android:paddingBottom="@dimen/margin_tiny"
-    android:paddingEnd="@dimen/margin_default">
+    android:paddingEnd="@dimen/margin_default"
+    android:paddingBottom="@dimen/margin_tiny">
 
     <RadioButton
         android:id="@+id/radio_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAlignment="textStart"
-        android:layoutDirection="rtl" />
-
+        android:layoutDirection="rtl"
+        android:textAlignment="textStart" />
 </androidx.appcompat.widget.LinearLayoutCompat>

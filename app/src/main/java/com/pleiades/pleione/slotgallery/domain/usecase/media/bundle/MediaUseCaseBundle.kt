@@ -9,5 +9,5 @@ data class MediaUseCaseBundle(
     val getDirectoryListUseCase: GetDirectoryListUseCase,
     val copyDirectoryUseCase: CopyDirectoryUseCase,
     val copyMediaUseCase: CopyMediaUseCase,
-    val renameMediaUseCase: RenameMediaUseCase,
+    val renameMediaUseCase: RenameMediaUseCase
 )

@@ -104,7 +104,7 @@ class PagerFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?,
+        savedInstanceState: Bundle?
     ): View {
         _binding = FragmentPagerBinding.inflate(inflater, container, false)
         return binding.root
@@ -285,7 +285,7 @@ class PagerFragment : Fragment() {
 
     inner class ImageFragmentStateAdapter(
         fragmentManager: FragmentManager,
-        lifecycle: Lifecycle,
+        lifecycle: Lifecycle
     ) : FragmentStateAdapter(fragmentManager, lifecycle) {
         override fun createFragment(position: Int): Fragment =
             PageFragment().apply {
