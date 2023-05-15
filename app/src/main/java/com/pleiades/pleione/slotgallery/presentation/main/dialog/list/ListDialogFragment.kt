@@ -195,10 +195,10 @@ class ListDialogFragment(private val type: Int) : androidx.fragment.app.DialogFr
                 text = resources.getStringArray(R.array.sort)[position]
                 isChecked =
                     position == when (type) {
-                        DIALOG_TYPE_SORT_DIRECTORY -> fragmentViewModel.getDirectorySortOrderPosition()
-                        DIALOG_TYPE_SORT_DIRECTORY_INSIDE -> fragmentViewModel.getMediaSortOrderPosition()
-                        else -> 0
-                    }
+                    DIALOG_TYPE_SORT_DIRECTORY -> fragmentViewModel.getDirectorySortOrderPosition()
+                    DIALOG_TYPE_SORT_DIRECTORY_INSIDE -> fragmentViewModel.getMediaSortOrderPosition()
+                    else -> 0
+                }
             }
         }
 

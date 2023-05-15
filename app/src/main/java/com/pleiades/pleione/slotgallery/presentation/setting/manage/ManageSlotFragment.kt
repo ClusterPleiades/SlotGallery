@@ -40,7 +40,7 @@ class ManageSlotFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?,
+        savedInstanceState: Bundle?
     ): View {
         _binding = FragmentManageBinding.inflate(inflater, container, false)
         return binding.root
@@ -95,12 +95,12 @@ class ManageSlotFragment : Fragment() {
         object : DiffUtil.ItemCallback<Slot>() {
             override fun areItemsTheSame(
                 oldItem: Slot,
-                newItem: Slot,
+                newItem: Slot
             ): Boolean = oldItem == newItem
 
             override fun areContentsTheSame(
                 oldItem: Slot,
-                newItem: Slot,
+                newItem: Slot
             ): Boolean = oldItem == newItem
         }
     ) {

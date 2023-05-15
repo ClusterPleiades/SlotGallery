@@ -4,7 +4,6 @@ import android.app.Dialog
 import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.os.Build
 import android.os.Bundle
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
@@ -13,9 +12,7 @@ import androidx.fragment.app.viewModels
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_PERMISSION
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_WIDTH_PERCENTAGE_DEFAULT
 import com.pleiades.pleione.slotgallery.Config.Companion.PERMISSION_IMAGES_VIDEOS
-import com.pleiades.pleione.slotgallery.Config.Companion.PERMISSION_STORAGE
 import com.pleiades.pleione.slotgallery.Config.Companion.REQUEST_CODE_PERMISSION_IMAGES_VIDEOS
-import com.pleiades.pleione.slotgallery.Config.Companion.REQUEST_CODE_PERMISSION_STORAGE
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.databinding.FragmentDialogDefaultBinding
 import com.pleiades.pleione.slotgallery.presentation.dialog.setLayoutSize

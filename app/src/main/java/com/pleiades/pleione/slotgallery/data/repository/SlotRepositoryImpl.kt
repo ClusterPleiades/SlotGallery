@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 class SlotRepositoryImpl @Inject constructor(
     private val sharedPreferences: SharedPreferences,
-    private val editor: SharedPreferences.Editor,
+    private val editor: SharedPreferences.Editor
 ) : SlotRepository {
     override fun putSlotList(slotList: List<Slot>) =
         editor.putString(PREFS_KEY_SLOT_LIST, Gson().toJson(slotList)).apply()

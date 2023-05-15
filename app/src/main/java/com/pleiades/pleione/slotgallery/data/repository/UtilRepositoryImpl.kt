@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 class UtilRepositoryImpl @Inject constructor(
     private val sharedPreferences: SharedPreferences,
-    private val editor: SharedPreferences.Editor,
+    private val editor: SharedPreferences.Editor
 ) : UtilRepository {
     override fun putDirectorySortOrderPosition(position: Int) =
         editor.putInt(PREFS_KEY_SORT_ORDER_DIRECTORY, position).apply()

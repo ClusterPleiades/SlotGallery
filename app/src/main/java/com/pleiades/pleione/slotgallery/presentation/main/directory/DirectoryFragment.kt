@@ -36,11 +36,11 @@ import com.michaelflisar.dragselectrecyclerview.DragSelectTouchListener
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_COPY_DIRECTORY
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_SORT_DIRECTORY
 import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_DIRECTORY_OVERVIEW
-import com.pleiades.pleione.slotgallery.Config.Companion.REQUEST_RESULT_KEY_COPY_COMPLETE
-import com.pleiades.pleione.slotgallery.Config.Companion.REQUEST_RESULT_KEY_DIRECTORY_OVERVIEW
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_ALL
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_IMAGE
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_VIDEO
+import com.pleiades.pleione.slotgallery.Config.Companion.REQUEST_RESULT_KEY_COPY_COMPLETE
+import com.pleiades.pleione.slotgallery.Config.Companion.REQUEST_RESULT_KEY_DIRECTORY_OVERVIEW
 import com.pleiades.pleione.slotgallery.Config.Companion.REQUEST_RESULT_KEY_SORT_ORDER_DIRECTORY
 import com.pleiades.pleione.slotgallery.Config.Companion.SPAN_COUNT_DIRECTORY
 import com.pleiades.pleione.slotgallery.Config.Companion.URI_DEFAULT_DIRECTORY
@@ -114,7 +114,7 @@ class DirectoryFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?,
+        savedInstanceState: Bundle?
     ): View {
         _binding = FragmentMainBinding.inflate(inflater, container, false)
         return binding.root
@@ -305,12 +305,12 @@ class DirectoryFragment : Fragment() {
         object : DiffUtil.ItemCallback<Directory>() {
             override fun areItemsTheSame(
                 oldItem: Directory,
-                newItem: Directory,
+                newItem: Directory
             ): Boolean = oldItem == newItem
 
             override fun areContentsTheSame(
                 oldItem: Directory,
-                newItem: Directory,
+                newItem: Directory
             ): Boolean = oldItem == newItem
         }
     ) {

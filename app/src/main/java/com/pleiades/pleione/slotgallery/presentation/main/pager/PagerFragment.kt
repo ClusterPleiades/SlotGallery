@@ -1,8 +1,6 @@
 package com.pleiades.pleione.slotgallery.presentation.main.pager
 
 import android.app.Activity
-import android.app.ProgressDialog.show
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -13,7 +11,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
@@ -26,7 +23,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
-import com.pleiades.pleione.slotgallery.Config
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_COPY_MEDIA
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_INFORMATION
 import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_DIRECTORY_OVERVIEW
@@ -37,7 +33,6 @@ import com.pleiades.pleione.slotgallery.Config.Companion.REQUEST_RESULT_MEDIA
 import com.pleiades.pleione.slotgallery.Config.Companion.STORE_URL_EDIT
 import com.pleiades.pleione.slotgallery.Config.Companion.URI_DEFAULT_DIRECTORY
 import com.pleiades.pleione.slotgallery.R
-import com.pleiades.pleione.slotgallery.controller.ContentController
 import com.pleiades.pleione.slotgallery.databinding.FragmentPagerBinding
 import com.pleiades.pleione.slotgallery.domain.model.DirectoryOverview
 import com.pleiades.pleione.slotgallery.presentation.choice.ChoiceActivity
@@ -106,7 +101,7 @@ class PagerFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?,
+        savedInstanceState: Bundle?
     ): View {
         _binding = FragmentPagerBinding.inflate(inflater, container, false)
         return binding.root
@@ -202,11 +197,11 @@ class PagerFragment : Fragment() {
 //                val intentSenderRequest = IntentSenderRequest.Builder(pendingIntent.intentSender).build()
 //
 //                // launch intent sender request
-////                renameResultLauncher.launch(intentSenderRequest)
+// //                renameResultLauncher.launch(intentSenderRequest)
 //            }
 //            R.id.cancel -> {
-////                binding.appbar.title.setText(fragmentViewModel.currentMedia.name)
-////                binding.appbar.title.clearFocus()
+// //                binding.appbar.title.setText(fragmentViewModel.currentMedia.name)
+// //                binding.appbar.title.clearFocus()
 //
 //                val inputMethodManager =
 //                    requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -275,7 +270,7 @@ class PagerFragment : Fragment() {
 
     inner class ImageFragmentStateAdapter(
         fragmentManager: FragmentManager,
-        lifecycle: Lifecycle,
+        lifecycle: Lifecycle
     ) : FragmentStateAdapter(fragmentManager, lifecycle) {
         override fun createFragment(position: Int): Fragment =
             PageFragment().apply {

@@ -5,7 +5,7 @@ import com.pleiades.pleione.slotgallery.domain.repository.WindowRepository
 import javax.inject.Inject
 
 class WindowRepositoryImpl @Inject constructor(
-    private val resources: Resources,
+    private val resources: Resources
 ) : WindowRepository {
     override fun getWidth() = resources.displayMetrics.widthPixels
 }
