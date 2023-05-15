@@ -15,7 +15,7 @@ import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_URI
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.databinding.FragmentPageBinding
 import com.pleiades.pleione.slotgallery.presentation.main.pager.page.image.ImageActivity
-import com.pleiades.pleione.slotgallery.ui.media.video.VideoActivity
+import com.pleiades.pleione.slotgallery.presentation.main.pager.page.video.VideoActivity
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.concurrent.TimeUnit
 

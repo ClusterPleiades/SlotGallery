@@ -114,7 +114,7 @@ class DirectoryFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentMainBinding.inflate(inflater, container, false)
         return binding.root
@@ -178,7 +178,11 @@ class DirectoryFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 fragmentViewModel.state.collect { state ->
                     requireActivity().title =
-                        state.selectedPositionSet.size.toString() + "/" + listAdapter.itemCount
+                        if (fragmentViewModel.isSelecting) {
+                            state.selectedPositionSet.size.toString() + "/" + listAdapter.itemCount
+                        } else {
+                            ""
+                        }
                     listAdapter.notifyItemRangeChanged(0, listAdapter.itemCount)
                 }
             }
@@ -198,7 +202,6 @@ class DirectoryFragment : Fragment() {
             inflater.inflate(R.menu.menu_directory_select, menu)
             (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
         } else {
-            requireActivity().title = ""
             inflater.inflate(R.menu.menu_directory, menu)
             (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
         }
@@ -305,12 +308,12 @@ class DirectoryFragment : Fragment() {
         object : DiffUtil.ItemCallback<Directory>() {
             override fun areItemsTheSame(
                 oldItem: Directory,
-                newItem: Directory
+                newItem: Directory,
             ): Boolean = oldItem == newItem
 
             override fun areContentsTheSame(
                 oldItem: Directory,
-                newItem: Directory
+                newItem: Directory,
             ): Boolean = oldItem == newItem
         }
     ) {
