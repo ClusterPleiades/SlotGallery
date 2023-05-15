@@ -1,9 +1,11 @@
 package com.pleiades.pleione.slotgallery.presentation.main.pager.page.image
 
 import android.os.Bundle
-import android.view.WindowInsets
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.pleiades.pleione.slotgallery.databinding.ActivityImageBinding
@@ -20,7 +22,11 @@ class ImageActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // full screen
-        window.insetsController?.hide(WindowInsets.Type.statusBars() or WindowInsets.Type.navigationBars())
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        WindowInsetsControllerCompat(window, window.decorView.rootView).let { controller ->
+            controller.hide(WindowInsetsCompat.Type.systemBars())
+            controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        }
 
         // photo
         Glide.with(this)

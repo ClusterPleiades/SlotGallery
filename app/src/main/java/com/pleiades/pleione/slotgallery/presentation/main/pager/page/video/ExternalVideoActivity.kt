@@ -1,5 +1,6 @@
 package com.pleiades.pleione.slotgallery.presentation.main.pager.page.video
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.net.Uri
@@ -30,6 +31,7 @@ class ExternalVideoActivity : AppCompatActivity() {
     private var isFull = false
     private var isRotated = false
 
+    @SuppressLint("DiscouragedApi", "InternalInsetResource")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityVideoBinding.inflate(layoutInflater)

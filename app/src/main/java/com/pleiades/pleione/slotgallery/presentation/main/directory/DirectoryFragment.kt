@@ -114,7 +114,7 @@ class DirectoryFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?,
+        savedInstanceState: Bundle?
     ): View {
         _binding = FragmentMainBinding.inflate(inflater, container, false)
         return binding.root
@@ -308,12 +308,12 @@ class DirectoryFragment : Fragment() {
         object : DiffUtil.ItemCallback<Directory>() {
             override fun areItemsTheSame(
                 oldItem: Directory,
-                newItem: Directory,
+                newItem: Directory
             ): Boolean = oldItem == newItem
 
             override fun areContentsTheSame(
                 oldItem: Directory,
-                newItem: Directory,
+                newItem: Directory
             ): Boolean = oldItem == newItem
         }
     ) {
