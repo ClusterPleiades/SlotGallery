@@ -77,7 +77,6 @@ class Config {
         const val MIME_TYPE_ALL = "*/*"
         const val FORMAT_DATE = "yyyy-MM-dd"
         const val FORMAT_TIME = "HH:mm"
-        const val NAME_DUMMY = "empty.png"
         const val PACKAGE_NAME_EDIT = "com.niksoftware.snapseed"
         const val STORE_URL_EDIT = "https://play.google.com/store/apps/details?id=com.niksoftware.snapseed"
         const val URI_DEFAULT_DIRECTORY = "default_uri"

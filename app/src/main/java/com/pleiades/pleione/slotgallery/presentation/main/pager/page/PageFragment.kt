@@ -14,6 +14,7 @@ import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_NAME
 import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_URI
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.databinding.FragmentPageBinding
+import com.pleiades.pleione.slotgallery.presentation.main.pager.page.image.ImageActivity
 import com.pleiades.pleione.slotgallery.ui.media.video.VideoActivity
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.concurrent.TimeUnit
@@ -41,16 +42,13 @@ class PageFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // initialize views
-//        binding.photoImage.setOnClickListener { (activity as MediaActivity).fullImage() }
-
         // image
         Glide.with(requireContext())
             .load(fragmentViewModel.media.uri)
             .transition(DrawableTransitionOptions.withCrossFade())
             .into(binding.image)
 
-        // video
+        // case video
         if (fragmentViewModel.media.isVideo) {
             binding.play.visibility = View.VISIBLE
             binding.time.visibility = View.VISIBLE
@@ -71,6 +69,16 @@ class PageFragment : Fragment() {
                 val intent = Intent(context, VideoActivity::class.java)
                 intent.putExtra(INTENT_EXTRA_NAME, fragmentViewModel.media.name)
                 intent.putExtra(INTENT_EXTRA_URI, fragmentViewModel.media.uri.toString())
+                startActivity(intent)
+            }
+        }
+        // case image
+        else {
+            binding.image.setOnClickListener {
+                val intent = Intent(context, ImageActivity::class.java).apply {
+                    putExtra(INTENT_EXTRA_URI, fragmentViewModel.media.uri)
+                }
+
                 startActivity(intent)
             }
         }
