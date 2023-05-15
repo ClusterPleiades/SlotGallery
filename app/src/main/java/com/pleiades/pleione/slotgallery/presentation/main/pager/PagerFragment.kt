@@ -126,6 +126,9 @@ class PagerFragment : Fragment() {
             it.directoryOverview == fragmentViewModel.directoryOverview
         }
 
+        // title
+        requireActivity().title = fragmentViewModel.currentMedia.name
+
         // pager
         contentsPagerAdapter = ImageFragmentStateAdapter(requireActivity().supportFragmentManager, lifecycle)
         with(binding.pager) {

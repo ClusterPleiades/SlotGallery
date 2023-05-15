@@ -2,12 +2,14 @@ package com.pleiades.pleione.slotgallery.presentation.main.dialog.edit
 
 import android.app.Activity
 import android.app.Dialog
+import android.content.Context
 import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
@@ -20,6 +22,7 @@ import com.pleiades.pleione.slotgallery.Config.Companion.REQUEST_RESULT_KEY_RENA
 import com.pleiades.pleione.slotgallery.databinding.FragmentDialogEditBinding
 import com.pleiades.pleione.slotgallery.presentation.dialog.setLayoutSize
 import dagger.hilt.android.AndroidEntryPoint
+
 
 @AndroidEntryPoint
 class EditDialogFragment(private val type: Int) : androidx.fragment.app.DialogFragment() {
