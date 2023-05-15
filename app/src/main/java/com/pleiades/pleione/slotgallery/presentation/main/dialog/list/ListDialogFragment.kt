@@ -27,12 +27,10 @@ import com.pleiades.pleione.slotgallery.Config.Companion.INFORMATION_POSITION_TI
 import com.pleiades.pleione.slotgallery.Config.Companion.INFORMATION_POSITION_WIDTH
 import com.pleiades.pleione.slotgallery.Config.Companion.REQUEST_RESULT_KEY_SORT_ORDER_DIRECTORY
 import com.pleiades.pleione.slotgallery.Config.Companion.REQUEST_RESULT_KEY_SORT_ORDER_DIRECTORY_INSIDE
-import com.pleiades.pleione.slotgallery.Config.Companion.REQUEST_RESULT_MEDIA
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.databinding.FragmentDialogListBinding
 import com.pleiades.pleione.slotgallery.databinding.ItemDialogInformationBinding
 import com.pleiades.pleione.slotgallery.databinding.ItemDialogRadioBinding
-import com.pleiades.pleione.slotgallery.domain.model.Media
 import com.pleiades.pleione.slotgallery.presentation.dialog.setLayoutSize
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
@@ -115,7 +113,7 @@ class ListDialogFragment(private val type: Int) : androidx.fragment.app.DialogFr
                 title.text = resources.getStringArray(R.array.information)[position]
 
                 // content
-                arguments?.getParcelable(REQUEST_RESULT_MEDIA, Media::class.java)?.let {
+                fragmentViewModel.media?.let {
                     content.text =
                         when (position) {
                             INFORMATION_POSITION_NAME -> it.name
@@ -195,10 +193,10 @@ class ListDialogFragment(private val type: Int) : androidx.fragment.app.DialogFr
                 text = resources.getStringArray(R.array.sort)[position]
                 isChecked =
                     position == when (type) {
-                    DIALOG_TYPE_SORT_DIRECTORY -> fragmentViewModel.getDirectorySortOrderPosition()
-                    DIALOG_TYPE_SORT_DIRECTORY_INSIDE -> fragmentViewModel.getMediaSortOrderPosition()
-                    else -> 0
-                }
+                        DIALOG_TYPE_SORT_DIRECTORY -> fragmentViewModel.getDirectorySortOrderPosition()
+                        DIALOG_TYPE_SORT_DIRECTORY_INSIDE -> fragmentViewModel.getMediaSortOrderPosition()
+                        else -> 0
+                    }
             }
         }
 
