@@ -19,6 +19,7 @@ class Config {
         const val DIALOG_TYPE_INFORMATION = 12
         const val DIALOG_TYPE_COPY_DIRECTORY = 20
         const val DIALOG_TYPE_COPY_MEDIA = 21
+        const val DIALOG_TYPE_RENAME_MEDIA = 30
         const val DIALOG_WIDTH_PERCENTAGE_DEFAULT = 0.85
         const val DIALOG_WIDTH_PERCENTAGE_RECYCLER = 0.65
 
@@ -37,6 +38,7 @@ class Config {
         const val REQUEST_RESULT_KEY_COPY_COMPLETE = "copy_complete"
         const val REQUEST_RESULT_KEY_SORT_ORDER_DIRECTORY = "sort_order_directory"
         const val REQUEST_RESULT_KEY_SORT_ORDER_DIRECTORY_INSIDE = "sort_order_directory"
+        const val REQUEST_RESULT_KEY_RENAME_COMPLETE = "rename_complete"
 
         // list
         const val SPAN_COUNT_DIRECTORY = 2

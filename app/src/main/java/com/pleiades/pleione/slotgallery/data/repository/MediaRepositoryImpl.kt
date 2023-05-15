@@ -1,6 +1,7 @@
 package com.pleiades.pleione.slotgallery.data.repository
 
 import android.content.ContentResolver
+import android.content.ContentValues
 import android.content.Context
 import android.content.SharedPreferences
 import android.media.MediaScannerConnection
@@ -32,7 +33,7 @@ import javax.inject.Inject
 class MediaRepositoryImpl @Inject constructor(
     private val applicationContext: Context,
     private val sharedPreferences: SharedPreferences,
-    private val contentResolver: ContentResolver
+    private val contentResolver: ContentResolver,
 ) : MediaRepository {
     override fun getDirectoryList(selectedSlot: Slot): List<Directory> {
         val directoryMutableList = mutableListOf<Directory>()
@@ -62,7 +63,7 @@ class MediaRepositoryImpl @Inject constructor(
         fromDirectoryList: List<Directory>,
         toDirectory: Directory,
         setMaxProgress: (Int) -> Unit,
-        setProgress: () -> Unit
+        setProgress: () -> Unit,
     ) {
         val maxProgress = fromDirectoryList.sumOf { it.mediaMutableList.size }
         setMaxProgress(maxProgress)
@@ -70,14 +71,16 @@ class MediaRepositoryImpl @Inject constructor(
         val toDirectoryPath = toDirectory.directoryOverview
         val toDirectoryRootUri = Uri.parse(toDirectoryPath.uri)
         val toDirectoryRootLastPath = toDirectoryRootUri.lastPathSegment ?: return
-        var toDirectoryDocumentFile = DocumentFile.fromTreeUri(applicationContext, toDirectoryRootUri) ?: return
+        var toDirectoryDocumentFile =
+            DocumentFile.fromTreeUri(applicationContext, toDirectoryRootUri) ?: return
         if (toDirectoryPath.lastPath != toDirectoryRootLastPath) {
-            val toDirectoryRelativePathList = toDirectoryPath.lastPath.substringAfter("$toDirectoryRootLastPath/").split("/")
+            val toDirectoryRelativePathList =
+                toDirectoryPath.lastPath.substringAfter("$toDirectoryRootLastPath/").split("/")
             for (toDirectoryRelativePath in toDirectoryRelativePathList) {
                 toDirectoryDocumentFile =
                     toDirectoryDocumentFile.findFile(toDirectoryRelativePath)
                         ?: toDirectoryDocumentFile.createDirectory(toDirectoryRelativePath)
-                        ?: return
+                                ?: return
             }
         }
         val toDirectoryFileNameMutableSet = mutableSetOf<String>()
@@ -115,7 +118,8 @@ class MediaRepositoryImpl @Inject constructor(
                     try {
                         val inputStream = contentResolver.openInputStream(media.uri) ?: return@withContext
                         val bufferedInputStream = BufferedInputStream(inputStream)
-                        val outputStream = contentResolver.openOutputStream(mediaDocumentFile.uri) ?: return@withContext
+                        val outputStream =
+                            contentResolver.openOutputStream(mediaDocumentFile.uri) ?: return@withContext
                         val bufferedOutputStream = BufferedOutputStream(outputStream)
 
                         var read: Int
@@ -150,7 +154,7 @@ class MediaRepositoryImpl @Inject constructor(
         mediaList: List<Media>,
         toDirectory: Directory,
         setMaxProgress: (Int) -> Unit,
-        setProgress: () -> Unit
+        setProgress: () -> Unit,
     ) {
         val maxProgress = mediaList.size
         setMaxProgress(maxProgress)
@@ -158,14 +162,16 @@ class MediaRepositoryImpl @Inject constructor(
         val toDirectoryPath = toDirectory.directoryOverview
         val toDirectoryRootUri = Uri.parse(toDirectoryPath.uri)
         val toDirectoryRootLastPath = toDirectoryRootUri.lastPathSegment ?: return
-        var toDirectoryDocumentFile = DocumentFile.fromTreeUri(applicationContext, toDirectoryRootUri) ?: return
+        var toDirectoryDocumentFile =
+            DocumentFile.fromTreeUri(applicationContext, toDirectoryRootUri) ?: return
         if (toDirectoryPath.lastPath != toDirectoryRootLastPath) {
-            val toDirectoryRelativePathList = toDirectoryPath.lastPath.substringAfter("$toDirectoryRootLastPath/").split("/")
+            val toDirectoryRelativePathList =
+                toDirectoryPath.lastPath.substringAfter("$toDirectoryRootLastPath/").split("/")
             for (toDirectoryRelativePath in toDirectoryRelativePathList)
                 toDirectoryDocumentFile =
                     toDirectoryDocumentFile.findFile(toDirectoryRelativePath)
                         ?: toDirectoryDocumentFile.createDirectory(toDirectoryRelativePath)
-                        ?: return
+                                ?: return
         }
         val toDirectoryFileNameMutableSet = mutableSetOf<String>()
         for (documentFile in toDirectoryDocumentFile.listFiles()) {
@@ -201,7 +207,8 @@ class MediaRepositoryImpl @Inject constructor(
                 try {
                     val inputStream = contentResolver.openInputStream(media.uri) ?: return@withContext
                     val bufferedInputStream = BufferedInputStream(inputStream)
-                    val outputStream = contentResolver.openOutputStream(mediaDocumentFile.uri) ?: return@withContext
+                    val outputStream =
+                        contentResolver.openOutputStream(mediaDocumentFile.uri) ?: return@withContext
                     val bufferedOutputStream = BufferedOutputStream(outputStream)
 
                     var read: Int
@@ -231,10 +238,30 @@ class MediaRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun renameMedia(
+        media: Media,
+        toName: String,
+    ) {
+        // initialize content values
+        val values = ContentValues().apply {
+            put(
+                if (media.isVideo) {
+                    MediaStore.Video.Media.DISPLAY_NAME
+                } else {
+                    MediaStore.Images.Media.DISPLAY_NAME
+                },
+                toName
+            )
+        }
+
+        // update physical content
+        contentResolver.update(media.uri, values, null, null)
+    }
+
     private fun addDirectory(
         directoryMutableList: MutableList<Directory>,
         isSubDirectoryAllowed: Boolean,
-        directoryOverview: DirectoryOverview
+        directoryOverview: DirectoryOverview,
     ) {
         val directory = Directory(directoryOverview)
         val directoryRelativePath = directoryOverview.lastPath.substringAfter(":") + "/"
@@ -297,7 +324,11 @@ class MediaRepositoryImpl @Inject constructor(
                 val uri = Uri.withAppendedPath(imageUri, id.toString())
 
                 if (isSubDirectoryAllowed && relativePath != directoryRelativePath) {
-                    subDirectoryLastPathMutableSet.add(directoryOverview.lastPath.substringBefore(":") + ":" + relativePath.substringBeforeLast("/"))
+                    subDirectoryLastPathMutableSet.add(
+                        directoryOverview.lastPath.substringBefore(":") + ":" + relativePath.substringBeforeLast(
+                            "/"
+                        )
+                    )
                 } else {
                     directory.mediaMutableList.add(
                         Media(
@@ -382,7 +413,11 @@ class MediaRepositoryImpl @Inject constructor(
                     }
 
                 if (isSubDirectoryAllowed && relativePath != directoryRelativePath) {
-                    subDirectoryLastPathMutableSet.add(directoryOverview.lastPath.substringBefore(":") + ":" + relativePath.substringBeforeLast("/"))
+                    subDirectoryLastPathMutableSet.add(
+                        directoryOverview.lastPath.substringBefore(":") + ":" + relativePath.substringBeforeLast(
+                            "/"
+                        )
+                    )
                 } else {
                     directory.mediaMutableList.add(
                         Media(

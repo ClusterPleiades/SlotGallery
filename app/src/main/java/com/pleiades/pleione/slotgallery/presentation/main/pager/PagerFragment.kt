@@ -25,10 +25,12 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_COPY_MEDIA
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_INFORMATION
+import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_RENAME_MEDIA
 import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_DIRECTORY_OVERVIEW
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_IMAGE
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_VIDEO
 import com.pleiades.pleione.slotgallery.Config.Companion.PACKAGE_NAME_EDIT
+import com.pleiades.pleione.slotgallery.Config.Companion.REQUEST_RESULT_KEY_RENAME_COMPLETE
 import com.pleiades.pleione.slotgallery.Config.Companion.REQUEST_RESULT_MEDIA
 import com.pleiades.pleione.slotgallery.Config.Companion.STORE_URL_EDIT
 import com.pleiades.pleione.slotgallery.Config.Companion.URI_DEFAULT_DIRECTORY
@@ -38,6 +40,7 @@ import com.pleiades.pleione.slotgallery.domain.model.DirectoryOverview
 import com.pleiades.pleione.slotgallery.presentation.choice.ChoiceActivity
 import com.pleiades.pleione.slotgallery.presentation.main.MainActivity
 import com.pleiades.pleione.slotgallery.presentation.main.MainViewModel
+import com.pleiades.pleione.slotgallery.presentation.main.dialog.edit.EditDialogFragment
 import com.pleiades.pleione.slotgallery.presentation.main.dialog.list.ListDialogFragment
 import com.pleiades.pleione.slotgallery.presentation.main.dialog.progress.ProgressDialogFragment
 import com.pleiades.pleione.slotgallery.presentation.main.pager.page.PageFragment
@@ -76,7 +79,7 @@ class PagerFragment : Fragment() {
                 }
             }
         }
-    private val editResultLauncher =
+    private val editResultLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
             if (result.resultCode == Activity.RESULT_OK) {
                 Toast.makeText(requireContext(), R.string.message_snapseed, Toast.LENGTH_SHORT).show()
@@ -101,7 +104,7 @@ class PagerFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentPagerBinding.inflate(inflater, container, false)
         return binding.root
@@ -141,6 +144,17 @@ class PagerFragment : Fragment() {
                 }
             })
         }
+
+        // fragment result listener
+        requireActivity().supportFragmentManager.setFragmentResultListener(
+            REQUEST_RESULT_KEY_RENAME_COMPLETE,
+            viewLifecycleOwner
+        ) { _: String, bundle: Bundle ->
+            val name = bundle.getString(REQUEST_RESULT_KEY_RENAME_COMPLETE, "")
+
+            fragmentViewModel.directory.mediaMutableList[fragmentViewModel.currentPosition].name = name
+            requireActivity().title = name
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -156,6 +170,11 @@ class PagerFragment : Fragment() {
 
             R.id.share -> {
                 share()
+                return true
+            }
+
+            R.id.rename -> {
+                rename()
                 return true
             }
 
@@ -188,27 +207,6 @@ class PagerFragment : Fragment() {
                 )
                 return true
             }
-//            R.id.rename -> {
-//                val pendingIntent =
-//                    MediaStore.createWriteRequest(
-//                        requireContext().contentResolver,
-//                        setOf(fragmentViewModel.currentMedia.uri)
-//                    )
-//                val intentSenderRequest = IntentSenderRequest.Builder(pendingIntent.intentSender).build()
-//
-//                // launch intent sender request
-// //                renameResultLauncher.launch(intentSenderRequest)
-//            }
-//            R.id.cancel -> {
-// //                binding.appbar.title.setText(fragmentViewModel.currentMedia.name)
-// //                binding.appbar.title.clearFocus()
-//
-//                val inputMethodManager =
-//                    requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-//                inputMethodManager.hideSoftInputFromWindow(requireActivity().currentFocus?.windowToken, 0)
-//
-//                return true
-//            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -225,6 +223,20 @@ class PagerFragment : Fragment() {
                 }
         }
         startActivity(Intent.createChooser(intent, getString(R.string.action_share)))
+    }
+
+    private fun rename() {
+        EditDialogFragment(DIALOG_TYPE_RENAME_MEDIA).apply {
+            arguments = Bundle().apply {
+                putParcelable(
+                    REQUEST_RESULT_MEDIA,
+                    fragmentViewModel.currentMedia
+                )
+            }
+        }.show(
+            requireActivity().supportFragmentManager,
+            DIALOG_TYPE_RENAME_MEDIA.toString()
+        )
     }
 
     private fun edit() {
@@ -263,14 +275,17 @@ class PagerFragment : Fragment() {
                 requireContext().contentResolver,
                 setOf(fragmentViewModel.currentMedia.uri)
             )
-        val intentSenderRequest = IntentSenderRequest.Builder(pendingIntent.intentSender).build()
+        val intentSenderRequest =
+            IntentSenderRequest
+                .Builder(pendingIntent.intentSender)
+                .build()
 
         deleteResultLauncher.launch(intentSenderRequest)
     }
 
     inner class ImageFragmentStateAdapter(
         fragmentManager: FragmentManager,
-        lifecycle: Lifecycle
+        lifecycle: Lifecycle,
     ) : FragmentStateAdapter(fragmentManager, lifecycle) {
         override fun createFragment(position: Int): Fragment =
             PageFragment().apply {
