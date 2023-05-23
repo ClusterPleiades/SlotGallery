@@ -13,12 +13,11 @@
         app:contentInsetStartWithNavigation="0dp">
 
         <EditText
-            android:id="@+id/title_appbar"
+            android:id="@+id/title"
             android:layout_width="wrap_content"
             android:singleLine="true"
             android:layout_height="wrap_content"
             android:textSize="@dimen/text_size_huge"
             tools:ignore="Autofill,LabelFor,TextFields" />
     </androidx.appcompat.widget.Toolbar>
-
 </com.google.android.material.appbar.AppBarLayout>

@@ -12,5 +12,4 @@
         android:theme="@style/AppTheme.ToolbarThemeDark"
         app:contentInsetStartWithNavigation="0dp"
         app:titleTextAppearance="@style/AppTheme.ToolbarTitleTextAppearanceDark" />
-
 </com.google.android.material.appbar.AppBarLayout>

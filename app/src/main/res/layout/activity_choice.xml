@@ -5,12 +5,11 @@
     android:orientation="vertical">
 
     <include
-        android:id="@+id/appbar_choice"
+        android:id="@+id/appbar"
         layout="@layout/layout_appbar_light" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_choice"
+        android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
 </androidx.appcompat.widget.LinearLayoutCompat>
