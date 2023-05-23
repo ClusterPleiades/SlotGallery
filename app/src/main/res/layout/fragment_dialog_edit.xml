@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/drawable_round"
     android:orientation="vertical">
 
-    <ProgressBar
-        android:id="@+id/progress_bar"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+    <EditText
+        android:id="@+id/edit"
         android:layout_width="match_parent"
-        android:layout_height="4dp"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:lineSpacingMultiplier="1.2"
         android:layout_marginStart="@dimen/margin_large"
-        android:layout_marginTop="@dimen/margin_large"
+        android:paddingTop="@dimen/margin_large"
         android:layout_marginEnd="@dimen/margin_large"
-        android:layout_marginBottom="@dimen/margin_default"
-        android:progress="0"
-        android:progressDrawable="@drawable/drawable_progress" />
+        android:paddingBottom="@dimen/margin_default"
+        android:autofillHints=""
+        tools:ignore="LabelFor" />
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
@@ -35,6 +37,19 @@
             android:paddingEnd="@dimen/margin_default"
             android:paddingBottom="@dimen/margin_small"
             android:text="@string/dialog_cancel"
+            android:textColor="@color/color_blue" />
+
+        <TextView
+            android:id="@+id/positive_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/margin_small"
+            android:background="@drawable/drawable_round_ripple"
+            android:paddingStart="@dimen/margin_default"
+            android:paddingTop="@dimen/margin_small"
+            android:paddingEnd="@dimen/margin_default"
+            android:paddingBottom="@dimen/margin_small"
+            android:text="@string/dialog_confirm"
             android:textColor="@color/color_blue" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 </androidx.appcompat.widget.LinearLayoutCompat>

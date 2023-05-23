@@ -1,16 +1,17 @@
 package com.pleiades.pleione.slotgallery.data.repository
 
 import android.content.ContentResolver
+import android.content.ContentValues
 import android.content.Context
 import android.content.SharedPreferences
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.provider.MediaStore
 import androidx.documentfile.provider.DocumentFile
-import com.pleiades.pleione.slotgallery.Config.Companion.PREFS_KEY_SORT_ORDER_DIRECTORY
-import com.pleiades.pleione.slotgallery.Config.Companion.PREFS_KEY_SORT_ORDER_DIRECTORY_INSIDE
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_IMAGE
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_VIDEO
+import com.pleiades.pleione.slotgallery.Config.Companion.PREFS_KEY_SORT_ORDER_DIRECTORY
+import com.pleiades.pleione.slotgallery.Config.Companion.PREFS_KEY_SORT_ORDER_DIRECTORY_INSIDE
 import com.pleiades.pleione.slotgallery.Config.Companion.PREFS_VALUE_SORT_POSITION_BY_NAME
 import com.pleiades.pleione.slotgallery.Config.Companion.PREFS_VALUE_SORT_POSITION_BY_NEWEST
 import com.pleiades.pleione.slotgallery.Config.Companion.PREFS_VALUE_SORT_POSITION_BY_OLDEST
@@ -29,7 +30,7 @@ import java.text.CharacterIterator
 import java.text.StringCharacterIterator
 import javax.inject.Inject
 
-class DefaultMediaRepository @Inject constructor(
+class MediaRepositoryImpl @Inject constructor(
     private val applicationContext: Context,
     private val sharedPreferences: SharedPreferences,
     private val contentResolver: ContentResolver
@@ -62,17 +63,19 @@ class DefaultMediaRepository @Inject constructor(
         fromDirectoryList: List<Directory>,
         toDirectory: Directory,
         setMaxProgress: (Int) -> Unit,
-        progress: () -> Unit
+        setProgress: () -> Unit
     ) {
-        val maxProgress = fromDirectoryList.map { it.mediaMutableList.size }.sum()
+        val maxProgress = fromDirectoryList.sumOf { it.mediaMutableList.size }
         setMaxProgress(maxProgress)
 
         val toDirectoryPath = toDirectory.directoryOverview
         val toDirectoryRootUri = Uri.parse(toDirectoryPath.uri)
         val toDirectoryRootLastPath = toDirectoryRootUri.lastPathSegment ?: return
-        var toDirectoryDocumentFile = DocumentFile.fromTreeUri(applicationContext, toDirectoryRootUri) ?: return
+        var toDirectoryDocumentFile =
+            DocumentFile.fromTreeUri(applicationContext, toDirectoryRootUri) ?: return
         if (toDirectoryPath.lastPath != toDirectoryRootLastPath) {
-            val toDirectoryRelativePathList = toDirectoryPath.lastPath.substringAfter("$toDirectoryRootLastPath/").split("/")
+            val toDirectoryRelativePathList =
+                toDirectoryPath.lastPath.substringAfter("$toDirectoryRootLastPath/").split("/")
             for (toDirectoryRelativePath in toDirectoryRelativePathList) {
                 toDirectoryDocumentFile =
                     toDirectoryDocumentFile.findFile(toDirectoryRelativePath)
@@ -115,7 +118,8 @@ class DefaultMediaRepository @Inject constructor(
                     try {
                         val inputStream = contentResolver.openInputStream(media.uri) ?: return@withContext
                         val bufferedInputStream = BufferedInputStream(inputStream)
-                        val outputStream = contentResolver.openOutputStream(mediaDocumentFile.uri) ?: return@withContext
+                        val outputStream =
+                            contentResolver.openOutputStream(mediaDocumentFile.uri) ?: return@withContext
                         val bufferedOutputStream = BufferedOutputStream(outputStream)
 
                         var read: Int
@@ -139,7 +143,7 @@ class DefaultMediaRepository @Inject constructor(
                     } catch (ioException: IOException) {
                         ioException.printStackTrace()
                     } finally {
-                        progress()
+                        setProgress()
                     }
                 }
             }
@@ -147,18 +151,22 @@ class DefaultMediaRepository @Inject constructor(
     }
 
     override suspend fun copyMedia(
-        fromDirectory: Directory,
+        mediaList: List<Media>,
         toDirectory: Directory,
-        mediaSet: Set<Media>
+        setMaxProgress: (Int) -> Unit,
+        setProgress: () -> Unit
     ) {
-        // TODO set progressbar attributes
+        val maxProgress = mediaList.size
+        setMaxProgress(maxProgress)
 
         val toDirectoryPath = toDirectory.directoryOverview
         val toDirectoryRootUri = Uri.parse(toDirectoryPath.uri)
         val toDirectoryRootLastPath = toDirectoryRootUri.lastPathSegment ?: return
-        var toDirectoryDocumentFile = DocumentFile.fromTreeUri(applicationContext, toDirectoryRootUri) ?: return
+        var toDirectoryDocumentFile =
+            DocumentFile.fromTreeUri(applicationContext, toDirectoryRootUri) ?: return
         if (toDirectoryPath.lastPath != toDirectoryRootLastPath) {
-            val toDirectoryRelativePathList = toDirectoryPath.lastPath.substringAfter("$toDirectoryRootLastPath/").split("/")
+            val toDirectoryRelativePathList =
+                toDirectoryPath.lastPath.substringAfter("$toDirectoryRootLastPath/").split("/")
             for (toDirectoryRelativePath in toDirectoryRelativePathList)
                 toDirectoryDocumentFile =
                     toDirectoryDocumentFile.findFile(toDirectoryRelativePath)
@@ -170,9 +178,7 @@ class DefaultMediaRepository @Inject constructor(
             documentFile.name?.let { toDirectoryFileNameMutableSet.add(it) }
         }
 
-        for (media in fromDirectory.mediaMutableList) {
-            // TODO break if progress dialog canceled
-
+        for (media in mediaList) {
             val preName = media.name.substringBeforeLast(".")
             val postName = media.name.substringAfterLast(".")
             val isValidFormat = preName != postName
@@ -201,7 +207,8 @@ class DefaultMediaRepository @Inject constructor(
                 try {
                     val inputStream = contentResolver.openInputStream(media.uri) ?: return@withContext
                     val bufferedInputStream = BufferedInputStream(inputStream)
-                    val outputStream = contentResolver.openOutputStream(mediaDocumentFile.uri) ?: return@withContext
+                    val outputStream =
+                        contentResolver.openOutputStream(mediaDocumentFile.uri) ?: return@withContext
                     val bufferedOutputStream = BufferedOutputStream(outputStream)
 
                     var read: Int
@@ -224,15 +231,31 @@ class DefaultMediaRepository @Inject constructor(
                     )
                 } catch (ioException: IOException) {
                     ioException.printStackTrace()
+                } finally {
+                    setProgress()
                 }
             }
+        }
+    }
 
-            // TODO improve progress
+    override suspend fun renameMedia(
+        media: Media,
+        toName: String
+    ) {
+        // initialize content values
+        val values = ContentValues().apply {
+            put(
+                if (media.isVideo) {
+                    MediaStore.Video.Media.DISPLAY_NAME
+                } else {
+                    MediaStore.Images.Media.DISPLAY_NAME
+                },
+                toName
+            )
         }
 
-        // TODO
-//        progressDialogFragment.setFragmentResult()
-//        progressDialogFragment.dismiss()
+        // update physical content
+        contentResolver.update(media.uri, values, null, null)
     }
 
     private fun addDirectory(
@@ -301,7 +324,11 @@ class DefaultMediaRepository @Inject constructor(
                 val uri = Uri.withAppendedPath(imageUri, id.toString())
 
                 if (isSubDirectoryAllowed && relativePath != directoryRelativePath) {
-                    subDirectoryLastPathMutableSet.add(directoryOverview.lastPath.substringBefore(":") + ":" + relativePath.substringBeforeLast("/"))
+                    subDirectoryLastPathMutableSet.add(
+                        directoryOverview.lastPath.substringBefore(":") + ":" + relativePath.substringBeforeLast(
+                            "/"
+                        )
+                    )
                 } else {
                     directory.mediaMutableList.add(
                         Media(
@@ -386,7 +413,11 @@ class DefaultMediaRepository @Inject constructor(
                     }
 
                 if (isSubDirectoryAllowed && relativePath != directoryRelativePath) {
-                    subDirectoryLastPathMutableSet.add(directoryOverview.lastPath.substringBefore(":") + ":" + relativePath.substringBeforeLast("/"))
+                    subDirectoryLastPathMutableSet.add(
+                        directoryOverview.lastPath.substringBefore(":") + ":" + relativePath.substringBeforeLast(
+                            "/"
+                        )
+                    )
                 } else {
                     directory.mediaMutableList.add(
                         Media(

@@ -28,11 +28,16 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '17'
+    }
+    tasks.withType(org.jetbrains.kotlin.gradle.internal.KaptGenerateStubsTask) {
+        kotlinOptions {
+            jvmTarget = '17'
+        }
     }
     buildFeatures {
         viewBinding true
@@ -45,6 +50,8 @@ android {
             useJUnitPlatform()
         }
     }
+    namespace 'com.pleiades.pleione.slotgallery'
+    buildToolsVersion '33.0.1'
 }
 
 tasks.check {
@@ -61,18 +68,18 @@ task installKotlinterPrePushHook(type: Copy) {
 }
 
 dependencies {
-    implementation 'androidx.core:core-ktx:1.9.0'
+    implementation 'androidx.core:core-ktx:1.10.1'
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.8.0'
+    implementation 'com.google.android.material:material:1.9.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'androidx.core:core-ktx:1.9.0'
+    implementation 'androidx.core:core-ktx:1.10.1'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     androidTestImplementation 'androidx.test:core:1.5.0'
 
     // coroutine life cycle scope
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.6.0"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.6.1"
 
     // data store
     implementation "androidx.datastore:datastore-preferences:1.0.0"
@@ -81,25 +88,25 @@ dependencies {
     implementation 'com.github.MFlisar:DragSelectRecyclerView:0.3'
 
     // glide
-    implementation 'com.github.bumptech.glide:glide:4.14.2'
-    kapt 'com.github.bumptech.glide:compiler:4.14.2'
+    implementation 'com.github.bumptech.glide:glide:4.15.1'
+    kapt 'com.github.bumptech.glide:compiler:4.15.1'
 
     // gson
-    implementation 'com.google.code.gson:gson:2.9.1'
+    implementation 'com.google.code.gson:gson:2.10.1'
 
     // hilt
-    implementation "com.google.dagger:hilt-android:2.44.2"
-    kapt "com.google.dagger:hilt-compiler:2.44"
+    implementation 'com.google.dagger:hilt-android:2.46.1'
+    kapt 'com.google.dagger:hilt-compiler:2.46.1'
 
     // photo view
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
 
     // video player
-    implementation "com.google.android.exoplayer:exoplayer-core:2.18.4"
-    implementation "com.google.android.exoplayer:exoplayer-ui:2.18.4"
+    implementation 'com.google.android.exoplayer:exoplayer-core:2.18.7'
+    implementation 'com.google.android.exoplayer:exoplayer-ui:2.18.7'
 
     // view model
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
     implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
 
@@ -107,7 +114,7 @@ dependencies {
     implementation "androidx.window:window:1.0.0"
 
     // kotest
-    testImplementation 'io.kotest:kotest-runner-junit5:5.5.2'
+    testImplementation 'io.kotest:kotest-runner-junit5:5.6.2'
     testImplementation 'org.jetbrains.kotlin:kotlin-reflect'
     testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4'
 }

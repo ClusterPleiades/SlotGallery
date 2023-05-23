@@ -18,6 +18,8 @@ class Config {
         const val DIALOG_TYPE_SORT_DIRECTORY_INSIDE = 11
         const val DIALOG_TYPE_INFORMATION = 12
         const val DIALOG_TYPE_COPY_DIRECTORY = 20
+        const val DIALOG_TYPE_COPY_MEDIA = 21
+        const val DIALOG_TYPE_RENAME_MEDIA = 30
         const val DIALOG_WIDTH_PERCENTAGE_DEFAULT = 0.85
         const val DIALOG_WIDTH_PERCENTAGE_RECYCLER = 0.65
 
@@ -36,6 +38,7 @@ class Config {
         const val REQUEST_RESULT_KEY_COPY_COMPLETE = "copy_complete"
         const val REQUEST_RESULT_KEY_SORT_ORDER_DIRECTORY = "sort_order_directory"
         const val REQUEST_RESULT_KEY_SORT_ORDER_DIRECTORY_INSIDE = "sort_order_directory"
+        const val REQUEST_RESULT_KEY_RENAME_COMPLETE = "rename_complete"
 
         // list
         const val SPAN_COUNT_DIRECTORY = 2
@@ -74,7 +77,6 @@ class Config {
         const val MIME_TYPE_ALL = "*/*"
         const val FORMAT_DATE = "yyyy-MM-dd"
         const val FORMAT_TIME = "HH:mm"
-        const val NAME_DUMMY = "empty.png"
         const val PACKAGE_NAME_EDIT = "com.niksoftware.snapseed"
         const val STORE_URL_EDIT = "https://play.google.com/store/apps/details?id=com.niksoftware.snapseed"
         const val URI_DEFAULT_DIRECTORY = "default_uri"

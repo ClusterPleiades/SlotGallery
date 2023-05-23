@@ -36,11 +36,11 @@ import com.michaelflisar.dragselectrecyclerview.DragSelectTouchListener
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_COPY_DIRECTORY
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_SORT_DIRECTORY
 import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_DIRECTORY_OVERVIEW
-import com.pleiades.pleione.slotgallery.Config.Companion.REQUEST_RESULT_KEY_COPY_COMPLETE
-import com.pleiades.pleione.slotgallery.Config.Companion.REQUEST_RESULT_KEY_DIRECTORY_OVERVIEW
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_ALL
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_IMAGE
 import com.pleiades.pleione.slotgallery.Config.Companion.MIME_TYPE_VIDEO
+import com.pleiades.pleione.slotgallery.Config.Companion.REQUEST_RESULT_KEY_COPY_COMPLETE
+import com.pleiades.pleione.slotgallery.Config.Companion.REQUEST_RESULT_KEY_DIRECTORY_OVERVIEW
 import com.pleiades.pleione.slotgallery.Config.Companion.REQUEST_RESULT_KEY_SORT_ORDER_DIRECTORY
 import com.pleiades.pleione.slotgallery.Config.Companion.SPAN_COUNT_DIRECTORY
 import com.pleiades.pleione.slotgallery.Config.Companion.URI_DEFAULT_DIRECTORY
@@ -178,7 +178,11 @@ class DirectoryFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 fragmentViewModel.state.collect { state ->
                     requireActivity().title =
-                        state.selectedPositionSet.size.toString() + "/" + listAdapter.itemCount
+                        if (fragmentViewModel.isSelecting) {
+                            state.selectedPositionSet.size.toString() + "/" + listAdapter.itemCount
+                        } else {
+                            ""
+                        }
                     listAdapter.notifyItemRangeChanged(0, listAdapter.itemCount)
                 }
             }
@@ -188,7 +192,9 @@ class DirectoryFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        if (!fragmentViewModel.isSelecting) activityViewModel.loadDirectoryList()
+        if (!fragmentViewModel.isSelecting) {
+            activityViewModel.loadDirectoryList()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -196,7 +202,6 @@ class DirectoryFragment : Fragment() {
             inflater.inflate(R.menu.menu_directory_select, menu)
             (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
         } else {
-            requireActivity().title = ""
             inflater.inflate(R.menu.menu_directory, menu)
             (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
         }
@@ -208,6 +213,7 @@ class DirectoryFragment : Fragment() {
                 onBackPressed()
                 return true
             }
+
             R.id.sort -> {
                 ListDialogFragment(DIALOG_TYPE_SORT_DIRECTORY)
                     .show(
@@ -216,22 +222,27 @@ class DirectoryFragment : Fragment() {
                     )
                 return true
             }
+
             R.id.setting -> {
                 startActivity(Intent(context, SettingActivity::class.java))
                 return true
             }
+
             R.id.select_all -> {
                 fragmentViewModel.selectAll(listAdapter.itemCount)
                 return true
             }
+
             R.id.share -> {
                 share()
                 return true
             }
+
             R.id.copy -> {
                 copyResultLauncher.launch(Intent(requireContext(), ChoiceActivity::class.java))
                 return true
             }
+
             R.id.delete -> {
                 delete()
                 return true

@@ -74,6 +74,5 @@
             android:singleLine="true"
             android:textColor="@color/color_gray"
             android:textSize="@dimen/text_size_small" />
-
     </androidx.appcompat.widget.LinearLayoutCompat>
 </androidx.constraintlayout.widget.ConstraintLayout>

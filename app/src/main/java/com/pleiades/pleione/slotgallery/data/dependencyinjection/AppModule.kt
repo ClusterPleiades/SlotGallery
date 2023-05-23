@@ -13,6 +13,7 @@ import com.pleiades.pleione.slotgallery.domain.repository.WindowRepository
 import com.pleiades.pleione.slotgallery.domain.usecase.media.CopyDirectoryUseCase
 import com.pleiades.pleione.slotgallery.domain.usecase.media.CopyMediaUseCase
 import com.pleiades.pleione.slotgallery.domain.usecase.media.GetDirectoryListUseCase
+import com.pleiades.pleione.slotgallery.domain.usecase.media.RenameMediaUseCase
 import com.pleiades.pleione.slotgallery.domain.usecase.media.bundle.MediaUseCaseBundle
 import com.pleiades.pleione.slotgallery.domain.usecase.slot.GetSelectedSlotPositionUseCase
 import com.pleiades.pleione.slotgallery.domain.usecase.slot.GetSlotListUseCase
@@ -41,11 +42,13 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideSharedPreference(@ApplicationContext context: Context): SharedPreferences = context.getSharedPreferences(PREFS, MODE_PRIVATE)
+    fun provideSharedPreference(@ApplicationContext context: Context): SharedPreferences =
+        context.getSharedPreferences(PREFS, MODE_PRIVATE)
 
     @Provides
     @Singleton
-    fun provideEditor(@ApplicationContext context: Context): SharedPreferences.Editor = context.getSharedPreferences(PREFS, MODE_PRIVATE).edit()
+    fun provideEditor(@ApplicationContext context: Context): SharedPreferences.Editor =
+        context.getSharedPreferences(PREFS, MODE_PRIVATE).edit()
 
     @Provides
     @Singleton
@@ -53,7 +56,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideContentResolver(@ApplicationContext context: Context): ContentResolver = context.contentResolver
+    fun provideContentResolver(@ApplicationContext context: Context): ContentResolver =
+        context.contentResolver
 
     @Provides
     @Singleton
@@ -61,7 +65,8 @@ object AppModule {
         MediaUseCaseBundle(
             getDirectoryListUseCase = GetDirectoryListUseCase(repository),
             copyDirectoryUseCase = CopyDirectoryUseCase(repository),
-            copyMediaUseCase = CopyMediaUseCase(repository)
+            copyMediaUseCase = CopyMediaUseCase(repository),
+            renameMediaUseCase = RenameMediaUseCase(repository)
         )
 
     @Provides

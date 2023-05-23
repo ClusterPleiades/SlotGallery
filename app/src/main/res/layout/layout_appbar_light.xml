@@ -11,5 +11,4 @@
         android:layout_height="?attr/actionBarSize"
         app:contentInsetStartWithNavigation="0dp"
         app:titleTextAppearance="@style/AppTheme.ToolbarTitleTextAppearance" />
-
 </com.google.android.material.appbar.AppBarLayout>

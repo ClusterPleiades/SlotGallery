@@ -6,12 +6,14 @@ import com.pleiades.pleione.slotgallery.domain.repository.MediaRepository
 
 class CopyMediaUseCase(private val repository: MediaRepository) {
     suspend operator fun invoke(
-        fromDirectory: Directory,
+        mediaList: List<Media>,
         toDirectory: Directory,
-        mediaSet: Set<Media>
+        setMaxProgress: (Int) -> Unit,
+        setProgress: () -> Unit
     ) = repository.copyMedia(
-        fromDirectory = fromDirectory,
+        mediaList = mediaList,
         toDirectory = toDirectory,
-        mediaSet = mediaSet
+        setMaxProgress = setMaxProgress,
+        setProgress = setProgress
     )
 }

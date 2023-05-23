@@ -1,5 +1,7 @@
-package com.pleiades.pleione.slotgallery.ui.media.video
+package com.pleiades.pleione.slotgallery.presentation.main.pager.page.video
 
+import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.os.Bundle
@@ -13,26 +15,23 @@ import androidx.core.view.WindowInsetsControllerCompat
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.ui.StyledPlayerView
-import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_NAME
-import com.pleiades.pleione.slotgallery.Config.Companion.INTENT_EXTRA_URI
 import com.pleiades.pleione.slotgallery.R
 import com.pleiades.pleione.slotgallery.databinding.ActivityVideoBinding
 
-class VideoActivity : AppCompatActivity() {
+class ExternalVideoActivity : AppCompatActivity() {
     private lateinit var binding: ActivityVideoBinding
 
     private lateinit var toolbarLayoutParams: ViewGroup.MarginLayoutParams
     private var statusBarHeight = 0
 
     private lateinit var exoPlayer: ExoPlayer
-    private lateinit var playerView: StyledPlayerView
     private lateinit var playerViewLayoutParams: ViewGroup.MarginLayoutParams
     private var navigationBarHeight = 0
 
     private var isFull = false
     private var isRotated = false
 
+    @SuppressLint("DiscouragedApi", "InternalInsetResource")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityVideoBinding.inflate(layoutInflater)
@@ -55,52 +54,49 @@ class VideoActivity : AppCompatActivity() {
         // set toolbar margin
         setToolbarMargin(true)
 
-        // set title from intent extra
-        title = intent.getStringExtra(INTENT_EXTRA_NAME)
+        // check intent
+        if (intent.action == Intent.ACTION_VIEW) {
+            // set title from intent
+            title = intent.data.toString()
 
-        // initialize uri from intent extra
-        val uri = Uri.parse(intent.getStringExtra(INTENT_EXTRA_URI))
+            // initialize uri from intent
+            val uri = Uri.parse(intent.data.toString())
 
-        // initialize player
-        playerView = findViewById(R.id.player_video)
-        playerView.setOnClickListener { fullVideo() }
+            // initialize player
+            binding.playerVideo.setOnClickListener { fullVideo() }
 
-        // initialize exoplayer
-        exoPlayer = ExoPlayer.Builder(this).build()
-        exoPlayer.addListener(object : Player.Listener {
-            override fun onPlaybackStateChanged(@Player.State state: Int) {
-                if (state == Player.STATE_ENDED) {
-                    // un full force
-                    isFull = true
-                    fullVideo()
+            // initialize exoplayer
+            exoPlayer = ExoPlayer.Builder(this).build()
+            exoPlayer.addListener(object : Player.Listener {
+                override fun onPlaybackStateChanged(@Player.State state: Int) {
+                    if (state == Player.STATE_ENDED) {
+                        // un full force
+                        isFull = true
+                        fullVideo()
+                    }
                 }
-            }
-        })
-        exoPlayer.setMediaItem(MediaItem.fromUri(uri))
+            })
+            exoPlayer.setMediaItem(MediaItem.fromUri(uri))
 
-        // set exoplayer as player
-        playerView.player = exoPlayer
+            // set exoplayer as player
+            binding.playerVideo.player = exoPlayer
 
-        // initialize player view layout params
-        playerViewLayoutParams = playerView.layoutParams as ViewGroup.MarginLayoutParams
+            // initialize player view layout params
+            playerViewLayoutParams = binding.playerVideo.layoutParams as ViewGroup.MarginLayoutParams
 
-        // initialize navigation bar height
-        val navigationBarHeightResId = resources.getIdentifier("navigation_bar_height", "dimen", "android")
-        navigationBarHeight = resources.getDimensionPixelSize(navigationBarHeightResId)
+            // initialize navigation bar height
+            val navigationBarHeightResId = resources.getIdentifier("navigation_bar_height", "dimen", "android")
+            navigationBarHeight = resources.getDimensionPixelSize(navigationBarHeightResId)
 
-        // set player view margin
-        setPlayerViewMargin(true)
+            // set player view margin
+            setPlayerViewMargin(true)
 
-        // play
-        exoPlayer.prepare()
-        exoPlayer.play()
-    }
-
-    override fun onResume() {
-        // set last resumed activity code
-//        MainActivity.lastResumedActivityCode = ACTIVITY_CODE_VIDEO
-
-        super.onResume()
+            // play
+            exoPlayer.prepare()
+            exoPlayer.play()
+        } else {
+            finish()
+        }
     }
 
     override fun onPause() {
@@ -199,6 +195,6 @@ class VideoActivity : AppCompatActivity() {
 
     private fun setPlayerViewMargin(apply: Boolean) {
         playerViewLayoutParams.bottomMargin = if (apply) navigationBarHeight else 0
-        playerView.layoutParams = playerViewLayoutParams
+        binding.playerVideo.layoutParams = playerViewLayoutParams
     }
 }

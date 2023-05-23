@@ -16,6 +16,15 @@ import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_SORT_DIRECT
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_TYPE_SORT_DIRECTORY_INSIDE
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_WIDTH_PERCENTAGE_DEFAULT
 import com.pleiades.pleione.slotgallery.Config.Companion.DIALOG_WIDTH_PERCENTAGE_RECYCLER
+import com.pleiades.pleione.slotgallery.Config.Companion.FORMAT_DATE
+import com.pleiades.pleione.slotgallery.Config.Companion.FORMAT_TIME
+import com.pleiades.pleione.slotgallery.Config.Companion.INFORMATION_POSITION_DATE
+import com.pleiades.pleione.slotgallery.Config.Companion.INFORMATION_POSITION_HEIGHT
+import com.pleiades.pleione.slotgallery.Config.Companion.INFORMATION_POSITION_NAME
+import com.pleiades.pleione.slotgallery.Config.Companion.INFORMATION_POSITION_PATH
+import com.pleiades.pleione.slotgallery.Config.Companion.INFORMATION_POSITION_SIZE
+import com.pleiades.pleione.slotgallery.Config.Companion.INFORMATION_POSITION_TIME
+import com.pleiades.pleione.slotgallery.Config.Companion.INFORMATION_POSITION_WIDTH
 import com.pleiades.pleione.slotgallery.Config.Companion.REQUEST_RESULT_KEY_SORT_ORDER_DIRECTORY
 import com.pleiades.pleione.slotgallery.Config.Companion.REQUEST_RESULT_KEY_SORT_ORDER_DIRECTORY_INSIDE
 import com.pleiades.pleione.slotgallery.R
@@ -24,6 +33,8 @@ import com.pleiades.pleione.slotgallery.databinding.ItemDialogInformationBinding
 import com.pleiades.pleione.slotgallery.databinding.ItemDialogRadioBinding
 import com.pleiades.pleione.slotgallery.presentation.dialog.setLayoutSize
 import dagger.hilt.android.AndroidEntryPoint
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @AndroidEntryPoint
 class ListDialogFragment(private val type: Int) : androidx.fragment.app.DialogFragment() {
@@ -42,7 +53,8 @@ class ListDialogFragment(private val type: Int) : androidx.fragment.app.DialogFr
             adapter =
                 when (type) {
                     DIALOG_TYPE_SORT_DIRECTORY, DIALOG_TYPE_SORT_DIRECTORY_INSIDE -> RadioAdapter()
-                    else -> InformationAdapter()
+                    DIALOG_TYPE_INFORMATION -> InformationAdapter()
+                    else -> null
                 }
         }
 
@@ -95,25 +107,35 @@ class ListDialogFragment(private val type: Int) : androidx.fragment.app.DialogFr
                 )
             )
 
-        // TODO check
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             with(holder.binding) {
                 // title
                 title.text = resources.getStringArray(R.array.information)[position]
 
                 // content
-//                val media = (activity as MediaActivity).getCurrentContent()
-//                content.text =
-//                    when (position) {
-//                        INFORMATION_POSITION_NAME -> media.name
-//                        INFORMATION_POSITION_DATE -> SimpleDateFormat(FORMAT_DATE, Locale.getDefault()).format(media.date * 1000)
-//                        INFORMATION_POSITION_TIME -> SimpleDateFormat(FORMAT_TIME, Locale.getDefault()).format(media.date * 1000)
-//                        INFORMATION_POSITION_SIZE -> media.size
-//                        INFORMATION_POSITION_WIDTH -> media.width.toString()
-//                        INFORMATION_POSITION_HEIGHT -> media.height.toString()
-//                        INFORMATION_POSITION_PATH -> media.relativePath + media.name
-//                        else -> null
-//                    }
+                fragmentViewModel.media?.let {
+                    content.text =
+                        when (position) {
+                            INFORMATION_POSITION_NAME -> it.name
+                            INFORMATION_POSITION_DATE ->
+                                SimpleDateFormat(
+                                    FORMAT_DATE,
+                                    Locale.getDefault()
+                                ).format(it.date * 1000)
+
+                            INFORMATION_POSITION_TIME ->
+                                SimpleDateFormat(
+                                    FORMAT_TIME,
+                                    Locale.getDefault()
+                                ).format(it.date * 1000)
+
+                            INFORMATION_POSITION_SIZE -> it.size
+                            INFORMATION_POSITION_WIDTH -> it.width.toString()
+                            INFORMATION_POSITION_HEIGHT -> it.height.toString()
+                            INFORMATION_POSITION_PATH -> it.relativePath + it.name
+                            else -> null
+                        }
+                }
             }
         }
 
@@ -127,6 +149,7 @@ class ListDialogFragment(private val type: Int) : androidx.fragment.app.DialogFr
                     when (type) {
                         DIALOG_TYPE_SORT_DIRECTORY -> {
                             fragmentViewModel.putDirectorySortOrderPosition(bindingAdapterPosition)
+
                             parentFragmentManager.setFragmentResult(
                                 REQUEST_RESULT_KEY_SORT_ORDER_DIRECTORY,
                                 Bundle().apply {
@@ -137,8 +160,10 @@ class ListDialogFragment(private val type: Int) : androidx.fragment.app.DialogFr
                                 }
                             )
                         }
+
                         DIALOG_TYPE_SORT_DIRECTORY_INSIDE -> {
                             fragmentViewModel.putMediaSortOrderPosition(bindingAdapterPosition)
+
                             parentFragmentManager.setFragmentResult(
                                 REQUEST_RESULT_KEY_SORT_ORDER_DIRECTORY_INSIDE,
                                 Bundle().apply {

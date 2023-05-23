@@ -175,7 +175,7 @@ class TestingMediaRepository(
         fromDirectoryList: List<Directory>,
         toDirectory: Directory,
         setMaxProgress: (Int) -> Unit,
-        progress: () -> Unit
+        setProgress: () -> Unit
     ) {
         // physical copy test in DefaultMediaRepositoryTest
     }

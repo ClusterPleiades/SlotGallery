@@ -8,6 +8,12 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/rename"
+        android:orderInCategory="0"
+        android:title="@string/action_rename"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/copy"
         android:orderInCategory="1"
         android:title="@string/action_copy"

@@ -1,9 +1,9 @@
 package com.pleiades.pleione.slotgallery.data.dependencyinjection
 
-import com.pleiades.pleione.slotgallery.data.repository.DefaultMediaRepository
-import com.pleiades.pleione.slotgallery.data.repository.DefaultSlotRepository
-import com.pleiades.pleione.slotgallery.data.repository.DefaultUtilRepository
-import com.pleiades.pleione.slotgallery.data.repository.DefaultWindowRepository
+import com.pleiades.pleione.slotgallery.data.repository.MediaRepositoryImpl
+import com.pleiades.pleione.slotgallery.data.repository.SlotRepositoryImpl
+import com.pleiades.pleione.slotgallery.data.repository.UtilRepositoryImpl
+import com.pleiades.pleione.slotgallery.data.repository.WindowRepositoryImpl
 import com.pleiades.pleione.slotgallery.domain.repository.MediaRepository
 import com.pleiades.pleione.slotgallery.domain.repository.SlotRepository
 import com.pleiades.pleione.slotgallery.domain.repository.UtilRepository
@@ -20,24 +20,24 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindMediaRepository(
-        defaultMediaRepository: DefaultMediaRepository
+        mediaRepositoryImpl: MediaRepositoryImpl
     ): MediaRepository
 
     @Binds
     @Singleton
     abstract fun bindSlotRepository(
-        defaultSlotRepository: DefaultSlotRepository
+        slotRepositoryImpl: SlotRepositoryImpl
     ): SlotRepository
 
     @Binds
     @Singleton
     abstract fun bindUtilRepository(
-        defaultUtilRepository: DefaultUtilRepository
+        utilRepositoryImpl: UtilRepositoryImpl
     ): UtilRepository
 
     @Binds
     @Singleton
     abstract fun bindWindowRepository(
-        defaultWindowRepository: DefaultWindowRepository
+        windowRepositoryImpl: WindowRepositoryImpl
     ): WindowRepository
 }

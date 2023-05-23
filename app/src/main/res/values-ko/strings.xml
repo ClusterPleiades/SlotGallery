@@ -27,6 +27,7 @@
     <string name="action_settings">설정</string>
     <string name="action_select_all">모두 선택</string>
     <string name="action_share">공유</string>
+    <string name="action_rename">명명</string>
     <string name="action_copy">복사</string>
     <string name="action_edit">편집</string>
     <string name="action_move">이동</string>
